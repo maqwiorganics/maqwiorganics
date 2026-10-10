@@ -1,0 +1,31 @@
+# Secrets and environment files
+.env
+.env.*
+!.env.example
+wp-config.php
+**/wp-config.php
+*.pem
+*.key
+*.p12
+*.sql
+*.sql.gz
+*.sqlite
+*.sqlite3
+
+# Private project materials and archives
+*.zip
+*.7z
+*.rar
+*backup*
+*recovery-code*
+*2fa*
+
+# WordPress runtime / generated files
+wp-admin/
+wp-includes/
+wp-content/uploads/
+wp-content/cache/
+wp-content/upgrade/
+wp-content/backup*/
+node_modules/
+.DS_Store
