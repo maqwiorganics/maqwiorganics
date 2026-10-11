@@ -30,7 +30,7 @@ fs.mkdirSync(output,{recursive:true});
   if(width<640){const menu=page.locator('.mq-mobile-nav');await menu.locator('summary').click();await page.keyboard.press('Escape');assert(!(await menu.evaluate(e=>e.open)),'Escape closes menu');await menu.locator('summary').click();await menu.getByRole('link',{name:'Shop',exact:true}).click();await page.locator('.mq-commerce').waitFor();}
   else {await page.locator('.mq-desktop-nav').getByRole('link',{name:'Shop',exact:true}).click();await page.locator('.mq-commerce').waitFor();}
   assert.equal(await page.locator('ul.products>li.product').count(),4,'Shop four products');await check('shop');
-  await page.locator('select.orderby').selectOption('price-desc');await page.waitForLoadState('domcontentloaded');
+  await page.locator('select.orderby').selectOption('price-desc');await page.waitForURL(url=>url.searchParams.get('orderby')==='price-desc');await page.waitForFunction(()=>document.querySelector('.woocommerce-loop-product__title')?.textContent.includes('Ghee'));
   await page.locator('.mq-shop-search input[type="search"]').fill('Honey');await page.locator('.mq-shop-search button[type="submit"]').click();await page.locator('.mq-commerce').waitFor();
   const results=await page.locator('ul.products>li.product').count();
   assert(results===1 || (new URL(page.url()).pathname==='/product/maqwi-honey/' && await page.locator('form.variations_form').count()===1),'Product search returns matching product');
@@ -66,7 +66,7 @@ fs.mkdirSync(output,{recursive:true});
  }
  const extra=await context.newPage();
  for(const [slug,sizes] of [['maqwi-honey',['250 g','500 g']],['maqwi-desi-ghee',['250 g','500 g']],['maqwi-achaar',['250 g','500 g']],['maqwi-itar',['6 ml','12 ml']]]){
-  await extra.goto(base+'product/'+slug+'/',{waitUntil:'domcontentloaded'});await extra.locator('form.variations_form').waitFor();
+  await extra.goto(base+'product/'+slug+'/',{waitUntil:'domcontentloaded'});await extra.locator('form.variations_form').waitFor();await extra.waitForLoadState('load');
   let previous='';for(const size of sizes){await extra.locator('select[name="attribute_size"]').selectOption({label:size});await extra.waitForFunction(previous=>{const id=document.querySelector('input.variation_id')?.value;return id&&id!=='0'&&id!==previous},previous);previous=await extra.locator('input.variation_id').inputValue();}
   assert.equal(await extra.locator('main h1').count(),1,'Product H1 '+slug);await extra.locator('.mq-concept-gallery img').evaluate(i=>i.decode());report.pages.push({name:slug,variations:sizes,passed:true});
  }
