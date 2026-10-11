@@ -25,7 +25,7 @@ fs.mkdirSync(output,{recursive:true});
   }
   await visit('?storeqa='+width);await page.locator('.mq-featured').waitFor();
   assert.equal(await page.locator('.mq-product-card').count(),4,'Four featured products');
-  assert(await page.locator('link[href*="style.css?ver=0.4.1"]').count(),'Current theme');
+  assert(await page.locator('link[href*="style.css?ver=0.4.2"]').count(),'Current theme');
   await check('home');
   if(width<640){const menu=page.locator('.mq-mobile-nav');await menu.locator('summary').click();await page.keyboard.press('Escape');assert(!(await menu.evaluate(e=>e.open)),'Escape closes menu');await menu.locator('summary').click();await menu.getByRole('link',{name:'Shop',exact:true}).click();await page.locator('.mq-commerce').waitFor();}
   else {await page.locator('.mq-desktop-nav').getByRole('link',{name:'Shop',exact:true}).click();await page.locator('.mq-commerce').waitFor();}
@@ -40,7 +40,7 @@ fs.mkdirSync(output,{recursive:true});
   await page.waitForLoadState('load');const select=page.locator('select[name="attribute_size"]');await select.selectOption({label:'250 g'});
   await page.waitForFunction(()=>Number(document.querySelector('input.variation_id')?.value)>0);await page.locator('.single_add_to_cart_button:not(.disabled)').waitFor();
   await page.locator('#tab-title-maqwi_details a').click();assert((await page.locator('#tab-maqwi_details').innerText()).includes('awaiting approval'),'Product details');
-  await check('product');await page.locator('.single_add_to_cart_button').click();await page.locator('.woocommerce-message').waitFor();
+  assert.equal(await page.locator('main [aria-label="Breadcrumb"]').count(),1,'One product breadcrumb');await check('product');await page.locator('.single_add_to_cart_button').click();await page.locator('.woocommerce-message').waitFor();
   await page.locator('.mq-cart').click();await page.locator('form.woocommerce-cart-form').waitFor();
   assert((await page.locator('.woocommerce-cart-form').innerText()).includes('Maqwi Honey'),'Cart product');
   await page.waitForLoadState('load');await page.locator('input.qty').fill('2');await page.locator('input.qty').press('Tab');await page.locator('button[name="update_cart"]').click();await page.waitForTimeout(1000);await page.locator('input.qty').waitFor();assert.equal(await page.locator('input.qty').inputValue(),'2','Quantity updated');
@@ -51,7 +51,7 @@ fs.mkdirSync(output,{recursive:true});
   assert.equal(await page.locator('input[name="payment_method"]').count(),0,'No payment gateway');
   await page.locator('#billing_first_name').fill('Frontend Preview');await page.locator('#billing_address_1').fill('Sample address for layout testing');await page.locator('#billing_city').fill('Lahore');await page.locator('#billing_city').press('Tab');await page.locator('#billing_email').fill('preview@example.invalid');
   await page.waitForFunction(()=>document.querySelector('#order_review')?.innerText.includes('Sample delivery'),{},{timeout:30000});
-  assert((await page.locator('#order_review').innerText()).includes('1,950'),'Sample shipping total');await check('checkout');
+  assert((await page.locator('#order_review').innerText()).includes('1,950'),'Sample shipping total');await page.waitForFunction(()=>![...document.querySelectorAll('form.checkout .blockUI')].some(el=>getComputedStyle(el).display!=='none'));await check('checkout');
   // Check Store API guard without submitting any customer data.
   const guard=await page.evaluate(async()=>{const r=await fetch('/?rest_route=/wc/store/v1/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});return {status:r.status,text:await r.text()};});
   assert.equal(guard.status,403,'Store API checkout blocked');assert(guard.text.includes('maqwi_orders_closed'),'Specific order guard');
