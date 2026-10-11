@@ -62,6 +62,9 @@ fs.mkdirSync(output, { recursive: true });
         assert(page.url().endsWith('#questions'), 'Mobile Questions anchor');
       }
       await page.locator('.mq-category h3 a').first().click();
+      const session = await context.newCDPSession(page);
+      const listeners = await session.send('Runtime.evaluate', { expression: 'getEventListeners(window).hashchange?.map(x => x.listener.toString())', includeCommandLineAPI: true, returnByValue: true });
+      console.log('COLLECTION_TRACE', JSON.stringify({ listeners: listeners.result.value, state: await page.evaluate(() => { const target = document.getElementById('collection-honey'); const panel = target?.closest('details'); const before = panel?.open; window.dispatchEvent(new HashChangeEvent('hashchange')); const afterDispatch = panel?.open; return { hash: location.hash, before, afterDispatch, match: /^collection-(honey|desi-ghee|achaar|itar)$/.test(location.hash.slice(1)), panelClass: panel?.className, instance: panel instanceof HTMLDetailsElement }; }) }));
       await page.waitForFunction(() => location.hash === '#collection-honey' && document.getElementById('collection-honey').closest('details').open);
       const honey = page.locator('#collection-honey');
       assert(await honey.locator('.mq-detail-note').isVisible(), 'Concept status visible in collection');
