@@ -7,10 +7,11 @@ fs.mkdirSync(output,{recursive:true});
 (async()=>{
  const executablePath=['/usr/bin/google-chrome','/usr/bin/chromium'].find(fs.existsSync);
  const browser=await chromium.launch({executablePath});
+ const context=await browser.newContext({viewport:{width:1440,height:900}});
  const report={widths:[],pages:[],errors:[],consoleErrors:[],checked:[]};
  try{
  for(const width of [320,390,768,1440]){
-  const context=await browser.newContext({viewport:{width,height:900}}),page=await context.newPage();
+  const page=await context.newPage();await page.setViewportSize({width,height:900});
   page.on('pageerror',e=>report.errors.push(e.message));
   page.on('console',m=>{if(m.type()==='error')report.consoleErrors.push(m.text())});
   async function visit(route){await page.goto(base+route,{waitUntil:'domcontentloaded',timeout:90000});await page.locator('.mq-header').waitFor({timeout:90000});await page.evaluate(()=>document.fonts.ready);}
@@ -20,7 +21,7 @@ fs.mkdirSync(output,{recursive:true});
    const metrics=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth,brokenImages:[...document.querySelectorAll('main img')].filter(i=>i.getBoundingClientRect().height>0&&(!i.complete||!i.naturalWidth)).length}));
    assert(metrics.scrollWidth<=width+1,name+' overflow '+metrics.scrollWidth);assert.equal(metrics.brokenImages,0,name+' images');
    report.pages.push({width,name,...metrics});
-   await page.screenshot({path:`${output}/${name}-${width}.png`,fullPage:true});
+   await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:`${output}/${name}-${width}.png`,fullPage:true});console.log(JSON.stringify({passed:name,width}));
   }
   await visit('?storeqa='+width);await page.locator('.mq-featured').waitFor();
   assert.equal(await page.locator('.mq-product-card').count(),4,'Four featured products');
@@ -57,7 +58,7 @@ fs.mkdirSync(output,{recursive:true});
   await page.locator('.mq-back-top').click();await page.waitForFunction(()=>scrollY<=5);
   // Remove only our sample cart item and verify empty state.
   await visit('cart/');await page.locator('.product-remove a').click();await page.locator('.cart-empty').waitFor();await check('empty-cart');
-  report.widths.push({width,complete:true});await context.close();
+  report.widths.push({width,complete:true});await page.close();
  }
  assert.equal(report.errors.length,0,'No runtime errors');
  report.checked=['home','shop','sorting','search','category','variation selection','product description and details','sample add to bag','quantity update','cart','checkout fields','disabled order submission','Store API order guard','account login screen','six information pages','FAQ','mobile navigation','footer','empty bag'];
