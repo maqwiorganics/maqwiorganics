@@ -25,7 +25,7 @@ fs.mkdirSync(output,{recursive:true});
   }
   await visit('?storeqa='+width);await page.locator('.mq-featured').waitFor();
   assert.equal(await page.locator('.mq-product-card').count(),4,'Four featured products');
-  assert(await page.locator('link[href*="style.css?ver=0.4.2"]').count(),'Current theme');
+  assert(await page.locator('link[href*="style.css?ver=0.4.3"]').count(),'Current theme');
   await check('home');
   if(width<640){const menu=page.locator('.mq-mobile-nav');await menu.locator('summary').click();await page.keyboard.press('Escape');assert(!(await menu.evaluate(e=>e.open)),'Escape closes menu');await menu.locator('summary').click();await menu.getByRole('link',{name:'Shop',exact:true}).click();await page.locator('.mq-commerce').waitFor();}
   else {await page.locator('.mq-desktop-nav').getByRole('link',{name:'Shop',exact:true}).click();await page.locator('.mq-commerce').waitFor();}
@@ -40,7 +40,7 @@ fs.mkdirSync(output,{recursive:true});
   await page.waitForLoadState('load');const select=page.locator('select[name="attribute_size"]');await select.selectOption({label:'250 g'});
   await page.waitForFunction(()=>Number(document.querySelector('input.variation_id')?.value)>0);await page.locator('.single_add_to_cart_button:not(.disabled)').waitFor();
   await page.locator('#tab-title-maqwi_details a').click();assert((await page.locator('#tab-maqwi_details').innerText()).includes('awaiting approval'),'Product details');
-  report.breadcrumbMarkup=await page.locator('main [class*="breadcrumb"], main [id*="breadcrumb"]').evaluateAll(nodes=>nodes.map(n=>n.outerHTML.slice(0,1400)));assert.equal(await page.locator('main [aria-label="Breadcrumb"]').count(),1,'One product breadcrumb');await check('product');await page.locator('.single_add_to_cart_button').click();await page.locator('.woocommerce-message').waitFor();
+  report.breadcrumbMarkup=await page.locator('main [class*="breadcrumb"], main [id*="breadcrumb"]').evaluateAll(nodes=>nodes.map(n=>n.outerHTML.slice(0,1400)));report.visibleBreadcrumbs=await page.locator('main nav[aria-label^="Breadcrumb"]').evaluateAll(nodes=>nodes.filter(n=>n.getBoundingClientRect().height>0&&getComputedStyle(n).display!=='none').length);assert.equal(report.visibleBreadcrumbs,1,'One visible product breadcrumb');await check('product');await page.locator('.single_add_to_cart_button').click();await page.locator('.woocommerce-message').waitFor();
   await page.locator('.mq-cart').click();await page.locator('form.woocommerce-cart-form').waitFor();
   assert((await page.locator('.woocommerce-cart-form').innerText()).includes('Maqwi Honey'),'Cart product');
   await page.waitForLoadState('load');await page.locator('input.qty').fill('2');await page.locator('input.qty').press('Tab');await page.locator('button[name="update_cart"]').click();await page.waitForTimeout(1000);await page.locator('input.qty').waitFor();assert.equal(await page.locator('input.qty').inputValue(),'2','Quantity updated');
