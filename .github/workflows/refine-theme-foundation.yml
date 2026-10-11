@@ -19,15 +19,16 @@ jobs:
           fetch-depth: 0
       - name: Validate source
         run: find wp-content/themes/maqwi-organics -name '*.php' -print0 | xargs -0 -n1 php -l
-      - name: Apply reviewed category links and text contrast fix
+      - name: Install self-hosted heading typography
         env:
           FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
         run: |
           python3 - <<'PY'
           import ftplib, ssl, os, io, hashlib, pathlib, subprocess
           local = pathlib.Path('wp-content/themes/maqwi-organics')
-          allowed = ['style.css','patterns/home.php']
-          old_commit = '3fc3527a283c45f8d88ae5d5629f349a69f9010f'
+          allowed = ['assets/fonts/maqwi-garamond-latin.woff','assets/fonts/OFL.txt','theme.json','style.css']
+          existing = ['theme.json','style.css']
+          old_commit = 'a02a1d53384731e35546e1fe31ec5513ab3b3afc'
           ftp = ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
           ftp.connect('ftpupload.net',21)
           ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
@@ -35,16 +36,18 @@ jobs:
           root = '/htdocs/wp-content/themes/maqwi-organics'
           history = '/htdocs/wp-content/themes/.maqwi-refinement-' + os.environ['GITHUB_RUN_ID']
           originals = {}
-          for name in allowed:
+          for name in existing:
               expected = subprocess.check_output(['git','show',old_commit+':'+str(local/name)])
               received = io.BytesIO()
               ftp.retrbinary('RETR '+root+'/'+name,received.write)
               assert hashlib.sha256(expected).digest() == hashlib.sha256(received.getvalue()).digest(), 'Unexpected existing source: '+name
               originals[name] = received.getvalue()
           ftp.mkd(history)
-          ftp.mkd(history+'/patterns')
+          assets = {pathlib.PurePosixPath(n).name for n in ftp.nlst(root+'/assets')}
+          assert 'fonts' not in assets, 'Refusing to overwrite an existing fonts directory'
+          ftp.mkd(root+'/assets/fonts')
+          for name in existing: ftp.storbinary('STOR '+history+'/'+name,io.BytesIO(originals[name]))
           for name in allowed:
-              ftp.storbinary('STOR '+history+'/'+name,io.BytesIO(originals[name]))
               data = (local/name).read_bytes()
               temporary = root+'/'+name+'.new-'+os.environ['GITHUB_RUN_ID']
               ftp.storbinary('STOR '+temporary,io.BytesIO(data))
@@ -53,5 +56,5 @@ jobs:
               assert hashlib.sha256(data).digest() == hashlib.sha256(received.getvalue()).digest(), name
               ftp.rename(temporary,root+'/'+name)
           ftp.quit()
-          print('Category links and small-text contrast refined; prior files retained; source hashes verified.')
+          print('Self-hosted heading font installed; prior typography files retained; all source/font hashes verified.')
           PY
