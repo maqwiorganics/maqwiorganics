@@ -29,9 +29,9 @@ fs.mkdirSync(output, { recursive: true });
       assert.equal(await page.locator('main h1').count(), 1, 'One H1 at ' + width);
       assert.equal(await page.locator('.mq-collection-detail').count(), 4, 'Four collection panels');
       assert.equal(await page.locator('.mq-cart,.mq-account,.mq-mobile-account').count(), 0, 'No ordering/account links');
-      assert(await page.locator('link[href*="style.css?ver=0.3.2"]').count(), 'Current stylesheet version');
+      assert(await page.locator('link[href*="style.css?ver=0.3.3"]').count(), 'Current stylesheet version');
       assert(await page.locator('meta[name="description"]').getAttribute('content'), 'Homepage description');
-      for (const image of await page.locator('main img').all()) {
+      for (const image of await page.locator('.mq-site img').all()) {
         if (await image.isVisible()) {
           await image.scrollIntoViewIfNeeded();
           await image.evaluate(img => img.decode());
@@ -42,7 +42,7 @@ fs.mkdirSync(output, { recursive: true });
         width: innerWidth,
         scrollWidth: document.documentElement.scrollWidth,
         fontLoaded: document.fonts.check('16px "Maqwi Garamond"'),
-        brokenVisibleImages: [...document.querySelectorAll('main img')].filter(img => img.getBoundingClientRect().height > 0 && (!img.complete || !img.naturalWidth)).length
+        brokenVisibleImages: [...document.querySelectorAll('.mq-site img')].filter(img => img.getBoundingClientRect().height > 0 && (!img.complete || !img.naturalWidth)).length
       }));
       assert(metrics.scrollWidth <= width + 1, 'Horizontal overflow at ' + width + ': ' + metrics.scrollWidth);
       assert(metrics.fontLoaded, 'Brand font loaded');
@@ -62,9 +62,6 @@ fs.mkdirSync(output, { recursive: true });
         assert(page.url().endsWith('#questions'), 'Mobile Questions anchor');
       }
       await page.locator('.mq-category h3 a').first().click();
-      const session = await context.newCDPSession(page);
-      const listeners = await session.send('Runtime.evaluate', { expression: 'getEventListeners(window).hashchange?.map(x => x.listener.toString())', includeCommandLineAPI: true, returnByValue: true });
-      console.log('COLLECTION_TRACE', JSON.stringify({ listeners: listeners.result.value, state: await page.evaluate(() => { const target = document.getElementById('collection-honey'); const panel = target?.closest('details'); const before = panel?.open; window.dispatchEvent(new HashChangeEvent('hashchange')); const afterDispatch = panel?.open; return { hash: location.hash, before, afterDispatch, match: /^collection-(honey|desi-ghee|achaar|itar)$/.test(location.hash.slice(1)), panelClass: panel?.className, instance: panel instanceof HTMLDetailsElement }; }) }));
       await page.waitForFunction(() => location.hash === '#collection-honey' && document.getElementById('collection-honey').closest('details').open);
       const honey = page.locator('#collection-honey');
       assert(await honey.locator('.mq-detail-note').isVisible(), 'Concept status visible in collection');
