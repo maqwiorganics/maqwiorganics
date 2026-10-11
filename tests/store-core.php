@@ -67,3 +67,10 @@ check( $r instanceof WP_Error && 403 === $r->data['status'], 'Store API draft ch
 check( null === $filters['rest_pre_dispatch']( null, null, new SampleRequest( 'GET', '/wc/store/v1/cart' ) ), 'Cart read blocked' );
 check( null === $filters['rest_pre_dispatch']( null, null, new SampleRequest( 'POST', '/wc/store/v1/cart/add-item' ) ), 'Sample cart API blocked' );
 echo "Sample-only cart, payment, registration and Store API guards passed.\n";
+
+check( true === $filters['wc_shipping_enabled']( false ), 'Preview shipping disabled' );
+check( true === $filters['woocommerce_cart_ready_to_calc_shipping']( false ), 'Preview delivery not calculable' );
+$preview_mode = 'no';
+check( false === $filters['wc_shipping_enabled']( false ), 'Real shipping setting changed' );
+check( false === $filters['woocommerce_cart_ready_to_calc_shipping']( false ), 'Real shipping address requirement changed' );
+echo "Sample delivery configuration isolated from real shipping settings.\n";

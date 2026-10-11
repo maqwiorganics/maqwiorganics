@@ -126,8 +126,12 @@ add_filter( 'woocommerce_get_privacy_policy_text', function ( $text, $type ) {
 }, 10, 2 );
 /** Purge native page cache once when this approved storefront code release is first executed. */
 add_action( 'init', function () {
-    if ( maqwi_storefront_preview() && '0.2.1' !== get_option( 'maqwi_preview_cache_release', '' ) && function_exists( 'w3tc_flush_all' ) ) {
+    if ( maqwi_storefront_preview() && '0.2.3' !== get_option( 'maqwi_preview_cache_release', '' ) && function_exists( 'w3tc_flush_all' ) ) {
         w3tc_flush_all();
-        update_option( 'maqwi_preview_cache_release', '0.2.1', false );
+        update_option( 'maqwi_preview_cache_release', '0.2.3', false );
     }
 }, 99 );
+
+/** Sample delivery must remain testable even while real shipping is unconfigured. */
+add_filter( 'wc_shipping_enabled', function ( $enabled ) { return maqwi_storefront_preview() ? true : $enabled; } );
+add_filter( 'woocommerce_cart_ready_to_calc_shipping', function ( $ready ) { return maqwi_storefront_preview() ? true : $ready; } );
