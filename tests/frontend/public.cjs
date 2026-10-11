@@ -116,8 +116,10 @@ fs.mkdirSync(output, { recursive: true });
     await page.screenshot({ path: output + '/404.png', fullPage: true });
     await page.getByRole('link', { name: 'Back to Maqwi', exact: true }).click();
     await page.locator('.mq-hero').waitFor();
+    await page.locator('.mq-back-top').click();
+    await page.waitForFunction(() => window.scrollY <= 5);
     assert.equal(report.errors.length, 0, 'No browser runtime errors');
-    report.checked = ['Images', 'H1', 'font', 'metadata', 'all anchor targets', 'collection deep links', 'FAQ', 'mobile menu Escape and focus', 'skip link', 'closed commerce routes', 'true branded 404'];
+    report.checked = ['Images', 'H1', 'font', 'metadata', 'all anchor targets', 'collection deep links', 'FAQ', 'mobile menu Escape and focus', 'skip link', 'closed commerce routes', 'true branded 404', 'footer return to top'];
     fs.writeFileSync(output + '/report.json', JSON.stringify(report, null, 2));
     console.log(JSON.stringify(report));
   } catch (error) {
