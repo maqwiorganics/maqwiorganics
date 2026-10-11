@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Maqwi Store Core
  * Description: Pakistan checkout rules and verified product details, independent of the theme.
- * Version: 0.1.2
+ * Version: 0.1.3
  * Requires Plugins: woocommerce
  * Requires PHP: 8.1
  * License: GPL-2.0-or-later
@@ -45,6 +45,8 @@ add_filter( 'woocommerce_checkout_fields', function ( $fields ) {
         $fields[ $section ][ $prefix . 'address_1' ]['placeholder'] = 'House / flat, street and area';
         $fields[ $section ][ $prefix . 'postcode' ]['required'] = false;
         $fields[ $section ][ $prefix . 'country' ]['type'] = 'hidden';
+        $fields[ $section ][ $prefix . 'country' ]['label'] = '';
+        $fields[ $section ][ $prefix . 'country' ]['class'] = array( 'mq-fixed-country' );
         $fields[ $section ][ $prefix . 'country' ]['default'] = 'PK';
         $fields[ $section ][ $prefix . 'state' ]['label'] = 'Province / territory';
         $fields[ $section ][ $prefix . 'state' ]['required'] = true;
@@ -177,7 +179,7 @@ function maqwi_store_setup_screen() {
         <input type="hidden" name="action" value="maqwi_setup_checkout">
         <?php wp_nonce_field( 'maqwi_setup_checkout' ); submit_button( 'Configure classic cart and checkout', 'secondary' ); ?>
     </form>
-    <p><strong>Installed:</strong> Maqwi Store Core 0.1.2; WooCommerce <?php echo esc_html( defined( 'WC_VERSION' ) ? WC_VERSION : 'not available' ); ?>; database <?php echo esc_html( get_option( 'woocommerce_db_version', 'not available' ) ); ?>; theme <?php echo esc_html( wp_get_theme()->get( 'Name' ) . ' ' . wp_get_theme()->get( 'Version' ) ); ?>.</p>
+    <p><strong>Installed:</strong> Maqwi Store Core 0.1.3; WooCommerce <?php echo esc_html( defined( 'WC_VERSION' ) ? WC_VERSION : 'not available' ); ?>; database <?php echo esc_html( get_option( 'woocommerce_db_version', 'not available' ) ); ?>; theme <?php echo esc_html( wp_get_theme()->get( 'Name' ) . ' ' . wp_get_theme()->get( 'Version' ) ); ?>.</p>
     </div>
     <?php
 }

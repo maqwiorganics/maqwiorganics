@@ -28,7 +28,7 @@ jobs:
           python3 - <<'PY'
           import ftplib, ssl, os, io, hashlib, pathlib, subprocess, secrets
           sources = ['wp-content/themes/maqwi-organics/woocommerce.php', 'wp-content/themes/maqwi-organics/style.css', 'wp-content/plugins/maqwi-store-core/maqwi-store-core.php']
-          old_commit = 'b80b3e1df011b58cc67753052909fd5da6c39ff2'
+          old_commit = 'd3a20aa19e82f2d75c14782dcabef3b3cb1e8a5d'
           ftp = ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
           ftp.connect('ftpupload.net',21)
           ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
@@ -73,5 +73,5 @@ jobs:
               raise
           finally:
               ftp.quit()
-          print('Catalogue heading and account address compatibility refined; source hashes verified.')
+          print('Fixed-country label hidden; prior source backed up; source hashes verified.')
           PY
