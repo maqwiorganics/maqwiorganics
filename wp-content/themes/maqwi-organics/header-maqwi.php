@@ -9,7 +9,7 @@
 <div class="mq-announcement">Our store is taking shape. Orders open after launch.</div>
 <?php endif; ?>
 <header id="top" class="mq-header">
-    <a class="mq-brand" href="<?php echo esc_url( home_url( '/' ) ); ?>" aria-label="Maqwi Organics home"><img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/logo.webp' ); ?>" alt="" width="68" height="60"><span>MAQWI<small>ORGANICS</small></span></a>
+    <a class="mq-brand" href="<?php echo esc_url( home_url( '/' ) ); ?>" aria-label="Maqwi Organics home"><img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/logo-mark.png' ); ?>" alt="" width="68" height="60"><span>MAQWI<small>ORGANICS</small></span></a>
     <nav class="mq-desktop-nav" aria-label="Main navigation"><?php wp_nav_menu( array( 'theme_location' => 'maqwi-primary', 'container' => false, 'menu_class' => 'mq-menu', 'fallback_cb' => 'maqwi_default_navigation', 'depth' => 1 ) ); ?></nav>
     <div class="mq-header-actions">
     <?php if ( ! $brand_launch && function_exists( 'wc_get_page_permalink' ) && wc_get_page_id( 'myaccount' ) > 0 ) : ?><a class="mq-account" href="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) ); ?>">Account</a><?php endif; ?>

@@ -19,11 +19,25 @@
       if (event.matches) menu.open = false;
     });
   }
-  const openCollection = () => {
-    const id = window.location.hash.slice(1);
-    if (!/^collection-(honey|desi-ghee|achaar|itar)$/.test(id)) return;
+  const collectionPanel = hash => {
+    const id = hash.slice(1);
+    if (!/^collection-(honey|desi-ghee|achaar|itar)$/.test(id)) return null;
     const panel = document.getElementById(id)?.closest('details');
-    if (panel instanceof HTMLDetailsElement) {
+    return panel instanceof HTMLDetailsElement ? panel : null;
+  };
+  // Kadence may update the URL with history.pushState instead of hashchange.
+  // Reveal content before its existing anchor handler calculates scroll position.
+  document.addEventListener('click', event => {
+    const anchor = event.target instanceof Element ? event.target.closest('a[href]') : null;
+    if (!anchor) return;
+    const url = new URL(anchor.href, window.location.href);
+    if (url.origin !== location.origin || url.pathname !== location.pathname) return;
+    const panel = collectionPanel(url.hash);
+    if (panel) panel.open = true;
+  }, true);
+  const openCollection = () => {
+    const panel = collectionPanel(window.location.hash);
+    if (panel) {
       panel.open = true;
       panel.scrollIntoView({ block: 'start', behavior: 'instant' });
     }

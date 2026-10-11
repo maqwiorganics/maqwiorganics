@@ -3,7 +3,7 @@ Theme Name: Maqwi Organics
 Description: Lightweight Kadence child theme with an editable Maqwi homepage pattern.
 Author: Maqwi Organics
 Template: kadence
-Version: 0.3.2
+Version: 0.3.3
 Requires at least: 6.6
 Requires PHP: 8.1
 Text Domain: maqwi-organics
@@ -50,3 +50,6 @@ License: GPL-2.0-or-later
 
 .mq-collection-detail{scroll-margin-top:110px}
 @media(max-width:639px){.mq-collection-detail{scroll-margin-top:90px}}
+
+.mq-footer-logo{display:inline-flex;align-items:center;gap:14px;text-decoration:none}.mq-footer-logo img{width:48px;height:44px;object-fit:contain}.mq-detail-body[id]{scroll-margin-top:220px}
+@media(max-width:639px){.mq-detail-body[id]{scroll-margin-top:200px}}
