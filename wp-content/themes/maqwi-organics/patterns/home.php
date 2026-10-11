@@ -31,10 +31,14 @@ $categories = array(
     array( 'itar', 'Itar', 'A personal ritual, a familiar fragrance.' ),
 );
 foreach ( $categories as $category ) :
+    $slug = 'ghee' === $category[0] ? 'desi-ghee' : $category[0];
+    $term = get_term_by( 'slug', $slug, 'product_cat' );
+    $category_url = $term ? get_term_link( $term ) : maqwi_shop_url();
+    if ( is_wp_error( $category_url ) ) { $category_url = maqwi_shop_url(); }
 ?>
 <!-- wp:group {"className":"mq-category","layout":{"type":"default"}} --><div class="wp-block-group mq-category">
 <!-- wp:image {"sizeSlug":"full"} --><figure class="wp-block-image size-full"><img src="<?php echo esc_url( $assets . $category[0] . '.webp' ); ?>" alt="<?php echo esc_attr( 'Maqwi ' . $category[1] . ' packaging concept' ); ?>" width="900" height="900" loading="lazy"></figure><!-- /wp:image -->
-<!-- wp:heading {"level":3} --><h3 class="wp-block-heading"><?php echo esc_html( $category[1] ); ?></h3><!-- /wp:heading -->
+<!-- wp:heading {"level":3} --><h3 class="wp-block-heading"><a href="<?php echo esc_url( $category_url ); ?>"><?php echo esc_html( $category[1] ); ?> <span aria-hidden="true">↗</span></a></h3><!-- /wp:heading -->
 <!-- wp:paragraph --><p><?php echo esc_html( $category[2] ); ?></p><!-- /wp:paragraph -->
 </div><!-- /wp:group -->
 <?php endforeach; ?>
