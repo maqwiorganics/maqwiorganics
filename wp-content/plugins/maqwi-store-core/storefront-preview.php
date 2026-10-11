@@ -115,3 +115,19 @@ add_action( 'admin_post_maqwi_seed_preview', function () {
     wp_safe_redirect( admin_url( 'admin.php?page=maqwi-store-setup&preview=ready' ) );
     exit;
 } );
+
+
+/** Clear preview wording instead of stock payment and privacy promises. */
+add_filter( 'woocommerce_no_available_payment_methods_message', function ( $message ) {
+    return maqwi_storefront_preview() ? 'Payment options will be enabled before launch. Preview orders cannot be submitted.' : $message;
+} );
+add_filter( 'woocommerce_get_privacy_policy_text', function ( $text, $type ) {
+    return maqwi_storefront_preview() ? 'Use sample details to test this preview. No order will be created. Read the privacy information before the final store launches.' : $text;
+}, 10, 2 );
+/** Purge native page cache once when this approved storefront code release is first executed. */
+add_action( 'init', function () {
+    if ( maqwi_storefront_preview() && '0.2.1' !== get_option( 'maqwi_preview_cache_release', '' ) && function_exists( 'w3tc_flush_all' ) ) {
+        w3tc_flush_all();
+        update_option( 'maqwi_preview_cache_release', '0.2.1', false );
+    }
+}, 99 );
