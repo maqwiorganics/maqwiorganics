@@ -1,0 +1,57 @@
+name: Retire verified InfinityFree default homepage
+on:
+  push:
+    branches: [staging]
+    paths: ['.github/workflows/retire-default-homepage.yml']
+permissions:
+  contents: read
+concurrency:
+  group: maqwi-temporary-theme-install
+  cancel-in-progress: false
+jobs:
+  retire:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - name: Move only verified provider placeholder into recoverable backup
+        env:
+          FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
+        run: |
+          python3 - <<'PY'
+          import ftplib, ssl, io, os, hashlib
+          ftp=ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
+          ftp.connect('ftpupload.net',21)
+          ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
+          ftp.prot_p()
+          def read(path):
+              b=io.BytesIO()
+              ftp.retrbinary('RETR '+path,b.write)
+              return b.getvalue()
+          def sha(data): return hashlib.sha256(data).hexdigest()
+          original_index=read('/htdocs/index.php')
+          assert sha(original_index)=='eea9347b1e266ca5407b92633958c148dbfebea307e511a3a226ea61828e2eba','WordPress homepage changed; stop'
+          names={x.rsplit('/',1)[-1] for x in ftp.nlst('/htdocs')}
+          assert 'index.html' not in names and 'index.htm' not in names,'Unexpected competing homepage; stop'
+          if 'index2.html' not in names:
+              print('Provider placeholder already absent; no changes.')
+              ftp.quit()
+              raise SystemExit(0)
+          data=read('/htdocs/index2.html')
+          assert sha(data)=='aa74b7061225e6b0830ed8ece5031d251f54543f90ace2c3674f7c129d639f6b','Placeholder changed; stop'
+          history='/htdocs/wp-content/themes/.maqwi-default-page-'+os.environ['GITHUB_RUN_ID']
+          ftp.mkd(history)
+          backup=history+'/index2.html'
+          ftp.storbinary('STOR '+backup,io.BytesIO(data))
+          assert read(backup)==data,'Backup verification failed'
+          ftp.delete('/htdocs/index2.html')
+          try:
+              assert read('/htdocs/index.php')==original_index,'WordPress index changed'
+              names={x.rsplit('/',1)[-1] for x in ftp.nlst('/htdocs')}
+              assert 'index2.html' not in names,'Placeholder still present'
+          except Exception:
+              ftp.storbinary('STOR /htdocs/index2.html',io.BytesIO(data))
+              assert read('/htdocs/index2.html')==data,'Rollback verification failed'
+              raise
+          ftp.quit()
+          print('Verified provider placeholder backed up and retired; WordPress homepage unchanged.')
+          PY
