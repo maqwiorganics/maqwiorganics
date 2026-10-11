@@ -1,0 +1,57 @@
+name: Refine theme foundation on temporary site
+on:
+  push:
+    branches: [staging]
+    paths: ['.github/workflows/refine-theme-foundation.yml']
+permissions:
+  contents: read
+concurrency:
+  group: maqwi-temporary-theme-install
+  cancel-in-progress: false
+jobs:
+  refine:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Validate source
+        run: find wp-content/themes/maqwi-organics -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: Apply reviewed category links and text contrast fix
+        env:
+          FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
+        run: |
+          python3 - <<'PY'
+          import ftplib, ssl, os, io, hashlib, pathlib, subprocess
+          local = pathlib.Path('wp-content/themes/maqwi-organics')
+          allowed = ['style.css','patterns/home.php']
+          old_commit = '3fc3527a283c45f8d88ae5d5629f349a69f9010f'
+          ftp = ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
+          ftp.connect('ftpupload.net',21)
+          ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
+          ftp.prot_p()
+          root = '/htdocs/wp-content/themes/maqwi-organics'
+          history = '/htdocs/wp-content/themes/.maqwi-refinement-' + os.environ['GITHUB_RUN_ID']
+          originals = {}
+          for name in allowed:
+              expected = subprocess.check_output(['git','show',old_commit+':'+str(local/name)])
+              received = io.BytesIO()
+              ftp.retrbinary('RETR '+root+'/'+name,received.write)
+              assert hashlib.sha256(expected).digest() == hashlib.sha256(received.getvalue()).digest(), 'Unexpected existing source: '+name
+              originals[name] = received.getvalue()
+          ftp.mkd(history)
+          ftp.mkd(history+'/patterns')
+          for name in allowed:
+              ftp.storbinary('STOR '+history+'/'+name,io.BytesIO(originals[name]))
+              data = (local/name).read_bytes()
+              temporary = root+'/'+name+'.new-'+os.environ['GITHUB_RUN_ID']
+              ftp.storbinary('STOR '+temporary,io.BytesIO(data))
+              received = io.BytesIO()
+              ftp.retrbinary('RETR '+temporary,received.write)
+              assert hashlib.sha256(data).digest() == hashlib.sha256(received.getvalue()).digest(), name
+              ftp.rename(temporary,root+'/'+name)
+          ftp.quit()
+          print('Category links and small-text contrast refined; prior files retained; source hashes verified.')
+          PY
