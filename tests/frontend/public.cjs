@@ -29,7 +29,7 @@ fs.mkdirSync(output, { recursive: true });
       assert.equal(await page.locator('main h1').count(), 1, 'One H1 at ' + width);
       assert.equal(await page.locator('.mq-collection-detail').count(), 4, 'Four collection panels');
       assert.equal(await page.locator('.mq-cart,.mq-account,.mq-mobile-account').count(), 0, 'No ordering/account links');
-      assert(await page.locator('link[href*="style.css?ver=0.3.3"]').count(), 'Current stylesheet version');
+      assert(await page.locator('link[href*="style.css?ver=0.3.4"]').count(), 'Current stylesheet version');
       assert(await page.locator('meta[name="description"]').getAttribute('content'), 'Homepage description');
       for (const image of await page.locator('.mq-site img').all()) {
         if (await image.isVisible()) {
@@ -105,6 +105,14 @@ fs.mkdirSync(output, { recursive: true });
     await page.locator('.mq-404').waitFor();
     assert.equal(response.status(), 404, 'Missing page returns real 404');
     assert.equal(await page.locator('main h1').count(), 1, '404 has one H1');
+    const buttonContrast = await page.locator('.mq-button-link').evaluate(el => {
+      const style = getComputedStyle(el);
+      const luminance = color => { const rgb = color.match(/[0-9.]+/g).slice(0, 3).map(Number).map(v => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }); return rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722; };
+      const a = luminance(style.color), b = luminance(style.backgroundColor);
+      return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+    });
+    assert(buttonContrast >= 4.5, '404 button text contrast');
+    report.buttonContrast = buttonContrast;
     await page.screenshot({ path: output + '/404.png', fullPage: true });
     await page.getByRole('link', { name: 'Back to Maqwi', exact: true }).click();
     await page.locator('.mq-hero').waitFor();
