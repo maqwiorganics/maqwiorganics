@@ -12,7 +12,8 @@
     <a class="mq-brand" href="<?php echo esc_url( home_url( '/' ) ); ?>" aria-label="Maqwi Organics home"><img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/logo.webp' ); ?>" alt="" width="68" height="60"><span>MAQWI<small>ORGANICS</small></span></a>
     <nav class="mq-desktop-nav" aria-label="Main navigation"><?php wp_nav_menu( array( 'theme_location' => 'maqwi-primary', 'container' => false, 'menu_class' => 'mq-menu', 'fallback_cb' => 'maqwi_default_navigation', 'depth' => 1 ) ); ?></nav>
     <div class="mq-header-actions">
-    <?php if ( function_exists( 'wc_get_cart_url' ) ) : ?><a class="mq-cart" href="<?php echo esc_url( wc_get_cart_url() ); ?>">Bag <span aria-hidden="true">↗</span></a><?php endif; ?>
-    <details class="mq-mobile-nav"><summary>Menu</summary><nav aria-label="Mobile navigation"><?php wp_nav_menu( array( 'theme_location' => 'maqwi-primary', 'container' => false, 'menu_class' => 'mq-menu', 'fallback_cb' => 'maqwi_default_navigation', 'depth' => 1 ) ); ?></nav></details>
+    <?php if ( function_exists( 'wc_get_page_permalink' ) && wc_get_page_id( 'myaccount' ) > 0 ) : ?><a class="mq-account" href="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) ); ?>">Account</a><?php endif; ?>
+    <?php if ( function_exists( 'wc_get_cart_url' ) ) : ?><a class="mq-cart" href="<?php echo esc_url( wc_get_cart_url() ); ?>">Bag <?php echo maqwi_cart_count(); ?></a><?php endif; ?>
+    <details class="mq-mobile-nav"><summary>Menu</summary><nav aria-label="Mobile navigation"><?php wp_nav_menu( array( 'theme_location' => 'maqwi-primary', 'container' => false, 'menu_class' => 'mq-menu', 'fallback_cb' => 'maqwi_default_navigation', 'depth' => 1 ) ); ?><?php if ( function_exists( 'wc_get_page_id' ) && wc_get_page_id( 'myaccount' ) > 0 ) : ?><a class="mq-mobile-account" href="<?php echo esc_url( wc_get_page_permalink( 'myaccount' ) ); ?>">My account</a><?php endif; ?></nav></details>
     </div>
 </header>

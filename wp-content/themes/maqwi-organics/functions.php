@@ -6,10 +6,15 @@ add_action( 'after_setup_theme', function () {
     register_nav_menus( array( 'maqwi-primary' => __( 'Maqwi primary navigation', 'maqwi-organics' ) ) );
     add_theme_support( 'editor-styles' );
     add_editor_style( 'style.css' );
+    add_theme_support( 'woocommerce' );
+    add_theme_support( 'wc-product-gallery-zoom' );
+    add_theme_support( 'wc-product-gallery-lightbox' );
+    add_theme_support( 'wc-product-gallery-slider' );
 } );
 
 add_action( 'wp_enqueue_scripts', function () {
     wp_enqueue_style( 'maqwi-organics', get_stylesheet_uri(), array(), wp_get_theme()->get( 'Version' ) );
+    if ( function_exists( 'WC' ) ) { wp_enqueue_script( 'wc-cart-fragments' ); }
 }, 30 );
 
 /** Return configured commerce routes without assuming page IDs or slugs. */
@@ -64,3 +69,39 @@ add_filter( 'render_block_core/image', function ( $html, $block ) {
     if ( $hero ) { $processor->set_attribute( 'fetchpriority', 'high' ); }
     return $processor->get_updated_html();
 }, 10, 2 );
+
+/** A small, live cart indicator uses WooCommerce's native fragment refresh. */
+function maqwi_cart_count() {
+    $count = function_exists( 'WC' ) && WC()->cart ? WC()->cart->get_cart_contents_count() : 0;
+    return '<span class="mq-bag-count" aria-label="' . esc_attr( sprintf( _n( '%d item in bag', '%d items in bag', $count, 'maqwi-organics' ), $count ) ) . '">' . esc_html( $count ) . '</span>';
+}
+add_filter( 'woocommerce_add_to_cart_fragments', function ( $fragments ) {
+    $fragments['span.mq-bag-count'] = maqwi_cart_count();
+    return $fragments;
+} );
+
+/** Category links resolve real terms and remain available for an empty catalogue. */
+function maqwi_collection_navigation() {
+    if ( ! taxonomy_exists( 'product_cat' ) ) { return; }
+    $labels = array( 'honey' => 'Honey', 'desi-ghee' => 'Desi ghee', 'achaar' => 'Achaar', 'itar' => 'Itar' );
+    echo '<nav class="mq-collection-nav" aria-label="Product collections"><a href="' . esc_url( maqwi_shop_url() ) . '"' . ( is_shop() ? ' aria-current="page"' : '' ) . '>All collections</a>';
+    foreach ( $labels as $slug => $label ) {
+        $term = get_term_by( 'slug', $slug, 'product_cat' );
+        if ( ! $term ) { continue; }
+        $url = get_term_link( $term );
+        if ( is_wp_error( $url ) ) { continue; }
+        echo '<a href="' . esc_url( $url ) . '"' . ( is_product_category( $slug ) ? ' aria-current="page"' : '' ) . '>' . esc_html( $label ) . '</a>';
+    }
+    echo '</nav>';
+}
+
+/** Commerce and regular pages share the storefront shell; Woo owns all forms. */
+add_filter( 'template_include', function ( $template ) {
+    if ( ! is_front_page() && is_page() ) {
+        return get_stylesheet_directory() . '/page-maqwi.php';
+    }
+    return $template;
+}, 99 );
+
+add_filter( 'loop_shop_columns', function () { return 4; } );
+add_filter( 'loop_shop_per_page', function () { return 12; }, 20 );

@@ -2,9 +2,9 @@ name: Validate Maqwi theme
 on:
   push:
     branches: [staging, main]
-    paths: ['wp-content/themes/maqwi-organics/**', '.github/workflows/theme-validation.yml']
+    paths: ['wp-content/themes/maqwi-organics/**', 'wp-content/plugins/maqwi-store-core/**', 'tests/**', '.github/workflows/theme-validation.yml']
   pull_request:
-    paths: ['wp-content/themes/maqwi-organics/**', '.github/workflows/theme-validation.yml']
+    paths: ['wp-content/themes/maqwi-organics/**', 'wp-content/plugins/maqwi-store-core/**', 'tests/**', '.github/workflows/theme-validation.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -17,7 +17,9 @@ jobs:
         with:
           persist-credentials: false
       - name: PHP syntax
-        run: find wp-content/themes/maqwi-organics -name '*.php' -print0 | xargs -0 -n1 php -l
+        run: find wp-content/themes/maqwi-organics wp-content/plugins/maqwi-store-core tests -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: Checkout rule checks
+        run: php tests/store-core.php
       - name: Theme metadata and asset budgets
         run: |
           python3 - <<'PY'
