@@ -62,3 +62,11 @@ Final cleanup run d2accd69-0b1e-46d1-ab6c-a203e912383c found the fixture still D
 The owner selected a public brand launch today, with orders closed. Theme 0.2.3 and Store Core 0.1.4 add a fail-closed brand mode. Purchasing (including variations), gateways and classic checkout are guarded; public commerce/account routes redirect to the homepage collection. Header/footer expose Collection, Story and Questions instead of cart/account. The native owner setup screen has a nonce/capability protected action to remove Coming soon only after enabling the order guard. Real-domain DNS stays unchanged.
 
 Opening paid orders is a separate release requiring catalogue, prices, stock, delivery, contacts, policies, authenticated email and end-to-end testing. COD customer email wording remains a store-release task.
+
+### Public release verification
+
+Brand release commit: `dabecfbd316f8bc8799172f0992bd6fe085c411e`. PHP/rule/asset validation run 38131394558 and guarded source deployment run 38131394564 both succeeded. Existing source snapshots are retained in `.maqwi-commerce-refine-38131394564` on the temporary host.
+
+Authenticated native-admin run `4ae77434-df6e-4489-8946-dbb8b53613ed` verified Core 0.1.4 / theme 0.2.3, applied the explicit brand-launch action, confirmed visibility Live and purged W3 Total Cache. Fresh signed-out run `d849ecf1-f7c0-41a3-80db-8622159fa8db` confirmed public homepage access, welcome announcement, all five image assets, collection/story anchors, FAQ and no Bag/Account links. Direct `/checkout/` and `/shop/` visits redirected to homepage collection with no purchase forms. No visible errors or broken images were found. No orders, email, DNS or indexing changes were made. Narrow viewport controls were unavailable, so mobile runtime remains unverified.
+
+Today’s approved deliverable is the public brand introduction at https://maqwiorganics.gt.tc/ — not an open-order store. Full store implementation and launch gates above remain outstanding. Brand mode defaults closed if the option is absent; disabling it is a separate reviewed store release and has no UI switch in this release.

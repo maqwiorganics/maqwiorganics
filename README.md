@@ -1,3 +1,5 @@
+> **11 October 2026: public brand launch live** at https://maqwiorganics.gt.tc/. Theme 0.2.3 / Store Core 0.1.4. Ordering is deliberately closed; public cart/checkout/catalogue/account routes return to the collection. Desktop signed-out smoke test passed; mobile runtime and paid-order launch remain pending. See `docs/BUILD-STATUS.md` for evidence and remaining gates.
+
 # Maqwi Organics
 
 WordPress + WooCommerce storefront for Pakistan, developed on InfinityFree at https://maqwiorganics.gt.tc/.
