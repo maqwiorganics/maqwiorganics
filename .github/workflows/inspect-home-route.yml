@@ -1,0 +1,40 @@
+name: Inspect temporary homepage routing
+on:
+  push:
+    branches: [staging]
+    paths: ['.github/workflows/inspect-home-route.yml']
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - name: Read only homepage routing metadata
+        env:
+          FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
+        run: |
+          python3 - <<'PY'
+          import ftplib, ssl, io, os, hashlib, json, re
+          ftp = ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
+          ftp.connect('ftpupload.net',21)
+          ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
+          ftp.prot_p()
+          def read(path):
+              b=io.BytesIO()
+              ftp.retrbinary('RETR '+path,b.write)
+              return b.getvalue()
+          names={x.rsplit('/',1)[-1] for x in ftp.nlst('/htdocs')}
+          report={}
+          for name in ['index.php','index.html','index.htm','index2.html']:
+              if name not in names:
+                  report[name]={'exists':False}
+                  continue
+              data=read('/htdocs/'+name)
+              text=data.decode('utf-8','replace')
+              report[name]={'exists':True,'size':len(data),'sha256':hashlib.sha256(data).hexdigest(),'wordpress_bootstrap':"wp-blog-header.php" in text,'infinityfree_default':'InfinityFree' in text and 'Your domain' in text}
+          ht=read('/htdocs/.htaccess').decode('utf-8','replace') if '.htaccess' in names else ''
+          report['routing']={'directory_index':re.findall(r'(?im)^\s*DirectoryIndex\s+([a-zA-Z0-9_. /-]+)$',ht),'has_https_condition':'%{HTTPS}' in ht,'has_wordpress_rewrite':'index.php' in ht and 'RewriteRule' in ht}
+          print(json.dumps(report))
+          ftp.quit()
+          PY
