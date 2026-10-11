@@ -48,3 +48,19 @@ add_shortcode( 'maqwi_featured_products', function () {
 function maqwi_default_navigation() {
     echo '<ul class="mq-menu"><li><a href="' . esc_url( maqwi_shop_url() ) . '">Shop</a></li><li><a href="' . esc_url( home_url( '/#our-story' ) ) . '">Our story</a></li><li><a href="' . esc_url( home_url( '/#questions' ) ) . '">Questions</a></li></ul>';
 }
+
+/** Add delivery attributes at render time so native Image blocks round-trip cleanly. */
+add_filter( 'render_block_core/image', function ( $html, $block ) {
+    $processor = new WP_HTML_Tag_Processor( $html );
+    if ( ! $processor->next_tag( 'img' ) ) { return $html; }
+    $src = $processor->get_attribute( 'src' );
+    $prefix = get_stylesheet_directory_uri() . '/assets/images/';
+    if ( ! is_string( $src ) || ! str_starts_with( $src, $prefix ) ) { return $html; }
+    $hero = str_contains( $block['attrs']['className'] ?? '', 'mq-hero-media' );
+    $processor->set_attribute( 'width', 900 );
+    $processor->set_attribute( 'height', 900 );
+    $processor->set_attribute( 'loading', $hero ? 'eager' : 'lazy' );
+    $processor->set_attribute( 'decoding', 'async' );
+    if ( $hero ) { $processor->set_attribute( 'fetchpriority', 'high' ); }
+    return $processor->get_updated_html();
+}, 10, 2 );

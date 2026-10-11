@@ -17,7 +17,7 @@ $assets = get_stylesheet_directory_uri() . '/assets/images/';
 <!-- wp:buttons --><div class="wp-block-buttons"><!-- wp:button {"className":"mq-button"} --><div class="wp-block-button mq-button"><a class="wp-block-button__link wp-element-button" href="#the-collection">Meet the collection <span aria-hidden="true">&nbsp;↗</span></a></div><!-- /wp:button --></div><!-- /wp:buttons -->
 <!-- wp:paragraph {"className":"mq-hero-note"} --><p class="mq-hero-note">Four traditions. One thoughtful beginning.</p><!-- /wp:paragraph -->
 </div><!-- /wp:group -->
-<!-- wp:image {"sizeSlug":"full","className":"mq-hero-media"} --><figure class="wp-block-image size-full mq-hero-media"><img src="<?php echo esc_url( $assets . 'honey.webp' ); ?>" alt="Maqwi honey packaging concept in a warm tabletop setting" width="900" height="900" fetchpriority="high"><figcaption class="wp-element-caption">Packaging concept · final product photography follows before launch.</figcaption></figure><!-- /wp:image -->
+<!-- wp:image {"sizeSlug":"full","className":"mq-hero-media"} --><figure class="wp-block-image size-full mq-hero-media"><img src="<?php echo esc_url( $assets . 'honey.webp' ); ?>" alt="Maqwi honey packaging concept in a warm tabletop setting"><figcaption class="wp-element-caption">Packaging concept · final product photography follows before launch.</figcaption></figure><!-- /wp:image -->
 </div><!-- /wp:group -->
 <!-- wp:group {"className":"mq-section mq-category-section","anchor":"the-collection","layout":{"type":"default"}} --><div id="the-collection" class="wp-block-group mq-section mq-category-section">
 <!-- wp:paragraph {"className":"mq-eyebrow"} --><p class="mq-eyebrow">Rooted in everyday traditions</p><!-- /wp:paragraph -->
@@ -37,7 +37,7 @@ foreach ( $categories as $category ) :
     if ( is_wp_error( $category_url ) ) { $category_url = maqwi_shop_url(); }
 ?>
 <!-- wp:group {"className":"mq-category","layout":{"type":"default"}} --><div class="wp-block-group mq-category">
-<!-- wp:image {"sizeSlug":"full"} --><figure class="wp-block-image size-full"><img src="<?php echo esc_url( $assets . $category[0] . '.webp' ); ?>" alt="<?php echo esc_attr( 'Maqwi ' . $category[1] . ' packaging concept' ); ?>" width="900" height="900" loading="lazy"></figure><!-- /wp:image -->
+<!-- wp:image {"sizeSlug":"full"} --><figure class="wp-block-image size-full"><img src="<?php echo esc_url( $assets . $category[0] . '.webp' ); ?>" alt="<?php echo esc_attr( 'Maqwi ' . $category[1] . ' packaging concept' ); ?>"></figure><!-- /wp:image -->
 <!-- wp:heading {"level":3} --><h3 class="wp-block-heading"><a href="<?php echo esc_url( $category_url ); ?>"><?php echo esc_html( $category[1] ); ?> <span aria-hidden="true">↗</span></a></h3><!-- /wp:heading -->
 <!-- wp:paragraph --><p><?php echo esc_html( $category[2] ); ?></p><!-- /wp:paragraph -->
 </div><!-- /wp:group -->
