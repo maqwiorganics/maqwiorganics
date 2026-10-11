@@ -1,0 +1,32 @@
+name: Validate Maqwi theme
+on:
+  push:
+    branches: [staging, main]
+    paths: ['wp-content/themes/maqwi-organics/**', '.github/workflows/theme-validation.yml']
+  pull_request:
+    paths: ['wp-content/themes/maqwi-organics/**', '.github/workflows/theme-validation.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: PHP syntax
+        run: find wp-content/themes/maqwi-organics -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: Theme metadata and asset budgets
+        run: |
+          python3 - <<'PY'
+          import json, pathlib
+          root = pathlib.Path('wp-content/themes/maqwi-organics')
+          json.loads((root/'theme.json').read_text())
+          assert 'Template: kadence' in (root/'style.css').read_text()
+          for image in (root/'assets/images').glob('*.webp'):
+              assert image.stat().st_size < 150_000, image.name
+          assert sum(p.stat().st_size for p in root.rglob('*') if p.is_file()) < 500_000
+          print('Theme metadata valid; each image below 150 KB; whole theme below 500 KB.')
+          PY

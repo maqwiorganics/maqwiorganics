@@ -1,26 +1,13 @@
 # Maqwi Organics
 
-WordPress and WooCommerce storefront project for Maqwi Organics.
+WordPress + WooCommerce storefront for Pakistan, developed on InfinityFree at https://maqwiorganics.gt.tc/.
 
-## Environments
+- `staging`: active development and validation.
+- `main`: controlled baseline; no automatic website deployment.
+- `wp-content/themes/maqwi-organics/`: lightweight Kadence child theme with an editable native homepage pattern.
+- `docs/BUILD-STATUS.md`: delivered work, installation state and remaining requirements.
+- `docs/DEPLOYMENT.md`: installation prerequisites and rollback.
 
-- `main`: controlled baseline; no automatic deployment.
-- `staging`: development changes and review before release.
-- Development website: https://maqwiorganics.gt.tc/
-- Hosting: InfinityFree (subject to capability and end-to-end compatibility tests).
+The first theme foundation is built in staging. It has not been installed or activated: the temporary website returned 502 during the backup preparation task. Store remains Coming soon. The real domain and DNS remain untouched.
 
-## Safety
-
-Do not commit WordPress credentials, FTP credentials, application passwords, access tokens, database dumps, 2FA recovery codes, customer/order data, or `wp-config.php`.
-
-Only custom theme and custom plugin source belongs in this repository. Do not vendor WordPress core, private project archives, or commercial theme packages.
-
-Deployment is disabled until we verify the actual WordPress document root, FTP remote path, backup procedure, and rollback strategy. GitHub Actions secrets must be configured securely before any deployment.
-
-## Planned structure
-
-- `wp-content/themes/maqwi-child/` — child theme once parent theme is confirmed.
-- `wp-content/plugins/maqwi-core/` — optional small project-specific customizations.
-- `docs/` — technical decisions, QA and deployment runbooks.
-
-Current status: repository setup only; nothing deployed to WordPress.
+Only custom source and selected brand assets belong here. Never commit credentials, config, customer/order data, database exports, 2FA codes, source archives or purchased theme packages.
