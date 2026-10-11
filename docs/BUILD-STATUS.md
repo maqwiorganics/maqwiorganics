@@ -1,6 +1,6 @@
 # Maqwi build status
 
-## Foundation v0.1.3
+## Storefront v0.2.2 — commerce phase
 
 Source: latest supplied master PRD v3.1 and technical requirements v2.0. Visual brief informs styling; its older Shopify references are superseded by WordPress/WooCommerce.
 
@@ -27,7 +27,7 @@ FTP image readback differed in bytes but decoded with identical dimensions and m
 
 Desktop runtime checks passed for collection scrolling, Story/Questions anchors, FAQ expansion and collapse, all four category archives, Shop and the empty cart. The initial Image block validation issue was fixed by moving sizing/loading attributes into the native render filter; the replacement Home page was validated and published.
 
-1. Apply the brand consistently to inherited Kadence shop/product/cart/checkout templates after reviewing their markup.
+1. Complete approved catalogue content, real photography, delivery rates/policies and transactional-email integration.
 2. QA 320/390/768/1440px, keyboard navigation, focus and layout. Browser viewport controls were not exposed, so mobile runtime testing remains unverified.
 3. Load only approved catalogue data; then test checkout, notifications, delivery/payment handling and recovery before launch.
 
@@ -39,4 +39,20 @@ Final SKU variants, prices, real stock, ingredients, source, batch/storage infor
 
 Prior audit: REST/loopback 403 in Site Health; external REST request returned a browser-challenge HTML document. A new database-only backup completed 11 October at admin-displayed 12:49:07. Native Run was attempted for action_scheduler/migration_hook ID12; completion was not verified. Six pending/past-due actions and zero failed actions remained, with the migration warning still present. No WooCommerce update callback, telemetry or order-related action was manually executed. At that stage the WooCommerce database schema version was unverified. normal admin access and successful backups do not prove background reliability. Coming soon remains required while checkout, notifications and recovery are unproven.
 
-Native visitor cron test: guarded configuration workflow run 38124486010 succeeded. A normal browser GET showed no fatal error or redirect loop. The six original blocked actions, including migration and WooCommerce update callback, were then Complete; migration-in-progress warning cleared. Counts at first check: 21 total, 6 complete, 15 pending, 2 past-due, no failed tab. A second read-only browser run returned no usable counts, so the two remaining overdue actions are not claimed resolved. Native visitor mode is retained based on measured progress; it is traffic-triggered and does not resolve host REST/loopback restrictions. The browser reported WooCommerce database version 11.2.0-1, but plugin version observations across runs conflict; exact code/schema compatibility needs reconciliation before launch.
+Native visitor cron test: guarded configuration workflow run 38124486010 succeeded. A normal browser GET showed no fatal error or redirect loop. The six original blocked actions, including migration and WooCommerce update callback, were then Complete; migration-in-progress warning cleared. Counts at first check: 21 total, 6 complete, 15 pending, 2 past-due, no failed tab. A second read-only browser run returned no usable counts, so the two remaining overdue actions are not claimed resolved. Native visitor mode is retained based on measured progress; it is traffic-triggered and does not resolve host REST/loopback restrictions. The browser reported WooCommerce database version 11.2.0-1; the later native setup screen confirmed WooCommerce11.2.0/database11.2.0-1. Earlier version summaries confused an available update with the installed version.
+
+## Commerce implementation — 11 October
+
+Theme v0.2.2 adds the Maqwi shell to WooCommerce catalogue/product templates and regular pages, including cart, checkout and accounts. Product search, real category navigation, native gallery support, live bag-count fragments, responsive product grids, form/table/account styling and product-detail styles are implemented. WooCommerce retains product data, notices, sorting, pagination, forms and processing.
+
+Maqwi Store Core v0.1.3 adds server-side Pakistan/mobile validation, simpler classic checkout fields, optional landmarks stored with the HPOS-compatible order CRUD API, COD On hold confirmation, verified product metadata fields and an owner-facing store setup screen. The setup button requires WooCommerce management capability, page-edit capability, nonce and enabled page revisions; it preserves IDs, titles and assignments and is idempotent. No automatic activation-time database migration or external service call occurs.
+
+PHP lint, checkout-rule checks and asset budgets passed for source commit 11d4bf3475efc66c288426b3074612ea90e3427e. A fresh database-only backup was verified at admin-displayed 14:04 before page conversion. Earlier browser editor attempts were incomplete, so their Cart/Checkout edits are not claimed successful. The core's guarded native setup screen provides a deterministic conversion route. Installation/runtime outcomes are recorded below.
+
+Commerce installer run 38127601023 succeeded after PHP/rule checks. Core activation and native classic-page setup succeeded. COD was enabled with confirmation instructions; bank/online gateways stayed disabled. Taxes were actually enabled on inspection and were disabled pending the business decision, correcting the earlier uncertain audit state. W3 Total Cache was purged once. Runtime verification passed for the shared homepage/shop/cart/account shell, category tabs, Honey archive and product search (empty results), with no fatal/404/duplicate cart. Empty checkout redirected to cart as expected. Native admin showed WooCommerce 11.2.0 with 11.2.1 available; no WooCommerce update was performed.
+
+Runtime QA run 14f6c3cd-8562-4af7-848c-4e6082830808 verified installed theme0.2.1/core0.1.2 and native WooCommerce11.2.0/database11.2.0-1. Temporary DRAFT-only product ID25 (never published) exercised metadata save/display, single-H1 product preview, add-to-cart, quantities1/2, corresponding subtotals and live bag counts. Checkout displayed the expected full-name/mobile/province/address/optional landmark/postcode fields and COD confirmation text, without last name/company/address2. No order was submitted. Shipping rates, actual stock decrement, order status, emails and final delivery were not tested. The fixture was removed from the cart and moved to Trash; active product count0/cart empty confirmed. Mobile viewport controls were unavailable and local Chromium was not installed, so no mobile runtime pass is claimed. The visible label of the hidden country field was identified and corrected in theme0.2.2/core0.1.3; validation38128711395 and guarded source refinement38128711384 passed. Runtime confirmation follows.
+
+Post-correction browser run 3f027bf6-556d-4678-93ab-0eff1fba4671 confirmed installed theme0.2.2/core0.1.3 and WooCommerce11.2.0/database11.2.0-1. It could not restore the draft fixture for a fresh checkout view before its time budget expired, so the final country-label visual check and hidden input DOM values remain unverified. It reported ID25 still in Trash. The previous full product/cart/checkout-field test remains the measured runtime evidence; no completed order, stock reduction or email delivery is claimed.
+
+Final cleanup run d2accd69-0b1e-46d1-ab6c-a203e912383c found the fixture still Draft (contrary to the previous run summary), moved only ID25 to Trash and verified it in the Trash listing. Cart was confirmed empty and bag count0. No order, email or public QA product was created.

@@ -2,11 +2,13 @@
 
 ## Verified connections
 
-GitHub staging and read-only FTPS diagnostics work. FTPS host `ftpupload.net`, port 21, document root `/htdocs`; password is held only in GitHub Actions secrets. WordPress access uses the owner's saved TinyFish browser profile; sessions can expire. Ordinary source changes do not deploy automatically. Installation/refinement maintenance workflows run when their own reviewed workflow files change on staging. Each checks its target and expected existing hashes.
+GitHub staging, FTPS diagnostics and guarded source deployment work. FTPS host `ftpupload.net`, port 21, document root `/htdocs`; password is held only in GitHub Actions secrets. WordPress access uses the owner's saved TinyFish browser profile; sessions can expire. Ordinary source changes do not deploy automatically. Installation/refinement maintenance workflows run when their own reviewed workflow files change on staging. Each checks its target and expected existing hashes.
 
 ## Scope
 
 The normal deployment scope is reviewed files beneath `wp-content/themes/maqwi-organics/` into `/htdocs/wp-content/themes/maqwi-organics/`. Never mirror/delete or sync the WordPress root. Do not commit credentials, wp-config.php, database backups, customer information, private documents or purchased theme archives.
+
+The commerce phase additionally installs/refines only the site-owned `wp-content/plugins/maqwi-store-core/maqwi-store-core.php`. Activation occurs through native admin after backup and validation. Source refinements compare the current file hashes against the reviewed prior commit and preserve verified snapshots. No automatic gateway or page changes happen merely from activation.
 
 ## Guarded configuration exception
 

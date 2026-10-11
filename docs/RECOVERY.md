@@ -8,6 +8,8 @@ Persistent files are **Maqwi-Encrypted-Recovery.zip** and **Maqwi-Recovery-Key.p
 
 A separate database-only backup completed at admin-displayed 12:49:07 before the scheduled-action investigation. It remains on the host and is not part of the independent encrypted full baseline.
 
+A further database-only backup was verified at admin-displayed 14:04 before the classic-checkout changes. The commerce installer retained a verified source snapshot in `/htdocs/wp-content/themes/.maqwi-commerce-38127601023`. This source-only snapshot is not a substitute for the independent full backup.
+
 ## Recover the components privately
 
 1. Download both persistent files into a private local directory. Extract `maqwi-prebuild.cms` from the ZIP.

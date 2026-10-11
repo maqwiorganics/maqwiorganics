@@ -6,7 +6,7 @@ Maqwi Store Core is a small site-owned plugin. Checkout and catalogue rules stay
 
 Use native Shortcode blocks containing `[woocommerce_cart]` and `[woocommerce_checkout]` on the existing assigned WooCommerce pages. The plugin's field customisations intentionally target shortcode checkout, not the Checkout block.
 
-Full name replaces separate name inputs; company and address line two are removed. Country is hidden with Pakistan as default, and server-side validation rejects another billing or delivery country. Province and city remain required; postcode and nearby landmark are optional. Native WooCommerce account, order, nonce and payment processing remain in use.
+Full name replaces separate name inputs; account address edits retain an optional last-name field for compatibility. company and address line two are removed. Country is hidden with Pakistan as default, and server-side validation rejects another billing or delivery country. Province and city remain required; postcode and nearby landmark are optional. Native WooCommerce account, order, nonce and payment processing remain in use.
 
 Pakistani mobile numbers accept `03XXXXXXXXX` or `+923XXXXXXXXX`, including display spaces, parentheses and hyphens. Valid numbers are stored as `+923XXXXXXXXX`. Landline, foreign, malformed and missing numbers are rejected. The plugin saves billing/shipping landmarks through the order CRUD API and displays them in the corresponding admin address panel.
 
@@ -29,3 +29,5 @@ Approved prices/stock, real product photos, business address, courier rates, ban
 Deactivate Maqwi Store Core through Plugins to remove its checkout/product display rules. Metadata remains in the database. Switch back to the prior cart/checkout revisions if returning to Blocks. Native WooCommerce records are not deleted. Keep Coming soon enabled while changing checkout.
 
 The commerce installer snapshots the four modified theme files before replacement. Its source and target allowlists exclude WordPress root/config, other themes/plugins and customer data. On upload failure it restores modified source and removes only newly created files. Runtime failure requires a reviewed FTPS rollback to that source snapshot and removal of the two new commerce templates; deactivating the core separately does not roll back the theme.
+
+The WooCommerce > Maqwi store setup screen shows product counts, visibility, classic-page/COD setup and installed code/schema versions. Its setup action preserves native page revisions and requires capabilities and nonce verification. Its delivery/email guidance is a checklist, not an automatic integration health test. Native on-hold email wording must be checked for COD confirmation and delivery authenticated before launch.
