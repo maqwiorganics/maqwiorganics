@@ -21,14 +21,14 @@ jobs:
         run: |
           find wp-content/themes/maqwi-organics wp-content/plugins/maqwi-store-core tests -name '*.php' -print0 | xargs -0 -n1 php -l
           php tests/store-core.php
-      - name: Apply three guarded source refinements
+      - name: Apply guarded brand-launch source refinements
         env:
           FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
         run: |
           python3 - <<'PY'
           import ftplib, ssl, os, io, hashlib, pathlib, subprocess, secrets
-          sources = ['wp-content/themes/maqwi-organics/woocommerce.php', 'wp-content/themes/maqwi-organics/style.css', 'wp-content/plugins/maqwi-store-core/maqwi-store-core.php']
-          old_commit = 'd3a20aa19e82f2d75c14782dcabef3b3cb1e8a5d'
+          sources = ['wp-content/plugins/maqwi-store-core/maqwi-store-core.php', 'wp-content/themes/maqwi-organics/functions.php', 'wp-content/themes/maqwi-organics/header-maqwi.php', 'wp-content/themes/maqwi-organics/footer-maqwi.php', 'wp-content/themes/maqwi-organics/style.css']
+          old_commit = '1b3ac3a7c8fb90ba3b3dd3ef1ae8ff68f41ccc01'
           ftp = ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
           ftp.connect('ftpupload.net',21)
           ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
@@ -73,5 +73,5 @@ jobs:
               raise
           finally:
               ftp.quit()
-          print('Fixed-country label hidden; prior source backed up; source hashes verified.')
+          print('Brand launch guards deployed; prior source backed up; source hashes verified.')
           PY

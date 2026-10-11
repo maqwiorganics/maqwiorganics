@@ -19,6 +19,7 @@ add_action( 'wp_enqueue_scripts', function () {
 
 /** Return configured commerce routes without assuming page IDs or slugs. */
 function maqwi_shop_url() {
+    if ( function_exists( 'maqwi_brand_launch_mode' ) && maqwi_brand_launch_mode() ) { return home_url( '/#the-collection' ); }
     $url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : '';
     return $url && -1 !== $url ? $url : home_url( '/' );
 }
@@ -51,7 +52,7 @@ add_shortcode( 'maqwi_featured_products', function () {
 
 /** Fallback links stay useful before an owner has assigned a menu. */
 function maqwi_default_navigation() {
-    echo '<ul class="mq-menu"><li><a href="' . esc_url( maqwi_shop_url() ) . '">Shop</a></li><li><a href="' . esc_url( home_url( '/#our-story' ) ) . '">Our story</a></li><li><a href="' . esc_url( home_url( '/#questions' ) ) . '">Questions</a></li></ul>';
+    echo '<ul class="mq-menu"><li><a href="' . esc_url( maqwi_shop_url() ) . '">' . ( function_exists( 'maqwi_brand_launch_mode' ) && maqwi_brand_launch_mode() ? 'Collection' : 'Shop' ) . '</a></li><li><a href="' . esc_url( home_url( '/#our-story' ) ) . '">Our story</a></li><li><a href="' . esc_url( home_url( '/#questions' ) ) . '">Questions</a></li></ul>';
 }
 
 /** Add delivery attributes at render time so native Image blocks round-trip cleanly. */

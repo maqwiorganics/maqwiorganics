@@ -56,3 +56,9 @@ Runtime QA run 14f6c3cd-8562-4af7-848c-4e6082830808 verified installed theme0.2.
 Post-correction browser run 3f027bf6-556d-4678-93ab-0eff1fba4671 confirmed installed theme0.2.2/core0.1.3 and WooCommerce11.2.0/database11.2.0-1. It could not restore the draft fixture for a fresh checkout view before its time budget expired, so the final country-label visual check and hidden input DOM values remain unverified. It reported ID25 still in Trash. The previous full product/cart/checkout-field test remains the measured runtime evidence; no completed order, stock reduction or email delivery is claimed.
 
 Final cleanup run d2accd69-0b1e-46d1-ab6c-a203e912383c found the fixture still Draft (contrary to the previous run summary), moved only ID25 to Trash and verified it in the Trash listing. Cart was confirmed empty and bag count0. No order, email or public QA product was created.
+
+## Public brand launch — 11 October 2026
+
+The owner selected a public brand launch today, with orders closed. Theme 0.2.3 and Store Core 0.1.4 add a fail-closed brand mode. Purchasing (including variations), gateways and classic checkout are guarded; public commerce/account routes redirect to the homepage collection. Header/footer expose Collection, Story and Questions instead of cart/account. The native owner setup screen has a nonce/capability protected action to remove Coming soon only after enabling the order guard. Real-domain DNS stays unchanged.
+
+Opening paid orders is a separate release requiring catalogue, prices, stock, delivery, contacts, policies, authenticated email and end-to-end testing. COD customer email wording remains a store-release task.
