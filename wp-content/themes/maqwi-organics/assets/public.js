@@ -29,5 +29,6 @@
     }
   };
   window.addEventListener('hashchange', openCollection);
+  window.addEventListener('pageshow', openCollection);
   openCollection();
 })();

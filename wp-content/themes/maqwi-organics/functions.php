@@ -20,7 +20,7 @@ add_action( 'wp_enqueue_scripts', function () {
 
 /** Return configured commerce routes without assuming page IDs or slugs. */
 function maqwi_shop_url() {
-    if ( function_exists( 'maqwi_brand_launch_mode' ) && maqwi_brand_launch_mode() ) { return home_url( '/#the-collection' ); }
+    if ( function_exists( 'maqwi_brand_launch_mode' ) && maqwi_brand_launch_mode() ) { return maqwi_home_anchor( 'the-collection' ); }
     $url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : '';
     return $url && -1 !== $url ? $url : home_url( '/' );
 }
@@ -54,7 +54,7 @@ add_shortcode( 'maqwi_featured_products', function () {
 
 /** Fallback links stay useful before an owner has assigned a menu. */
 function maqwi_default_navigation() {
-    echo '<ul class="mq-menu"><li><a href="' . esc_url( maqwi_shop_url() ) . '">' . ( function_exists( 'maqwi_brand_launch_mode' ) && maqwi_brand_launch_mode() ? 'Collection' : 'Shop' ) . '</a></li><li><a href="' . esc_url( home_url( '/#our-story' ) ) . '">Our story</a></li><li><a href="' . esc_url( home_url( '/#questions' ) ) . '">Questions</a></li></ul>';
+    echo '<ul class="mq-menu"><li><a href="' . esc_url( maqwi_shop_url() ) . '">' . ( function_exists( 'maqwi_brand_launch_mode' ) && maqwi_brand_launch_mode() ? 'Collection' : 'Shop' ) . '</a></li><li><a href="' . esc_url( maqwi_home_anchor( 'our-story' ) ) . '">Our story</a></li><li><a href="' . esc_url( maqwi_home_anchor( 'questions' ) ) . '">Questions</a></li></ul>';
 }
 
 /** Add delivery attributes at render time so native Image blocks round-trip cleanly. */
@@ -130,7 +130,7 @@ function maqwi_brand_collection_details() {
         <?php $number = 0; foreach ( maqwi_brand_collections() as $slug => $item ) : $number++; ?>
             <details id="<?php echo esc_attr( 'collection-' . $slug ); ?>" class="mq-collection-detail">
                 <summary><span class="mq-detail-number" aria-hidden="true"><?php echo esc_html( sprintf( '%02d', $number ) ); ?></span><span><span class="mq-detail-title"><?php echo esc_html( $item['name'] ); ?></span><span class="mq-detail-line"><?php echo esc_html( $item['line'] ); ?></span></span><span class="mq-detail-toggle" aria-hidden="true"></span></summary>
-                <div class="mq-detail-body"><figure><img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/' . $item['image'] . '.webp' ); ?>" alt="<?php echo esc_attr( 'Maqwi ' . $item['name'] . ' packaging concept' ); ?>" width="900" height="900" loading="lazy" decoding="async"><figcaption>Packaging concept</figcaption></figure><div><p class="mq-eyebrow">Collection in preparation</p><h3><?php echo esc_html( $item['line'] ); ?></h3><p><?php echo esc_html( $item['copy'] ); ?></p><p><?php echo esc_html( $item['details'] ); ?></p><p class="mq-detail-note">Artwork is an early packaging concept. Final product details, photographs, prices and availability will be confirmed before orders open.</p><a class="mq-text-link" href="<?php echo esc_url( home_url( '/#questions' ) ); ?>">Before you order <span aria-hidden="true">&nbsp;↗</span></a></div></div>
+                <div class="mq-detail-body"><figure><img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/' . $item['image'] . '.webp' ); ?>" alt="<?php echo esc_attr( 'Maqwi ' . $item['name'] . ' packaging concept' ); ?>" width="900" height="900" loading="lazy" decoding="async"><figcaption>Packaging concept</figcaption></figure><div><p class="mq-eyebrow">Collection in preparation</p><h3><?php echo esc_html( $item['line'] ); ?></h3><p><?php echo esc_html( $item['copy'] ); ?></p><p><?php echo esc_html( $item['details'] ); ?></p><p class="mq-detail-note">Artwork is an early packaging concept. Final product details, photographs, prices and availability will be confirmed before orders open.</p><a class="mq-text-link" href="<?php echo esc_url( maqwi_home_anchor( 'questions' ) ); ?>">Before you order <span aria-hidden="true">&nbsp;↗</span></a></div></div>
             </details>
         <?php endforeach; ?>
         </div>
@@ -149,7 +149,7 @@ add_filter( 'render_block_core/heading', function ( $html ) {
             if ( ! $term ) { continue; }
             $category_url = get_term_link( $term );
             if ( ! is_wp_error( $category_url ) && $url === $category_url ) {
-                $processor->set_attribute( 'href', home_url( '/#collection-' . $slug ) );
+                $processor->set_attribute( 'href', maqwi_home_anchor( 'collection-' . $slug ) );
                 break;
             }
         }
@@ -176,3 +176,8 @@ add_action( 'wp_head', function () {
     }
     echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
 }, 5 );
+
+/** Stay in the current homepage document, including normal host query redirects. */
+function maqwi_home_anchor( $anchor ) {
+    return is_front_page() ? '#' . $anchor : home_url( '/#' . $anchor );
+}
