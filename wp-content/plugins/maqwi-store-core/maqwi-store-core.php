@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Maqwi Store Core
  * Description: Pakistan checkout rules and verified product details, independent of the theme.
- * Version: 0.1.5
+ * Version: 0.2.0
  * Requires Plugins: woocommerce
  * Requires PHP: 8.1
  * License: GPL-2.0-or-later
@@ -19,11 +19,18 @@ add_action( 'before_woocommerce_init', function () {
 function maqwi_brand_launch_mode() {
     return 'yes' === get_option( 'maqwi_brand_launch', 'yes' );
 }
-function maqwi_brand_purchasable( $purchasable ) {
+function maqwi_storefront_preview() {
+    return maqwi_brand_launch_mode() && 'yes' === get_option( 'maqwi_storefront_preview', 'no' );
+}
+function maqwi_brand_purchasable( $purchasable, $product = null ) {
+    if ( maqwi_storefront_preview() && $product ) {
+        $parent = $product->get_parent_id() ? wc_get_product( $product->get_parent_id() ) : $product;
+        return $purchasable && $parent && 'yes' === $parent->get_meta( '_maqwi_sample' );
+    }
     return maqwi_brand_launch_mode() ? false : $purchasable;
 }
-add_filter( 'woocommerce_is_purchasable', 'maqwi_brand_purchasable', 100 );
-add_filter( 'woocommerce_variation_is_purchasable', 'maqwi_brand_purchasable', 100 );
+add_filter( 'woocommerce_is_purchasable', 'maqwi_brand_purchasable', 100, 2 );
+add_filter( 'woocommerce_variation_is_purchasable', 'maqwi_brand_purchasable', 100, 2 );
 add_filter( 'woocommerce_available_payment_gateways', function ( $gateways ) {
     return maqwi_brand_launch_mode() ? array() : $gateways;
 }, 100 );
@@ -31,7 +38,7 @@ add_action( 'woocommerce_after_checkout_validation', function ( $data, $errors )
     if ( maqwi_brand_launch_mode() ) { $errors->add( 'maqwi_orders_closed', 'Orders are not open yet. Please return when the collection is ready.' ); }
 }, 100, 2 );
 add_action( 'template_redirect', function () {
-    if ( ! maqwi_brand_launch_mode() || ! function_exists( 'is_woocommerce' ) ) { return; }
+    if ( ! maqwi_brand_launch_mode() || maqwi_storefront_preview() || ! function_exists( 'is_woocommerce' ) ) { return; }
     if ( is_woocommerce() || is_cart() || is_checkout() || is_account_page() ) {
         $anchor = 'the-collection';
         if ( is_product_category() ) {
@@ -192,7 +199,7 @@ function maqwi_store_setup_screen() {
     $cod = get_option( 'woocommerce_cod_settings', array() );
     ?>
     <div class="wrap"><h1>Maqwi store setup</h1>
-    <p><?php echo maqwi_brand_launch_mode() ? 'Public brand launch: ordering is closed. Commerce routes return to the collection.' : 'Store mode: complete delivery, email and order tests before accepting customers.'; ?></p>
+    <p><?php echo maqwi_brand_launch_mode() ? 'Orders are closed. The full storefront preview can be enabled below.' : 'Store mode: complete delivery, email and order tests before accepting customers.'; ?></p>
     <table class="widefat striped" style="max-width:1000px"><thead><tr><th>Area</th><th>Current setup</th><th>Next action</th></tr></thead><tbody>
         <tr><td>Store visibility</td><td><?php echo $coming_soon ? 'Coming soon — store closed' : 'Live — review launch approval'; ?></td><td><a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-settings&tab=site-visibility' ) ); ?>">Visibility settings</a></td></tr>
         <tr><td>Products</td><td><?php echo esc_html( (int) ( $counts->publish ?? 0 ) ); ?> published; <?php echo esc_html( (int) ( $counts->draft ?? 0 ) ); ?> drafts</td><td><a href="<?php echo esc_url( admin_url( 'edit.php?post_type=product' ) ); ?>">Confirm prices, stock, label details and photos</a></td></tr>
@@ -202,6 +209,8 @@ function maqwi_store_setup_screen() {
         <tr><td>Business details</td><td>Verify address, support contact and published policies.</td><td><a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-settings&tab=general' ) ); ?>">Store settings</a></td></tr>
         <tr><td>Order email</td><td>Authentication and customer/admin delivery are not proven by installed settings.</td><td><a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-settings&tab=email' ) ); ?>">Email settings</a></td></tr>
     </tbody></table>
+    <h2>Full storefront preview</h2><p>Create four editable sample products with two sizes each, product photography concepts and six information pages. Existing matching source records are reused; existing content is never overwritten. Native cart and checkout are available for testing; no orders or account registrations can be submitted.</p>
+    <form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post"><input type="hidden" name="action" value="maqwi_seed_preview"><?php wp_nonce_field( 'maqwi_seed_preview' ); submit_button( 'Build sample catalogue and enable storefront preview', 'primary' ); ?></form>
     <h2>Public brand launch</h2><p>This makes the site public while purchase and checkout guards keep orders closed. The real domain and DNS are unchanged.</p>
     <form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post">
         <input type="hidden" name="action" value="maqwi_launch_brand">
@@ -212,7 +221,7 @@ function maqwi_store_setup_screen() {
         <input type="hidden" name="action" value="maqwi_setup_checkout">
         <?php wp_nonce_field( 'maqwi_setup_checkout' ); submit_button( 'Configure classic cart and checkout', 'secondary' ); ?>
     </form>
-    <p><strong>Installed:</strong> Maqwi Store Core 0.1.5; WooCommerce <?php echo esc_html( defined( 'WC_VERSION' ) ? WC_VERSION : 'not available' ); ?>; database <?php echo esc_html( get_option( 'woocommerce_db_version', 'not available' ) ); ?>; theme <?php echo esc_html( wp_get_theme()->get( 'Name' ) . ' ' . wp_get_theme()->get( 'Version' ) ); ?>.</p>
+    <p><strong>Installed:</strong> Maqwi Store Core 0.2.0; WooCommerce <?php echo esc_html( defined( 'WC_VERSION' ) ? WC_VERSION : 'not available' ); ?>; database <?php echo esc_html( get_option( 'woocommerce_db_version', 'not available' ) ); ?>; theme <?php echo esc_html( wp_get_theme()->get( 'Name' ) . ' ' . wp_get_theme()->get( 'Version' ) ); ?>.</p>
     </div>
     <?php
 }
@@ -254,3 +263,5 @@ add_action( 'admin_post_maqwi_launch_brand', function () {
     wp_safe_redirect( admin_url( 'admin.php?page=maqwi-store-setup' ) );
     exit;
 } );
+
+require_once __DIR__ . '/storefront-preview.php';

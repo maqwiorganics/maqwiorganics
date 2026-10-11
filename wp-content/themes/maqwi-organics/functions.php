@@ -20,7 +20,7 @@ add_action( 'wp_enqueue_scripts', function () {
 
 /** Return configured commerce routes without assuming page IDs or slugs. */
 function maqwi_shop_url() {
-    if ( function_exists( 'maqwi_brand_launch_mode' ) && maqwi_brand_launch_mode() ) { return maqwi_home_anchor( 'the-collection' ); }
+    if ( maqwi_public_brand_mode() ) { return maqwi_home_anchor( 'the-collection' ); }
     $url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : '';
     return $url && -1 !== $url ? $url : home_url( '/' );
 }
@@ -54,7 +54,7 @@ add_shortcode( 'maqwi_featured_products', function () {
 
 /** Fallback links stay useful before an owner has assigned a menu. */
 function maqwi_default_navigation() {
-    echo '<ul class="mq-menu"><li><a href="' . esc_url( maqwi_shop_url() ) . '">' . ( function_exists( 'maqwi_brand_launch_mode' ) && maqwi_brand_launch_mode() ? 'Collection' : 'Shop' ) . '</a></li><li><a href="' . esc_url( maqwi_home_anchor( 'our-story' ) ) . '">Our story</a></li><li><a href="' . esc_url( maqwi_home_anchor( 'questions' ) ) . '">Questions</a></li></ul>';
+    echo '<ul class="mq-menu"><li><a href="' . esc_url( maqwi_shop_url() ) . '">' . ( maqwi_public_brand_mode() ? 'Collection' : 'Shop' ) . '</a></li><li><a href="' . esc_url( home_url( '/about/' ) ) . '">Our story</a></li><li><a href="' . esc_url( home_url( '/faq/' ) ) . '">Questions</a></li><li><a href="' . esc_url( home_url( '/contact/' ) ) . '">Contact</a></li></ul>';
 }
 
 /** Add delivery attributes at render time so native Image blocks round-trip cleanly. */
@@ -112,7 +112,7 @@ add_filter( 'loop_shop_per_page', function () { return 12; }, 20 );
 
 /** Brand content remains separate from unapproved WooCommerce product data. */
 function maqwi_public_brand_mode() {
-    return function_exists( 'maqwi_brand_launch_mode' ) && maqwi_brand_launch_mode();
+    return function_exists( 'maqwi_brand_launch_mode' ) && maqwi_brand_launch_mode() && !( function_exists( 'maqwi_storefront_preview' ) && maqwi_storefront_preview() );
 }
 function maqwi_brand_collections() {
     return array(
@@ -181,3 +181,27 @@ add_action( 'wp_head', function () {
 function maqwi_home_anchor( $anchor ) {
     return is_front_page() ? '#' . $anchor : home_url( '/#' . $anchor );
 }
+
+/** Preview cards, galleries and safety label retain normal native WooCommerce data. */
+add_action( 'woocommerce_before_single_product', function () {
+    global $product;
+    if ( $product && $product->get_meta( '_maqwi_concept_image' ) && ! $product->get_image_id() ) { remove_action( 'woocommerce_before_single_product_summary', 'woocommerce_show_product_images', 20 ); }
+} );
+add_action( 'woocommerce_before_single_product_summary', function () {
+    global $product;
+    if ( ! $product || ! $product->get_meta( '_maqwi_concept_image' ) || $product->get_image_id() ) { return; }
+    echo '<div class="mq-concept-gallery"><img src="' . esc_url( get_stylesheet_directory_uri() . '/assets/images/' . $product->get_meta( '_maqwi_concept_image' ) . '.webp' ) . '" alt="' . esc_attr( $product->get_name() . ' packaging concept' ) . '" width="900" height="900"><p>Packaging concept · sample catalogue</p></div>';
+}, 19 );
+add_filter( 'woocommerce_product_get_image', function ( $html, $product, $size, $attr, $placeholder ) {
+    $image = $product->get_meta( '_maqwi_concept_image' );
+    if ( ! $image && $product->get_parent_id() ) { $parent = wc_get_product( $product->get_parent_id() ); $image = $parent ? $parent->get_meta( '_maqwi_concept_image' ) : ''; }
+    if ( ! $image || $product->get_image_id() || ! in_array( $image, array( 'honey', 'ghee', 'achaar', 'itar' ), true ) ) { return $html; }
+    return '<img class="mq-product-concept" src="' . esc_url( get_stylesheet_directory_uri() . '/assets/images/' . $image . '.webp' ) . '" alt="' . esc_attr( $product->get_name() . ' packaging concept' ) . '" width="900" height="900" loading="lazy" decoding="async">';
+}, 10, 5 );
+add_action( 'woocommerce_single_product_summary', function () {
+    global $product;
+    if ( $product && 'yes' === $product->get_meta( '_maqwi_sample' ) ) { echo '<p class="mq-sample-note">Sample product · editable prices and sizes · orders closed</p>'; }
+}, 11 );
+add_action( 'woocommerce_before_shop_loop', function () {
+    if ( function_exists( 'maqwi_storefront_preview' ) && maqwi_storefront_preview() ) { echo '<p class="mq-sample-note">Explore the sample collection. Prices and sizes are examples for testing; packaging is concept artwork.</p>'; }
+}, 5 );

@@ -1,11 +1,11 @@
-<?php defined( 'ABSPATH' ) || exit; $brand_launch = function_exists( 'maqwi_brand_launch_mode' ) && maqwi_brand_launch_mode(); ?>
+<?php defined( 'ABSPATH' ) || exit; $brand_launch = maqwi_public_brand_mode(); ?>
 <!doctype html>
 <html <?php language_attributes(); ?>>
 <head><meta charset="<?php bloginfo( 'charset' ); ?>"><meta name="viewport" content="width=device-width, initial-scale=1"><?php wp_head(); ?></head>
 <body id="top" <?php body_class( 'mq-site' ); ?>>
 <?php wp_body_open(); ?>
 <a class="mq-skip-link" href="#main">Skip to content</a>
-<?php if ( $brand_launch ) : ?><div class="mq-announcement">Welcome to Maqwi. Meet the collection — orders open soon.</div><?php elseif ( 'yes' === get_option( 'woocommerce_coming_soon', 'no' ) ) : ?>
+<?php if ( function_exists( 'maqwi_storefront_preview' ) && maqwi_storefront_preview() ) : ?><div class="mq-announcement">Store preview · sample prices and products · orders are closed</div><?php elseif ( $brand_launch ) : ?><div class="mq-announcement">Welcome to Maqwi. Meet the collection — orders open soon.</div><?php elseif ( 'yes' === get_option( 'woocommerce_coming_soon', 'no' ) ) : ?>
 <div class="mq-announcement">Our store is taking shape. Orders open after launch.</div>
 <?php endif; ?>
 <header class="mq-header">

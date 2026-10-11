@@ -3,7 +3,7 @@ Theme Name: Maqwi Organics
 Description: Lightweight Kadence child theme with an editable Maqwi homepage pattern.
 Author: Maqwi Organics
 Template: kadence
-Version: 0.3.5
+Version: 0.4.0
 Requires at least: 6.6
 Requires PHP: 8.1
 Text Domain: maqwi-organics
@@ -55,3 +55,12 @@ License: GPL-2.0-or-later
 @media(max-width:639px){.mq-detail-body[id]{scroll-margin-top:200px}}
 
 .mq-site .mq-button-link{color:var(--mq-cream)}.mq-site .mq-button-link:hover{background:#254b2e;color:var(--mq-cream)}
+
+/* Full native storefront preview. */
+.mq-sample-note{padding:14px 18px;border:1px solid var(--mq-line);background:#edeedf;border-radius:8px;font-size:.88rem;line-height:1.6;color:var(--mq-ink)}
+.mq-concept-gallery{width:48%;float:left;margin-bottom:2rem}.mq-concept-gallery img{width:100%;height:auto;border-radius:12px}.mq-concept-gallery p{font-size:.8rem;color:#5c5c50}
+.mq-product-concept{aspect-ratio:1;object-fit:cover;border-radius:8px}.mq-commerce .woocommerce-product-gallery:has(.woocommerce-product-gallery__image--placeholder){display:none}
+.mq-info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin:32px 0}.mq-info-card{padding:28px;border:1px solid var(--mq-line);border-radius:12px;background:#fffdf8}.mq-info-card h2{font-size:1.7rem;margin-top:0}
+.mq-page-content>p{max-width:760px}.mq-page-content details{padding:20px 0;border-bottom:1px solid var(--mq-line)}.mq-page-content summary{cursor:pointer;font-weight:600;padding:8px 0;min-height:44px}
+.mq-preview-checkout-note{margin:16px 0}.mq-preview-disabled{width:100%;padding:18px;background:var(--mq-green);color:var(--mq-cream);border:0;border-radius:6px;font:inherit;cursor:not-allowed;opacity:1}
+@media(max-width:639px){.mq-concept-gallery{float:none;width:100%}.mq-info-grid{grid-template-columns:1fr}.mq-header-actions{gap:10px}.mq-account{display:none}.mq-cart{font-size:.8rem}}

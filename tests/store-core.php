@@ -3,7 +3,8 @@
 define( 'ABSPATH', __DIR__ );
 $filters = array();
 $brand_mode = 'no';
-function get_option( $key, $default = false ) { global $brand_mode; return 'maqwi_brand_launch' === $key && null !== $brand_mode ? $brand_mode : $default; }
+$preview_mode = 'no';
+function get_option( $key, $default = false ) { global $brand_mode, $preview_mode; if ( 'maqwi_storefront_preview' === $key ) { return $preview_mode; } return 'maqwi_brand_launch' === $key && null !== $brand_mode ? $brand_mode : $default; }
 function add_action( ...$args ) {}
 function add_filter( $hook, $callback, ...$args ) { global $filters; $filters[ $hook ] = $callback; }
 require __DIR__ . '/../wp-content/plugins/maqwi-store-core/maqwi-store-core.php';
@@ -40,3 +41,27 @@ echo "Brand launch purchase and gateway guards passed.\n";
 
 $brand_mode = null;
 check( false === maqwi_brand_purchasable( true ), 'Missing setting must fail closed' );
+
+$brand_mode = 'yes';
+$preview_mode = 'yes';
+class SampleProduct {
+    function __construct( public $sample ) {}
+    function get_parent_id() { return 0; }
+    function get_meta( $key ) { return $this->sample; }
+}
+check( true === maqwi_brand_purchasable( true, new SampleProduct( 'yes' ) ), 'Sample bag interaction blocked' );
+check( false === maqwi_brand_purchasable( true, new SampleProduct( 'no' ) ), 'Preview allowed a real product' );
+check( false === maqwi_brand_purchasable( false, new SampleProduct( 'yes' ) ), 'Preview bypassed native restriction' );
+check( array() === $filters['woocommerce_available_payment_gateways']( array( 'cod' => 'gateway' ) ), 'Preview exposed payment' );
+check( 'no' === $filters['option_woocommerce_enable_myaccount_registration']( 'yes' ), 'Preview enabled registration' );
+class WP_Error { function __construct( public $code, public $message, public $data ) {} }
+class SampleRequest {
+    function __construct( public $method, public $route ) {}
+    function get_method() { return $this->method; }
+    function get_route() { return $this->route; }
+}
+$r = $filters['rest_pre_dispatch']( null, null, new SampleRequest( 'POST', '/wc/store/v1/checkout' ) );
+check( $r instanceof WP_Error && 403 === $r->data['status'], 'Store API order submission not blocked' );
+check( null === $filters['rest_pre_dispatch']( null, null, new SampleRequest( 'GET', '/wc/store/v1/cart' ) ), 'Cart read blocked' );
+check( null === $filters['rest_pre_dispatch']( null, null, new SampleRequest( 'POST', '/wc/store/v1/cart/add-item' ) ), 'Sample cart API blocked' );
+echo "Sample-only cart, payment, registration and Store API guards passed.\n";
