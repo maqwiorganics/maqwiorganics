@@ -74,3 +74,9 @@ $preview_mode = 'no';
 check( false === $filters['wc_shipping_enabled']( false ), 'Real shipping setting changed' );
 check( false === $filters['woocommerce_cart_ready_to_calc_shipping']( false ), 'Real shipping address requirement changed' );
 echo "Sample delivery configuration isolated from real shipping settings.\n";
+
+$preview_mode = 'yes';
+check( 'Maqwi_Preview_Shipping' === $filters['woocommerce_shipping_methods']( array() )['maqwi_preview'], 'Native sample shipping method missing' );
+$preview_mode = 'no';
+check( array() === $filters['woocommerce_shipping_methods']( array() ), 'Sample method leaked into real store' );
+echo "Native sample shipping method isolated to preview.\n";

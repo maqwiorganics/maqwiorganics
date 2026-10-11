@@ -126,12 +126,38 @@ add_filter( 'woocommerce_get_privacy_policy_text', function ( $text, $type ) {
 }, 10, 2 );
 /** Purge native page cache once when this approved storefront code release is first executed. */
 add_action( 'init', function () {
-    if ( maqwi_storefront_preview() && '0.2.3' !== get_option( 'maqwi_preview_cache_release', '' ) && function_exists( 'w3tc_flush_all' ) ) {
+    if ( maqwi_storefront_preview() && '0.2.4' !== get_option( 'maqwi_preview_cache_release', '' ) && function_exists( 'w3tc_flush_all' ) ) {
+        delete_transient( 'wc_shipping_method_count' );
+        if ( class_exists( 'WC_Cache_Helper' ) ) { WC_Cache_Helper::get_transient_version( 'shipping', true ); }
         w3tc_flush_all();
-        update_option( 'maqwi_preview_cache_release', '0.2.3', false );
+        update_option( 'maqwi_preview_cache_release', '0.2.4', false );
     }
 }, 99 );
 
 /** Sample delivery must remain testable even while real shipping is unconfigured. */
 add_filter( 'wc_shipping_enabled', function ( $enabled ) { return maqwi_storefront_preview() ? true : $enabled; } );
 add_filter( 'woocommerce_cart_ready_to_calc_shipping', function ( $ready ) { return maqwi_storefront_preview() ? true : $ready; } );
+
+/** A preview-only native legacy method makes delivery calculable without creating real zones. */
+add_action( 'woocommerce_shipping_init', function () {
+    if ( class_exists( 'Maqwi_Preview_Shipping' ) ) { return; }
+    class Maqwi_Preview_Shipping extends WC_Shipping_Method {
+        public function __construct() {
+            $this->id = 'maqwi_preview';
+            $this->method_title = 'Maqwi sample delivery';
+            $this->method_description = 'Preview only. Not an approved courier or delivery tariff.';
+            $this->title = 'Sample delivery — final rate to be confirmed';
+            $this->enabled = maqwi_storefront_preview() ? 'yes' : 'no';
+            $this->supports = array();
+        }
+        public function calculate_shipping( $package = array() ) {
+            if ( maqwi_storefront_preview() && 'PK' === ( $package['destination']['country'] ?? '' ) ) {
+                $this->add_rate( array( 'id' => $this->id, 'label' => $this->title, 'cost' => 250, 'taxes' => false ) );
+            }
+        }
+    }
+} );
+add_filter( 'woocommerce_shipping_methods', function ( $methods ) {
+    if ( maqwi_storefront_preview() ) { $methods['maqwi_preview'] = 'Maqwi_Preview_Shipping'; }
+    return $methods;
+} );
