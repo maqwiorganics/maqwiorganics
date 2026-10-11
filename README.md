@@ -1,4 +1,4 @@
-> **Public brand frontend — 11 October 2026**: https://maqwiorganics.gt.tc/. Theme 0.3.5 / Store Core 0.1.5. Homepage, collection details, native mobile menu/FAQ, original transparent logo variants, sharing metadata and a branded true-404 page are implemented. Ordering stays closed. See `docs/BUILD-STATUS.md` for verified checks and store-launch requirements.
+> **Full storefront preview — 11 October 2026**: https://maqwiorganics.gt.tc/. Theme0.4.3 / Store Core0.2.5. Native shop, categories, four variable sample products, cart, checkout and account presentation, plus six information pages. Sample prices/sizes are editable in WooCommerce; order submission remains blocked. Acceptance evidence is recorded in `docs/BUILD-STATUS.md`.
 
 # Maqwi Organics
 

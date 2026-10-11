@@ -37,3 +37,19 @@ The WooCommerce > Maqwi store setup screen shows product counts, visibility, cla
 The owner approved a public brand introduction with ordering closed. `maqwi_brand_launch` defaults to `yes` when absent. The core disables simple/variation purchasability, removes available gateways and rejects classic checkout validation while brand mode is enabled. Public shop/cart/checkout/account/product routes return to the collection; known category routes return to the corresponding expandable brand section. Native admin remains available.
 
 The nonce/capability protected owner action enables the ordering guard before removing WooCommerce Coming soon. It makes no DNS changes and does not enable sales. There is no one-click sales toggle in this release. Opening orders requires a separate reviewed release, real approved catalogue/shipping/support/policy data, revised public content, authenticated email, completed-order tests and recovery checks.
+
+
+## Full storefront preview — Core 0.2.5
+
+Owner-authorised admin action: WooCommerce → Maqwi store setup → Build sample catalogue and enable storefront preview. Requires manage_woocommerce, publish_products, publish_pages and a valid native nonce. It enables the sales guard first, creates four native variable sample products with two variations each and six editable information pages, then enables storefront preview. It never overwrites existing page content or existing matching sample products. Conflicting non-sample product slugs cause an error. Ordinary public visits cannot seed data.
+
+Products: Maqwi Honey (250g/500g; sample PKR850/1500), Desi Ghee (250g/500g;1100/2000), Achaar (250g/500g;450/800), Itar (6ml/12ml;650/1150). These are example prices and sizes, not approved offers. Edit native products in Products → All Products; prices live in Variations. Descriptions and Maqwi product metadata are editable in the product editor. Change the featured image to replace the theme's concept-image fallback. No sample product uses managed stock; no real inventory count is claimed.
+
+Preview allows normal catalogue/search/category/product routes and cart interaction only for records marked _maqwi_sample=yes, including their variations. It retains native product restrictions. Gateways remain empty; classic checkout validation rejects orders, an additional pre-save order creation guard throws before persistence, and Store API checkout reads and writes return403 to prevent draft-order creation. Public account registration is disabled. Native account login is displayed but no account credentials are created by setup or QA.
+
+A labelled sample Pakistan delivery rate (PKR250) makes cart and checkout totals testable. No real shipping zone or courier contract is changed. Before selling, replace sample records/claims/photos, configure actual stock/delivery, approve legal/support information and verify email/order flows. The order guard must remain enabled until that separately reviewed release. Do not treat the frontend preview as an approved store launch.
+
+Information pages: /about/, /contact/, /faq/, /delivery/, /returns/, /privacy-preview/. They contain working brand/FAQ content and clearly marked pending business details, not invented contact numbers or approved policy terms. Existing privacy configuration is unchanged.
+
+
+The sample delivery adapter is a native non-zone WooCommerce shipping method registered only in preview. This prevents the native zero-method count from skipping delivery calculation; no real shipping-zone or method-instance record is added. Native count/package caches are invalidated with the code revision. Before a real-store release, configure and test genuine shipping methods and clear shipping caches when disabling preview.
