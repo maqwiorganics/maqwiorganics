@@ -20,12 +20,15 @@ jobs:
           persist-credentials: false
       - name: Validate PHP syntax
         run: find wp-content/themes/maqwi-organics -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: Image verification dependency
+        run: python3 -m pip install --disable-pip-version-check Pillow==11.3.0
       - name: Install new inactive child theme through FTPS
         env:
           FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
         run: |
           python3 - <<'PY'
           import ftplib, ssl, os, io, hashlib, pathlib, re
+          from PIL import Image, ImageChops, ImageStat
           root = pathlib.Path('wp-content/themes/maqwi-organics')
           allowed = ['style.css','theme.json','functions.php','front-page.php','header-maqwi.php','footer-maqwi.php','patterns/home.php','assets/images/logo.webp','assets/images/honey.webp','assets/images/ghee.webp','assets/images/achaar.webp','assets/images/itar.webp']
           assert sorted(str(p.relative_to(root)) for p in root.rglob('*') if p.is_file()) == sorted(allowed)
@@ -56,9 +59,14 @@ jobs:
               received = io.BytesIO()
               ftp.retrbinary('RETR '+remote,received.write)
               if hashlib.sha256(data).digest() != hashlib.sha256(received.getvalue()).digest():
-                  print({"file":relative,"sent_bytes":len(data),"received_bytes":len(received.getvalue()),"sent_signature":data[:16].hex(),"received_signature":received.getvalue()[:16].hex()})
-                  raise RuntimeError("Transferred file mismatch; refusing to publish theme directory")
+                  assert relative.endswith(".webp"), "Source file changed in transfer: "+relative
+                  original = Image.open(io.BytesIO(data)).convert("RGB")
+                  actual = Image.open(io.BytesIO(received.getvalue())).convert("RGB")
+                  assert original.size == actual.size, "Image dimensions changed: "+relative
+                  difference = max(ImageStat.Stat(ImageChops.difference(original,actual)).rms)
+                  print({"image":relative,"original_bytes":len(data),"readback_bytes":len(received.getvalue()),"maximum_channel_rms":round(difference,3)})
+                  assert difference <= 12, "Image content changed beyond compression tolerance: "+relative
           ftp.rename(temporary,target)
           ftp.quit()
-          print('Installed inactive maqwi-organics theme; every file verified; no existing files overwritten.')
+          print('Installed inactive maqwi-organics theme; source bytes verified, images checked for dimensions and visual equivalence; no existing files overwritten.')
           PY
