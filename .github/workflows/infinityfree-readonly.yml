@@ -24,45 +24,69 @@ jobs:
         shell: bash
         run: |
           python3 - <<'PY'
-          import ftplib
-          import json
-          import os
-          import ssl
-          import sys
-          
-          password = os.environ.get("FTP_PASSWORD", "")
-          if not password:
-              print("Connection test stopped: INFINITYFREE_FTP_PASSWORD is missing.")
-              sys.exit(1)
-          
+          import ftplib, io, json, os, re, ssl, sys
+          from urllib.request import Request, urlopen
+          from urllib.error import HTTPError
           ftp = ftplib.FTP_TLS(context=ssl.create_default_context(), timeout=25)
-          stage = "encrypted connection"
+          stage = "encrypted FTP"
+          def read(path, limit=1048576):
+              chunks = bytearray()
+              def receive(chunk):
+                  chunks.extend(chunk)
+                  if len(chunks) > limit:
+                      raise ValueError("size limit")
+              ftp.retrbinary("RETR " + path, receive)
+              return chunks.decode("utf-8", errors="replace")
           try:
               ftp.connect("ftpupload.net", 21)
-              ftp.auth()
-              stage = "authentication"
-              ftp.login("if0_43106867", password)
+              ftp.login("if0_43106867", os.environ["FTP_PASSWORD"])
               ftp.prot_p()
-              ftp.set_pasv(True)
-              print("Encrypted FTP authentication succeeded.")
-              stage = "WordPress directory verification"
-              ftp.cwd("/htdocs")
-              names = {name.rstrip("/").split("/")[-1] for name in ftp.nlst()}
-              required = {"wp-admin", "wp-content", "wp-includes", "wp-config.php"}
-              if not required.issubset(names):
-                  print("Expected WordPress root was not verified; test stopped.")
-                  sys.exit(1)
-              print("WordPress root verified: /htdocs")
-              for path in ("/htdocs/wp-content/themes", "/htdocs/wp-content/plugins"):
-                  stage = "directory listing"
-                  ftp.cwd(path)
-                  names = sorted({name.rstrip("/").split("/")[-1] for name in ftp.nlst()})
-                  print(json.dumps({"directory": path, "entries": names}, ensure_ascii=True))
-              print("Read-only connection test completed. No website files changed.")
+              stage = "configuration analysis"
+              config = read("/htdocs/wp-config.php")
+              config = re.sub(r"/\*.*?\*/|//[^\n]*", "", config, flags=re.S)
+              for flag in ["DISABLE_WP_CRON", "ALTERNATE_WP_CRON", "WP_CACHE", "WP_HTTP_BLOCK_EXTERNAL", "DISALLOW_FILE_MODS", "FORCE_SSL_ADMIN"]:
+                  match = re.search(r"""define\s*\(\s*['"]""" + flag + r"""['"]\s*,\s*(true|false|0|1)\s*\)""", config, re.I)
+                  print(json.dumps({"flag":flag, "literal_boolean":match.group(1).lower() if match else "not found or nonliteral"}))
+              del config
+              version = read("/htdocs/wp-includes/version.php")
+              match = re.search(r"""\$wp_version\s*=\s*['"]([0-9.]+)['"]""", version)
+              print("WordPress source version: " + (match.group(1) if match else "not parsed"))
+              htaccess = read("/htdocs/.htaccess")
+              for label, pattern in [
+                  ("wordpress_rewrite_block", r"BEGIN WordPress"),
+                  ("w3tc_rules", r"W3TC"),
+                  ("rest_api_reference", r"wp-json|rest_route"),
+                  ("authorization_header_forwarding", r"HTTP_AUTHORIZATION"),
+                  ("deny_rules_present", r"Deny from|Require all denied")]:
+                  print(json.dumps({"htaccess_check":label, "present":bool(re.search(pattern,htaccess,re.I))}))
+              ftp.cwd("/htdocs/wp-content")
+              names = {x.rstrip("/").split("/")[-1] for x in ftp.nlst()}
+              print(json.dumps({"wp_content": {key:key in names for key in ["advanced-cache.php","object-cache.php","mu-plugins"]}}))
+              if "mu-plugins" in names:
+                  ftp.cwd("/htdocs/wp-content/mu-plugins")
+                  print(json.dumps({"mu_plugin_names":sorted(x.rstrip("/").split("/")[-1] for x in ftp.nlst())}))
+              print("FTP source checks completed; no files modified.")
           except Exception as exc:
-              print("Connection test failed at " + stage + " (" + type(exc).__name__ + ").")
-              print("No unencrypted fallback was attempted. No website files changed.")
+              print("FTP diagnostics failed at " + stage + " (" + type(exc).__name__ + ").")
               sys.exit(1)
           finally:
               ftp.close()
+          try:
+              req = Request("https://maqwiorganics.gt.tc/wp-json/", headers={"User-Agent":"Maqwi-ReadOnly-Connection-Diagnostic/1.0"})
+              try:
+                  response = urlopen(req, timeout=25)
+              except HTTPError as exc:
+                  response = exc
+              with response:
+                  body = response.read(65536).decode("utf-8", errors="replace")
+                  result = {"rest_http_status":response.status, "content_type":response.headers.get("Content-Type",""), "browser_challenge_markers":any(x in body for x in ["aes.js","__test","requires Javascript","requires JavaScript"])}
+                  try:
+                      data = json.loads(body)
+                      result["wordpress_json"] = isinstance(data,dict) and ("namespaces" in data or "code" in data)
+                  except ValueError:
+                      result["wordpress_json"] = False
+                  print(json.dumps(result))
+                  print("Single REST probe completed; no challenge execution, cookies, or retry.")
+          except Exception as exc:
+              print("REST probe unavailable (" + type(exc).__name__ + ").")
           PY
