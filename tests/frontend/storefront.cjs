@@ -55,6 +55,7 @@ fs.mkdirSync(output,{recursive:true});
   // Check Store API guard without submitting any customer data.
   const guard=await page.evaluate(async()=>{const r=await fetch('/?rest_route=/wc/store/v1/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});return {status:r.status,text:await r.text()};});
   assert.equal(guard.status,403,'Store API checkout blocked');assert(guard.text.includes('maqwi_orders_closed'),'Specific order guard');
+  const readGuard=await page.evaluate(async()=>{const r=await fetch('/?rest_route=/wc/store/v1/checkout');return {status:r.status,text:await r.text()};});assert.equal(readGuard.status,403,'Store API draft checkout blocked');assert(readGuard.text.includes('maqwi_orders_closed'),'Specific draft guard');
   await visit('my-account/');await page.locator('form.woocommerce-form-login').waitFor();assert.equal(await page.locator('form.woocommerce-form-register').count(),0,'No registration');await check('account');
   for(const route of ['about','contact','faq','delivery','returns','privacy-preview']){await visit(route+'/');await check(route);}
   await visit('faq/');await page.locator('main details summary').first().click();assert(await page.locator('main details').first().evaluate(e=>e.open),'FAQ works');
@@ -73,6 +74,6 @@ fs.mkdirSync(output,{recursive:true});
  assert.equal(report.errors.length,0,'No runtime errors');
  report.checked=['home','shop','sorting','search','category','variation selection','product description and details','sample add to bag','quantity update','cart','checkout fields','disabled order submission','Store API order guard','account login screen','six information pages','FAQ','mobile navigation','footer','empty bag'];
  fs.writeFileSync(output+'/report.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));
- }catch(e){fs.writeFileSync(output+'/report.json',JSON.stringify({...report,failure:e.message},null,2));for(const c of browser.contexts())for(const p of c.pages()){console.log(JSON.stringify({url:p.url(),body:(await p.locator('main').innerText().catch(()=>'' )).slice(0,4000)}));await p.screenshot({path:output+'/failure.png',fullPage:true}).catch(()=>{});}throw e;}
+ }catch(e){fs.writeFileSync(output+'/report.json',JSON.stringify({...report,failure:e.message},null,2));for(const c of browser.contexts())for(const p of c.pages()){console.log(JSON.stringify({state:await p.evaluate(async()=>{let cart={};try{const r=await fetch('/?rest_route=/wc/store/v1/cart');const d=await r.json();cart={status:r.status,needsShipping:d.needs_shipping,shippingRates:d.shipping_rates,totals:d.totals};}catch(e){cart={error:e.message}}return {cart,country:document.querySelector('#billing_country')?.value,state:document.querySelector('#billing_state')?.value,city:document.querySelector('#billing_city')?.value,jquery:typeof jQuery,checkout:typeof wc_checkout_params};}),url:p.url(),body:(await p.locator('main').innerText().catch(()=>'' )).slice(0,4000)}));await p.screenshot({path:output+'/failure.png',fullPage:true}).catch(()=>{});}throw e;}
  finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1});
