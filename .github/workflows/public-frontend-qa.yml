@@ -1,0 +1,30 @@
+name: Public frontend browser QA
+on:
+  push:
+    branches: [staging]
+    paths: ['.github/workflows/public-frontend-qa.yml', 'tests/frontend/public.cjs']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Install pinned browser driver without lifecycle scripts
+        run: npm install --prefix .qa-deps --ignore-scripts --no-audit --no-fund --no-save playwright@1.62.1
+      - name: Public acceptance checks using normal installed Chrome
+        env:
+          NODE_PATH: ${{ github.workspace }}/.qa-deps/node_modules
+        run: node tests/frontend/public.cjs
+      - name: Retain public screenshots and acceptance report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: maqwi-public-frontend-qa
+          path: frontend-qa/
+          retention-days: 7
+          if-no-files-found: warn
