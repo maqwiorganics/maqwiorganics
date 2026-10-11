@@ -10,11 +10,17 @@ fs.mkdirSync(output, { recursive: true });
   assert(executablePath, 'A normal Chromium browser must be installed on the runner');
   const browser = await chromium.launch({ executablePath });
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
-  const report = { widths: [], errors: [], checked: [] };
+  const report = { widths: [], errors: [], checked: [], scriptResponses: [], consoleErrors: [] };
   try {
     for (const width of [320, 390, 768, 1440]) {
       const page = await context.newPage();
       page.on('pageerror', e => report.errors.push(e.message));
+      page.on('console', msg => { if (msg.type() === 'error') report.consoleErrors.push(msg.text()); });
+      page.on('response', async response => {
+        if (!response.url().includes('/assets/public.js')) return;
+        const text = await response.text().catch(() => '');
+        report.scriptResponses.push({ status: response.status(), type: response.headers()['content-type'], bytes: text.length, expected: text === fs.readFileSync('wp-content/themes/maqwi-organics/assets/public.js', 'utf8'), hasHashHandler: text.includes("addEventListener('hashchange'") });
+      });
       await page.setViewportSize({ width, height: 900 });
       await page.goto(home + '?frontendqa=' + width, { waitUntil: 'domcontentloaded', timeout: 90000 });
       // Let the host's normal browser challenge and WordPress redirects run naturally.
@@ -109,7 +115,7 @@ fs.mkdirSync(output, { recursive: true });
   } catch (error) {
     const observed = [];
     for (const page of context.pages()) {
-      observed.push(await page.evaluate(() => ({ url: location.href, hash: location.hash, honey: document.querySelector('.mq-category h3 a')?.getAttribute('href'), panelOpen: document.getElementById('collection-honey')?.open, scripts: [...document.scripts].map(s => s.src).filter(s => s.includes('public.js')) })).catch(() => ({ url: page.url() })));
+      observed.push(await page.evaluate(() => ({ url: location.href, hash: location.hash, honey: document.querySelector('.mq-category h3 a')?.getAttribute('href'), panelOpen: document.getElementById('collection-honey')?.open, scripts: [...document.scripts].filter(s => s.src.includes('public.js')).map(s => ({ src: s.src, type: s.type, defer: s.defer, async: s.async })), detailElement: document.getElementById('collection-honey')?.tagName, constructor: typeof HTMLDetailsElement })).catch(() => ({ url: page.url() })));
     }
     fs.writeFileSync(output + '/report.json', JSON.stringify({ ...report, failure: error.message, observed }, null, 2));
     for (const page of context.pages()) await page.screenshot({ path: output + '/failure.png', fullPage: true }).catch(() => {});
