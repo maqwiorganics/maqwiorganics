@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Maqwi Store Core
  * Description: Pakistan checkout rules and verified product details, independent of the theme.
- * Version: 0.1.0
+ * Version: 0.1.1
  * Requires Plugins: woocommerce
  * Requires PHP: 8.1
  * License: GPL-2.0-or-later
@@ -136,3 +136,66 @@ function maqwi_render_product_details() {
     }
     echo '</dl>';
 }
+
+/** A small owner-facing readiness screen; it never labels an untested store ready. */
+add_action( 'admin_menu', function () {
+    add_submenu_page( 'woocommerce', 'Maqwi store setup', 'Maqwi store setup', 'manage_woocommerce', 'maqwi-store-setup', 'maqwi_store_setup_screen' );
+} );
+function maqwi_store_setup_screen() {
+    if ( ! current_user_can( 'manage_woocommerce' ) ) { return; }
+    $counts = wp_count_posts( 'product' );
+    $coming_soon = 'yes' === get_option( 'woocommerce_coming_soon' );
+    $classic = true;
+    foreach ( array( 'cart', 'checkout' ) as $type ) {
+        $page = get_post( wc_get_page_id( $type ) );
+        $classic = $classic && $page && has_shortcode( $page->post_content, 'woocommerce_' . $type ) && ! has_block( 'woocommerce/' . $type, $page->post_content );
+    }
+    $cod = get_option( 'woocommerce_cod_settings', array() );
+    ?>
+    <div class="wrap"><h1>Maqwi store setup</h1>
+    <p>Build first, open for orders after checkout, delivery, email and recovery have been tested.</p>
+    <table class="widefat striped" style="max-width:1000px"><thead><tr><th>Area</th><th>Current setup</th><th>Next action</th></tr></thead><tbody>
+        <tr><td>Store visibility</td><td><?php echo $coming_soon ? 'Coming soon — store closed' : 'Live — review launch approval'; ?></td><td><a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-settings&tab=site-visibility' ) ); ?>">Visibility settings</a></td></tr>
+        <tr><td>Products</td><td><?php echo esc_html( (int) ( $counts->publish ?? 0 ) ); ?> published; <?php echo esc_html( (int) ( $counts->draft ?? 0 ) ); ?> drafts</td><td><a href="<?php echo esc_url( admin_url( 'edit.php?post_type=product' ) ); ?>">Confirm prices, stock, label details and photos</a></td></tr>
+        <tr><td>Cart and checkout</td><td><?php echo $classic ? 'Classic pages configured — order test still needed' : 'Classic page setup needed'; ?></td><td>Use the setup button below if these pages still contain Blocks.</td></tr>
+        <tr><td>Cash on delivery</td><td><?php echo 'yes' === ( $cod['enabled'] ?? 'no' ) ? 'Enabled — orders await confirmation' : 'Not enabled'; ?></td><td><a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-settings&tab=checkout&section=cod' ) ); ?>">Payment settings</a></td></tr>
+        <tr><td>Delivery</td><td>Courier coverage and rates need approval and a delivery test.</td><td><a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-settings&tab=shipping' ) ); ?>">Shipping zones and rates</a></td></tr>
+        <tr><td>Business details</td><td>Verify address, support contact and published policies.</td><td><a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-settings&tab=general' ) ); ?>">Store settings</a></td></tr>
+        <tr><td>Order email</td><td>Authentication and customer/admin delivery are not proven by installed settings.</td><td><a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-settings&tab=email' ) ); ?>">Email settings</a></td></tr>
+    </tbody></table>
+    <h2>Use the Maqwi checkout</h2><p>This replaces the contents of the assigned Cart and Checkout pages with native WooCommerce shortcodes. Titles, URLs and page assignments stay the same. Take a database backup first; previous page content is retained in revisions.</p>
+    <form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post">
+        <input type="hidden" name="action" value="maqwi_setup_checkout">
+        <?php wp_nonce_field( 'maqwi_setup_checkout' ); submit_button( 'Configure classic cart and checkout', 'secondary' ); ?>
+    </form>
+    <p><strong>Installed:</strong> Maqwi Store Core 0.1.1; WooCommerce <?php echo esc_html( defined( 'WC_VERSION' ) ? WC_VERSION : 'not available' ); ?>; database <?php echo esc_html( get_option( 'woocommerce_db_version', 'not available' ) ); ?>; theme <?php echo esc_html( wp_get_theme()->get( 'Name' ) . ' ' . wp_get_theme()->get( 'Version' ) ); ?>.</p>
+    </div>
+    <?php
+}
+add_action( 'admin_post_maqwi_setup_checkout', function () {
+    if ( ! current_user_can( 'manage_woocommerce' ) ) { wp_die( 'You cannot change this store setup.' ); }
+    check_admin_referer( 'maqwi_setup_checkout' );
+    $pages = array();
+    foreach ( array( 'cart', 'checkout' ) as $type ) {
+        $id = wc_get_page_id( $type );
+        $page = get_post( $id );
+        if ( ! $page || 'page' !== $page->post_type || ! current_user_can( 'edit_post', $id ) ) { wp_die( 'Check the WooCommerce page assignments before configuring checkout.' ); }
+        if ( ! wp_revisions_enabled( $page ) ) { wp_die( 'Enable page revisions before configuring checkout so the previous content can be recovered.' ); }
+        $pages[ $type ] = $page;
+    }
+    if ( $pages['cart']->ID === $pages['checkout']->ID ) { wp_die( 'Cart and Checkout must be different pages.' ); }
+    $updated = array();
+    foreach ( $pages as $type => $page ) {
+        $content = "<!-- wp:shortcode -->\n[woocommerce_" . $type . "]\n<!-- /wp:shortcode -->";
+        if ( $content === trim( $page->post_content ) ) { continue; }
+        wp_save_post_revision( $page->ID );
+        $result = wp_update_post( array( 'ID' => $page->ID, 'post_content' => $content ), true );
+        if ( is_wp_error( $result ) ) {
+            foreach ( $updated as $original ) { wp_update_post( array( 'ID' => $original->ID, 'post_content' => $original->post_content ) ); }
+            wp_die( 'Page setup failed. Check the previous page revisions before retrying.' );
+        }
+        $updated[] = $page;
+    }
+    wp_safe_redirect( admin_url( 'admin.php?page=maqwi-store-setup' ) );
+    exit;
+} );
