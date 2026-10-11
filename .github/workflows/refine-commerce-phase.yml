@@ -1,0 +1,77 @@
+name: Refine reviewed commerce phase on temporary site
+on:
+  push:
+    branches: [staging]
+    paths: ['.github/workflows/refine-commerce-phase.yml']
+permissions:
+  contents: read
+concurrency:
+  group: maqwi-temporary-theme-install
+  cancel-in-progress: false
+jobs:
+  refine:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Validate PHP and checkout rules
+        run: |
+          find wp-content/themes/maqwi-organics wp-content/plugins/maqwi-store-core tests -name '*.php' -print0 | xargs -0 -n1 php -l
+          php tests/store-core.php
+      - name: Apply three guarded source refinements
+        env:
+          FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
+        run: |
+          python3 - <<'PY'
+          import ftplib, ssl, os, io, hashlib, pathlib, subprocess, secrets
+          sources = ['wp-content/themes/maqwi-organics/woocommerce.php', 'wp-content/themes/maqwi-organics/style.css', 'wp-content/plugins/maqwi-store-core/maqwi-store-core.php']
+          old_commit = 'b80b3e1df011b58cc67753052909fd5da6c39ff2'
+          ftp = ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
+          ftp.connect('ftpupload.net',21)
+          ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
+          ftp.prot_p()
+          def read(path):
+              output = io.BytesIO()
+              ftp.retrbinary('RETR '+path,output.write)
+              return output.getvalue()
+          def verify(expected,actual):
+              assert hashlib.sha256(expected).digest() == hashlib.sha256(actual).digest(), 'Unexpected source hash'
+          originals = {}
+          for source in sources:
+              expected = subprocess.check_output(['git','show',old_commit+':'+source])
+              originals[source] = read('/htdocs/'+source)
+              verify(expected,originals[source])
+          history = '/htdocs/wp-content/themes/.maqwi-commerce-refine-'+os.environ['GITHUB_RUN_ID']
+          ftp.mkd(history)
+          for source in sources:
+              target = history+'/'+pathlib.Path(source).name
+              ftp.storbinary('STOR '+target,io.BytesIO(originals[source]))
+              verify(originals[source],read(target))
+          changed = []
+          temporary = None
+          try:
+              for source in sources:
+                  target = '/htdocs/'+source
+                  temporary = str(pathlib.PurePosixPath(target).parent)+'/.maqwi-refine-'+secrets.token_hex(8)+'.php'
+                  data = pathlib.Path(source).read_bytes()
+                  ftp.storbinary('STOR '+temporary,io.BytesIO(data))
+                  verify(data,read(temporary))
+                  ftp.rename(temporary,target)
+                  temporary = None
+                  changed.append(source)
+                  verify(data,read(target))
+          except Exception:
+              if temporary:
+                  try: ftp.delete(temporary)
+                  except ftplib.error_perm: pass
+              for source in reversed(changed):
+                  ftp.storbinary('STOR /htdocs/'+source,io.BytesIO(originals[source]))
+                  verify(originals[source],read('/htdocs/'+source))
+              raise
+          finally:
+              ftp.quit()
+          print('Catalogue heading and account address compatibility refined; source hashes verified.')
+          PY
