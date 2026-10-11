@@ -29,7 +29,7 @@ fs.mkdirSync(output, { recursive: true });
       assert.equal(await page.locator('main h1').count(), 1, 'One H1 at ' + width);
       assert.equal(await page.locator('.mq-collection-detail').count(), 4, 'Four collection panels');
       assert.equal(await page.locator('.mq-cart,.mq-account,.mq-mobile-account').count(), 0, 'No ordering/account links');
-      assert(await page.locator('link[href*="style.css?ver=0.3.4"]').count(), 'Current stylesheet version');
+      assert(await page.locator('link[href*="style.css?ver=0.3.5"]').count(), 'Current stylesheet version');
       assert(await page.locator('meta[name="description"]').getAttribute('content'), 'Homepage description');
       for (const image of await page.locator('.mq-site img').all()) {
         if (await image.isVisible()) {
