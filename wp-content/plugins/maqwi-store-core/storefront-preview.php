@@ -4,7 +4,7 @@ defined( 'ABSPATH' ) || exit;
 
 /** Defence in depth: preview never creates orders, including Store API requests. */
 add_filter( 'rest_pre_dispatch', function ( $result, $server, $request ) {
-    if ( maqwi_brand_launch_mode() && 'GET' !== $request->get_method() && preg_match( '#^/wc/store/v[0-9]+/checkout(?:/|$)#', $request->get_route() ) ) {
+    if ( maqwi_brand_launch_mode() && preg_match( '#^/wc/store/v[0-9]+/checkout(?:/|$)#', $request->get_route() ) ) {
         return new WP_Error( 'maqwi_orders_closed', 'Orders are closed during the storefront preview.', array( 'status' => 403 ) );
     }
     return $result;

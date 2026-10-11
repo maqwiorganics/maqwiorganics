@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Maqwi Store Core
  * Description: Pakistan checkout rules and verified product details, independent of the theme.
- * Version: 0.2.1
+ * Version: 0.2.2
  * Requires Plugins: woocommerce
  * Requires PHP: 8.1
  * License: GPL-2.0-or-later
@@ -221,7 +221,7 @@ function maqwi_store_setup_screen() {
         <input type="hidden" name="action" value="maqwi_setup_checkout">
         <?php wp_nonce_field( 'maqwi_setup_checkout' ); submit_button( 'Configure classic cart and checkout', 'secondary' ); ?>
     </form>
-    <p><strong>Installed:</strong> Maqwi Store Core 0.2.1; WooCommerce <?php echo esc_html( defined( 'WC_VERSION' ) ? WC_VERSION : 'not available' ); ?>; database <?php echo esc_html( get_option( 'woocommerce_db_version', 'not available' ) ); ?>; theme <?php echo esc_html( wp_get_theme()->get( 'Name' ) . ' ' . wp_get_theme()->get( 'Version' ) ); ?>.</p>
+    <p><strong>Installed:</strong> Maqwi Store Core 0.2.2; WooCommerce <?php echo esc_html( defined( 'WC_VERSION' ) ? WC_VERSION : 'not available' ); ?>; database <?php echo esc_html( get_option( 'woocommerce_db_version', 'not available' ) ); ?>; theme <?php echo esc_html( wp_get_theme()->get( 'Name' ) . ' ' . wp_get_theme()->get( 'Version' ) ); ?>.</p>
     </div>
     <?php
 }

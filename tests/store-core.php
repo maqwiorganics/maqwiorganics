@@ -62,6 +62,8 @@ class SampleRequest {
 }
 $r = $filters['rest_pre_dispatch']( null, null, new SampleRequest( 'POST', '/wc/store/v1/checkout' ) );
 check( $r instanceof WP_Error && 403 === $r->data['status'], 'Store API order submission not blocked' );
+$r = $filters['rest_pre_dispatch']( null, null, new SampleRequest( 'GET', '/wc/store/v1/checkout' ) );
+check( $r instanceof WP_Error && 403 === $r->data['status'], 'Store API draft checkout not blocked' );
 check( null === $filters['rest_pre_dispatch']( null, null, new SampleRequest( 'GET', '/wc/store/v1/cart' ) ), 'Cart read blocked' );
 check( null === $filters['rest_pre_dispatch']( null, null, new SampleRequest( 'POST', '/wc/store/v1/cart/add-item' ) ), 'Sample cart API blocked' );
 echo "Sample-only cart, payment, registration and Store API guards passed.\n";
