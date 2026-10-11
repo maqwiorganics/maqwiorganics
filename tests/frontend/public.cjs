@@ -23,7 +23,7 @@ fs.mkdirSync(output, { recursive: true });
       assert.equal(await page.locator('main h1').count(), 1, 'One H1 at ' + width);
       assert.equal(await page.locator('.mq-collection-detail').count(), 4, 'Four collection panels');
       assert.equal(await page.locator('.mq-cart,.mq-account,.mq-mobile-account').count(), 0, 'No ordering/account links');
-      assert(await page.locator('link[href*="style.css?ver=0.3.0"]').count(), 'Current stylesheet version');
+      assert(await page.locator('link[href*="style.css?ver=0.3.1"]').count(), 'Current stylesheet version');
       assert(await page.locator('meta[name="description"]').getAttribute('content'), 'Homepage description');
       for (const image of await page.locator('main img').all()) {
         if (await image.isVisible()) {
@@ -107,7 +107,11 @@ fs.mkdirSync(output, { recursive: true });
     fs.writeFileSync(output + '/report.json', JSON.stringify(report, null, 2));
     console.log(JSON.stringify(report));
   } catch (error) {
-    fs.writeFileSync(output + '/report.json', JSON.stringify({ ...report, failure: error.message }, null, 2));
+    const observed = [];
+    for (const page of context.pages()) {
+      observed.push(await page.evaluate(() => ({ url: location.href, hash: location.hash, honey: document.querySelector('.mq-category h3 a')?.getAttribute('href'), panelOpen: document.getElementById('collection-honey')?.open, scripts: [...document.scripts].map(s => s.src).filter(s => s.includes('public.js')) })).catch(() => ({ url: page.url() })));
+    }
+    fs.writeFileSync(output + '/report.json', JSON.stringify({ ...report, failure: error.message, observed }, null, 2));
     for (const page of context.pages()) await page.screenshot({ path: output + '/failure.png', fullPage: true }).catch(() => {});
     throw error;
   } finally {
