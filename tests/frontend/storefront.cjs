@@ -40,7 +40,7 @@ fs.mkdirSync(output,{recursive:true});
   await page.waitForLoadState('load');const select=page.locator('select[name="attribute_size"]');await select.selectOption({label:'250 g'});
   await page.waitForFunction(()=>Number(document.querySelector('input.variation_id')?.value)>0);await page.locator('.single_add_to_cart_button:not(.disabled)').waitFor();
   await page.locator('#tab-title-maqwi_details a').click();assert((await page.locator('#tab-maqwi_details').innerText()).includes('awaiting approval'),'Product details');
-  assert.equal(await page.locator('main [aria-label="Breadcrumb"]').count(),1,'One product breadcrumb');await check('product');await page.locator('.single_add_to_cart_button').click();await page.locator('.woocommerce-message').waitFor();
+  report.breadcrumbMarkup=await page.locator('main [class*="breadcrumb"], main [id*="breadcrumb"]').evaluateAll(nodes=>nodes.map(n=>n.outerHTML.slice(0,1400)));assert.equal(await page.locator('main [aria-label="Breadcrumb"]').count(),1,'One product breadcrumb');await check('product');await page.locator('.single_add_to_cart_button').click();await page.locator('.woocommerce-message').waitFor();
   await page.locator('.mq-cart').click();await page.locator('form.woocommerce-cart-form').waitFor();
   assert((await page.locator('.woocommerce-cart-form').innerText()).includes('Maqwi Honey'),'Cart product');
   await page.waitForLoadState('load');await page.locator('input.qty').fill('2');await page.locator('input.qty').press('Tab');await page.locator('button[name="update_cart"]').click();await page.waitForTimeout(1000);await page.locator('input.qty').waitFor();assert.equal(await page.locator('input.qty').inputValue(),'2','Quantity updated');
