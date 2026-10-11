@@ -20,6 +20,8 @@ jobs:
         run: find wp-content/themes/maqwi-organics wp-content/plugins/maqwi-store-core tests -name '*.php' -print0 | xargs -0 -n1 php -l
       - name: Checkout rule checks
         run: php tests/store-core.php
+      - name: Public script syntax
+        run: node --check wp-content/themes/maqwi-organics/assets/public.js
       - name: Theme metadata and asset budgets
         run: |
           python3 - <<'PY'

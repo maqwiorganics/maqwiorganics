@@ -1,4 +1,4 @@
-name: Refine reviewed commerce phase on temporary site
+name: Deploy reviewed public frontend on temporary site
 on:
   push:
     branches: [staging]
@@ -21,14 +21,16 @@ jobs:
         run: |
           find wp-content/themes/maqwi-organics wp-content/plugins/maqwi-store-core tests -name '*.php' -print0 | xargs -0 -n1 php -l
           php tests/store-core.php
-      - name: Apply guarded brand-launch source refinements
+          node --check wp-content/themes/maqwi-organics/assets/public.js
+      - name: Apply guarded public frontend release
         env:
           FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
         run: |
           python3 - <<'PY'
           import ftplib, ssl, os, io, hashlib, pathlib, subprocess, secrets
-          sources = ['wp-content/plugins/maqwi-store-core/maqwi-store-core.php', 'wp-content/themes/maqwi-organics/functions.php', 'wp-content/themes/maqwi-organics/header-maqwi.php', 'wp-content/themes/maqwi-organics/footer-maqwi.php', 'wp-content/themes/maqwi-organics/style.css']
-          old_commit = '1b3ac3a7c8fb90ba3b3dd3ef1ae8ff68f41ccc01'
+          sources = ['wp-content/themes/maqwi-organics/assets/public.js', 'wp-content/themes/maqwi-organics/404.php', 'wp-content/themes/maqwi-organics/functions.php', 'wp-content/plugins/maqwi-store-core/maqwi-store-core.php', 'wp-content/themes/maqwi-organics/header-maqwi.php', 'wp-content/themes/maqwi-organics/footer-maqwi.php', 'wp-content/themes/maqwi-organics/style.css']
+          new_sources = set(sources[:2])
+          old_commit = 'c3db2ba127fcafa7ca607d80faf32f1901fe7cdc'
           ftp = ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
           ftp.connect('ftpupload.net',21)
           ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
@@ -41,12 +43,17 @@ jobs:
               assert hashlib.sha256(expected).digest() == hashlib.sha256(actual).digest(), 'Unexpected source hash'
           originals = {}
           for source in sources:
+              if source in new_sources:
+                  parent = str(pathlib.PurePosixPath('/htdocs/'+source).parent)
+                  names = {x.rsplit('/',1)[-1] for x in ftp.nlst(parent)}
+                  assert pathlib.Path(source).name not in names, 'Unexpected pre-existing new source'
+                  continue
               expected = subprocess.check_output(['git','show',old_commit+':'+source])
               originals[source] = read('/htdocs/'+source)
               verify(expected,originals[source])
           history = '/htdocs/wp-content/themes/.maqwi-commerce-refine-'+os.environ['GITHUB_RUN_ID']
           ftp.mkd(history)
-          for source in sources:
+          for source in originals:
               target = history+'/'+pathlib.Path(source).name
               ftp.storbinary('STOR '+target,io.BytesIO(originals[source]))
               verify(originals[source],read(target))
@@ -55,7 +62,7 @@ jobs:
           try:
               for source in sources:
                   target = '/htdocs/'+source
-                  temporary = str(pathlib.PurePosixPath(target).parent)+'/.maqwi-refine-'+secrets.token_hex(8)+'.php'
+                  temporary = str(pathlib.PurePosixPath(target).parent)+'/.maqwi-refine-'+secrets.token_hex(8)+pathlib.Path(source).suffix
                   data = pathlib.Path(source).read_bytes()
                   ftp.storbinary('STOR '+temporary,io.BytesIO(data))
                   verify(data,read(temporary))
@@ -68,10 +75,13 @@ jobs:
                   try: ftp.delete(temporary)
                   except ftplib.error_perm: pass
               for source in reversed(changed):
+                  if source in new_sources:
+                      ftp.delete('/htdocs/'+source)
+                      continue
                   ftp.storbinary('STOR /htdocs/'+source,io.BytesIO(originals[source]))
                   verify(originals[source],read('/htdocs/'+source))
               raise
           finally:
               ftp.quit()
-          print('Brand launch guards deployed; prior source backed up; source hashes verified.')
+          print('Public frontend deployed; previous source backed up; exact source hashes verified.')
           PY

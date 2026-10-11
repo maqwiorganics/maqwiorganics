@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Maqwi Store Core
  * Description: Pakistan checkout rules and verified product details, independent of the theme.
- * Version: 0.1.4
+ * Version: 0.1.5
  * Requires Plugins: woocommerce
  * Requires PHP: 8.1
  * License: GPL-2.0-or-later
@@ -33,7 +33,12 @@ add_action( 'woocommerce_after_checkout_validation', function ( $data, $errors )
 add_action( 'template_redirect', function () {
     if ( ! maqwi_brand_launch_mode() || ! function_exists( 'is_woocommerce' ) ) { return; }
     if ( is_woocommerce() || is_cart() || is_checkout() || is_account_page() ) {
-        wp_safe_redirect( home_url( '/#the-collection' ), 302 );
+        $anchor = 'the-collection';
+        if ( is_product_category() ) {
+            $term = get_queried_object();
+            if ( $term && in_array( $term->slug, array( 'honey', 'desi-ghee', 'achaar', 'itar' ), true ) ) { $anchor = 'collection-' . $term->slug; }
+        }
+        wp_safe_redirect( home_url( '/#' . $anchor ), 302 );
         exit;
     }
 }, 5 );
@@ -207,7 +212,7 @@ function maqwi_store_setup_screen() {
         <input type="hidden" name="action" value="maqwi_setup_checkout">
         <?php wp_nonce_field( 'maqwi_setup_checkout' ); submit_button( 'Configure classic cart and checkout', 'secondary' ); ?>
     </form>
-    <p><strong>Installed:</strong> Maqwi Store Core 0.1.4; WooCommerce <?php echo esc_html( defined( 'WC_VERSION' ) ? WC_VERSION : 'not available' ); ?>; database <?php echo esc_html( get_option( 'woocommerce_db_version', 'not available' ) ); ?>; theme <?php echo esc_html( wp_get_theme()->get( 'Name' ) . ' ' . wp_get_theme()->get( 'Version' ) ); ?>.</p>
+    <p><strong>Installed:</strong> Maqwi Store Core 0.1.5; WooCommerce <?php echo esc_html( defined( 'WC_VERSION' ) ? WC_VERSION : 'not available' ); ?>; database <?php echo esc_html( get_option( 'woocommerce_db_version', 'not available' ) ); ?>; theme <?php echo esc_html( wp_get_theme()->get( 'Name' ) . ' ' . wp_get_theme()->get( 'Version' ) ); ?>.</p>
     </div>
     <?php
 }
