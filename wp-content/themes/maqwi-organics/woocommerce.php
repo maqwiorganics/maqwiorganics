@@ -4,7 +4,21 @@ defined( 'ABSPATH' ) || exit;
 get_header( 'maqwi' );
 ?>
 <main id="main" class="mq-commerce">
-    <?php woocommerce_breadcrumb( array( 'delimiter' => '<span aria-hidden="true"> / </span>' ) ); ?>
+    <?php
+    // Generate native Woo crumbs once without invoking parent-theme breadcrumb output hooks.
+    $breadcrumb = new WC_Breadcrumb();
+    $breadcrumb->add_crumb( 'Home', home_url( '/' ) );
+    $crumbs = $breadcrumb->generate();
+    if ( $crumbs ) {
+        echo '<nav class="woocommerce-breadcrumb" aria-label="Breadcrumb">';
+        foreach ( $crumbs as $index => $crumb ) {
+            if ( $index ) { echo '<span aria-hidden="true"> / </span>'; }
+            if ( ! empty( $crumb[1] ) && $index < count( $crumbs ) - 1 ) { echo '<a href="' . esc_url( $crumb[1] ) . '">' . esc_html( $crumb[0] ) . '</a>'; }
+            else { echo '<span' . ( $index === count( $crumbs ) - 1 ? ' aria-current="page"' : '' ) . '>' . esc_html( $crumb[0] ) . '</span>'; }
+        }
+        echo '</nav>';
+    }
+    ?>
     <?php if ( ! is_product() ) : ?>
         <div class="mq-shop-intro"><div class="mq-shop-heading"><p class="mq-eyebrow">The Maqwi collection</p><h1><?php woocommerce_page_title(); ?></h1></div>
         <p>Desi favourites for your kitchen, table and everyday rituals.</p></div>

@@ -126,11 +126,12 @@ add_filter( 'woocommerce_get_privacy_policy_text', function ( $text, $type ) {
 }, 10, 2 );
 /** Purge native page cache once when this approved storefront code release is first executed. */
 add_action( 'init', function () {
-    if ( maqwi_storefront_preview() && '0.2.4' !== get_option( 'maqwi_preview_cache_release', '' ) && function_exists( 'w3tc_flush_all' ) ) {
+    $release = '0.2.5/' . wp_get_theme()->get( 'Version' );
+    if ( maqwi_storefront_preview() && $release !== get_option( 'maqwi_preview_cache_release', '' ) && function_exists( 'w3tc_flush_all' ) ) {
         delete_transient( 'wc_shipping_method_count' );
         if ( class_exists( 'WC_Cache_Helper' ) ) { WC_Cache_Helper::get_transient_version( 'shipping', true ); }
         w3tc_flush_all();
-        update_option( 'maqwi_preview_cache_release', '0.2.4', false );
+        update_option( 'maqwi_preview_cache_release', $release, false );
     }
 }, 99 );
 
