@@ -1,4 +1,4 @@
-name: Deploy reviewed public frontend on temporary site
+name: Deploy complete storefront preview on temporary site
 on:
   push:
     branches: [staging]
@@ -28,9 +28,9 @@ jobs:
         run: |
           python3 - <<'PY'
           import ftplib, ssl, os, io, hashlib, pathlib, subprocess, secrets
-          sources = ['wp-content/themes/maqwi-organics/assets/public.js', 'wp-content/themes/maqwi-organics/header-maqwi.php', 'wp-content/themes/maqwi-organics/style.css']
-          new_sources = set()
-          old_commit = '026092489f64dacc94659424eee14209057db445'
+          sources = ['wp-content/plugins/maqwi-store-core/storefront-preview.php', 'wp-content/plugins/maqwi-store-core/maqwi-store-core.php', 'wp-content/themes/maqwi-organics/functions.php', 'wp-content/themes/maqwi-organics/header-maqwi.php', 'wp-content/themes/maqwi-organics/footer-maqwi.php', 'wp-content/themes/maqwi-organics/style.css']
+          new_sources = {'wp-content/plugins/maqwi-store-core/storefront-preview.php'}
+          old_commit = '18350e9aec77076090d53c4be52c966677c183e9'
           ftp = ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
           ftp.connect('ftpupload.net',21)
           ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
@@ -94,3 +94,4 @@ jobs:
               ftp.quit()
           print('Public frontend deployed; previous source backed up; exact source hashes verified.')
           PY
+
