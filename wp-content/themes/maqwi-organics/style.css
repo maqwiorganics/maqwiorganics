@@ -3,7 +3,7 @@ Theme Name: Maqwi Organics
 Description: Lightweight Kadence child theme with an editable Maqwi homepage pattern.
 Author: Maqwi Organics
 Template: kadence
-Version: 0.3.1
+Version: 0.3.2
 Requires at least: 6.6
 Requires PHP: 8.1
 Text Domain: maqwi-organics
@@ -47,3 +47,6 @@ License: GPL-2.0-or-later
 @media(max-width:782px){.admin-bar .mq-header{top:46px}.mq-header{gap:16px}.mq-menu{gap:20px}.mq-principles{gap:24px}}
 @media(max-width:639px){.mq-header{min-height:72px;padding:10px 20px}.mq-collection-details{padding-top:12px}.mq-detail-title{font-size:28px}.mq-collection-detail>summary{grid-template-columns:28px 1fr 28px;gap:12px;padding:22px 0}.mq-detail-line{font-size:12px;line-height:1.5}.mq-detail-body{grid-template-columns:1fr;gap:28px;padding-bottom:32px}.mq-detail-body figure{max-width:320px;margin-inline:auto}.mq-detail-body h3{font-size:28px}.mq-detail-body p{font-size:14px}.mq-detail-body .mq-eyebrow{font-size:10px}.mq-section-aside{margin-top:20px!important}.mq-footer-bottom{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap}.mq-footer-bottom>span{margin:0}.mq-404{padding-block:56px}.mq-home [id],.mq-page [id]{scroll-margin-top:90px}.mq-hero h1{font-size:clamp(38px,10.5vw,50px)}.mq-hero{padding-bottom:40px}}
 @media(max-width:359px){.mq-header{padding-inline:16px}.mq-brand img{width:34px;height:36px}.mq-brand span{font-size:17px}.mq-section,.mq-hero,.mq-story{padding-inline:16px}.mq-category h3{font-size:20px}.mq-categories{gap:24px 12px}.mq-category p{font-size:12px}.mq-detail-line{max-width:190px}}
+
+.mq-collection-detail{scroll-margin-top:110px}
+@media(max-width:639px){.mq-collection-detail{scroll-margin-top:90px}}

@@ -22,7 +22,7 @@
   const openCollection = () => {
     const id = window.location.hash.slice(1);
     if (!/^collection-(honey|desi-ghee|achaar|itar)$/.test(id)) return;
-    const panel = document.getElementById(id);
+    const panel = document.getElementById(id)?.closest('details');
     if (panel instanceof HTMLDetailsElement) {
       panel.open = true;
       panel.scrollIntoView({ block: 'start', behavior: 'instant' });
