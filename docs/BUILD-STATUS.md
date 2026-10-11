@@ -1,6 +1,8 @@
 # Maqwi build status
 
-## Storefront v0.2.2 — commerce phase
+Current release: **theme 0.3.5 / Store Core 0.1.5**, public brand introduction on the temporary hostname, ordering closed. Read the final frontend release section for current QA evidence; older sections below retain installation history.
+
+## Earlier storefront foundation and commerce phase
 
 Source: latest supplied master PRD v3.1 and technical requirements v2.0. Visual brief informs styling; its older Shopify references are superseded by WordPress/WooCommerce.
 
@@ -9,13 +11,13 @@ Source: latest supplied master PRD v3.1 and technical requirements v2.0. Visual 
 - Homepage fallback renders that pattern if the site uses latest posts or an empty front page. A populated static front page retains its own content until intentionally replaced.
 - Homepage-specific header/footer avoid overriding unverified parent commerce markup.
 - Native keyboard-operable menu/FAQs, visible focus and skip link; responsive category grid.
-- Supplied original logo retained, locally optimized to WebP. It has an opaque white background; transparent master selection remains to be verified against the supplied PDF assets.
-- Four supplied packaging concepts optimized to 42–56 KB each. They are visibly labelled concepts and must be replaced by verified product photography before launch. Claims printed within these images are unverified and must not become launch claims.
+- Supplied original logo retained, locally optimized to WebP. The initial version had an opaque white background; the current frontend uses original transparent colour/white variants extracted from the supplied logo PDF, as recorded below.
+- Four supplied packaging concepts optimized to 42–56 KB each. They are visibly labelled concepts and must be replaced by verified product photography before ordering opens. Claims printed within these images are unverified and must not become launch claims.
 - Featured section queries WooCommerce public featured products and excludes hidden, unavailable and non-purchasable items. Prices come from WooCommerce. No invented catalogue, prices, reviews or support details.
 - No page builder, externally requested font, tracking script or newsletter form dependency. A 32 KB self-hosted, licensed EB Garamond Latin font supplies the heading style; the UI uses system sans.
 - Approved developer-guide colours: Forest #2F5D3A, Cream #F7F2E7, Gold #D9A441, Charcoal #2D2924 and Sage #A8B59A. Gold is decorative; small story text uses cream for 6.85:1 contrast on green.
 
-## Current installation status
+## Initial installation history
 
 2026-10-11: The initial browser attempt received 502; a later attempt succeeded. UpdraftPlus full backup completed and an independent encrypted copy was downloaded, decrypted and hash-verified. Official Kadence parent installed. Maqwi Organics child theme activated after Live Preview; homepage content and collection scroll verified without fatal errors. Subsequent refinements link the four category names and improve small-text contrast.
 
@@ -23,21 +25,21 @@ Store title Maqwi Organics retained; timezone Asia/Karachi and d/m/Y saved; inde
 
 FTP image readback differed in bytes but decoded with identical dimensions and maximum per-channel RMS differences of 2.2–4.1/255; image checks accepted the small recompression differences. PHP/CSS/JSON source files passed exact hashes. No corrupted code was activated.
 
-## Next development and validation sequence
+## Earlier development and validation sequence
 
 Desktop runtime checks passed for collection scrolling, Story/Questions anchors, FAQ expansion and collapse, all four category archives, Shop and the empty cart. The initial Image block validation issue was fixed by moving sizing/loading attributes into the native render filter; the replacement Home page was validated and published.
 
 1. Complete approved catalogue content, real photography, delivery rates/policies and transactional-email integration.
-2. QA 320/390/768/1440px, keyboard navigation, focus and layout. Browser viewport controls were not exposed, so mobile runtime testing remains unverified.
+2. QA 320/390/768/1440px, keyboard navigation, focus and layout. At that earlier stage browser viewport controls were not exposed. The later public frontend acceptance results below cover these widths.
 3. Load only approved catalogue data; then test checkout, notifications, delivery/payment handling and recovery before launch.
 
-## Unresolved launch data
+## Unresolved open-order store data
 
 Final SKU variants, prices, real stock, ingredients, source, batch/storage information and photography; business address/support contact; delivery rates/courier; approved policies; bank details; authenticated transactional email and analytics IDs. These do not block theme development but block accepting customer orders.
 
 ## Hosting findings
 
-Prior audit: REST/loopback 403 in Site Health; external REST request returned a browser-challenge HTML document. A new database-only backup completed 11 October at admin-displayed 12:49:07. Native Run was attempted for action_scheduler/migration_hook ID12; completion was not verified. Six pending/past-due actions and zero failed actions remained, with the migration warning still present. No WooCommerce update callback, telemetry or order-related action was manually executed. At that stage the WooCommerce database schema version was unverified. normal admin access and successful backups do not prove background reliability. Coming soon remains required while checkout, notifications and recovery are unproven.
+Prior audit: REST/loopback 403 in Site Health; external REST request returned a browser-challenge HTML document. A new database-only backup completed 11 October at admin-displayed 12:49:07. Native Run was attempted for action_scheduler/migration_hook ID12; completion was not verified. Six pending/past-due actions and zero failed actions remained, with the migration warning still present. No WooCommerce update callback, telemetry or order-related action was manually executed. At that stage the WooCommerce database schema version was unverified. normal admin access and successful backups do not prove background reliability. At that stage Coming soon was retained. The later approved public brand launch uses explicit ordering guards while checkout, notifications and recovery remain unproven for sales.
 
 Native visitor cron test: guarded configuration workflow run 38124486010 succeeded. A normal browser GET showed no fatal error or redirect loop. The six original blocked actions, including migration and WooCommerce update callback, were then Complete; migration-in-progress warning cleared. Counts at first check: 21 total, 6 complete, 15 pending, 2 past-due, no failed tab. A second read-only browser run returned no usable counts, so the two remaining overdue actions are not claimed resolved. Native visitor mode is retained based on measured progress; it is traffic-triggered and does not resolve host REST/loopback restrictions. The browser reported WooCommerce database version 11.2.0-1; the later native setup screen confirmed WooCommerce11.2.0/database11.2.0-1. Earlier version summaries confused an available update with the installed version.
 
@@ -78,3 +80,30 @@ User screenshot showed InfinityFree’s default page at the temporary hostname. 
 Guarded workflow run 38134487284 succeeded: verified exact hashes of index.php and the provider placeholder, backed up index2.html under wp-content/themes/.maqwi-default-page-38134487284, verified the backup, removed only the obsolete root placeholder and verified WordPress index.php unchanged. It does not modify .htaccess, wp-config.php, DNS or content. Recovery: restore the retained index2.html only if the provider placeholder is intentionally needed; it is not the Maqwi homepage.
 
 Post-change fresh HTTP, HTTPS and ?view=brand-20261011 requests all showed the Maqwi hero and no provider placeholder. TinyFish native-admin run 60411697-5f5b-4f7c-a655-35ce2eb62b07 purged W3 Total Cache and rechecked the correct homepage. This cannot clear a previously stored copy in the user’s browser; a fresh query link was provided. Ordering remains closed.
+
+## Public frontend release — theme 0.3.5 / core 0.1.5
+
+Public brand scope: polished homepage, sticky branded navigation, collection overview and four working expandable collection panels, story, principles, FAQ, footer/back-to-top, browser-sharing metadata and a branded missing-page screen that returns true HTTP 404. Ordering remains closed. Native block content stays editable; brand detail panels are rendered by the existing featured shortcode in brand mode. Store mode retains native WooCommerce featured-product data. No invented prices, catalogue, contact links, forms, reviews or policies were published. Header and footer use the original colour/white transparent logo variants from the supplied PDF, including its existing alpha masks; the brand mark was not redrawn.
+
+Mobile menu supports Escape with focus returned to the trigger, outside clicks and closing on link selection. Collection links stay in the current document. Browser tracing showed the working hash handler was not invoked by existing smooth-anchor handling during the real click; capture-phase click handling now reveals the requested panel before the parent anchor handling calculates its scroll position. Legacy category URLs redirect to the matching collection, while cart/checkout/account/shop return to the brand overview. Original concept imagery is labelled throughout; current copy states that verified details and prices follow before orders open.
+
+Guarded deployment 38135550000 succeeded on attempt 2 after an initial FTP-connect timeout made no writes. Subsequent guarded deployments and native cache purges installed source refinements and original logo assets. Initial acceptance checks found the collection event issue; a diagnostic run used synthetic events and is not accepted as interaction proof. The clean final pre-contrast-fix run 38137215215 passed real clicks at 320/390/768/1440px, no horizontal overflow, loaded images/font, one main H1, metadata, all anchor targets, menu Escape/focus/link close, FAQ, collection routes, skip link, closed ordering routes and real 404 navigation, with zero runtime or console errors. Visual inspection of retained phone/desktop/404 screenshots found the 404 button had inherited dark text. Theme 0.3.4 corrects that CSS specificity and is rechecked below.
+
+The public frontend is a brand introduction. Approved contact details, real product photos/label information, stock/prices, policies, delivery rates, authenticated order email, completed-order QA and recovery tests remain requirements for the open-order store. Real domain and DNS remain unchanged, and the temporary site remains discouraged from indexing.
+
+### Final deployed acceptance — 11 October 2026
+
+Theme 0.3.4 acceptance run 38137571656 passed the real visitor interactions and verified the corrected 404 button contrast at 6.85:1. An additional footer test then found that the sticky header's top anchor did not return to the document start. Theme 0.3.5 moves the target to the body and handles the owned footer action explicitly. Source commit `7b7cbb43035e6d256eec4c6855d601c22a16a7d1` passed validation 38138196653 and guarded deployment 38138196681. Previous source snapshots are retained at `wp-content/themes/.maqwi-commerce-refine-38138196681`. Native W3 Total Cache purge completed after deployment.
+
+Final public acceptance run [38138420029](https://github.com/maqwiorganics/maqwiorganics/actions/runs/38138420029) succeeded against deployed theme 0.3.5 with normal Chrome and Playwright, without admin credentials, synthetic events, orders or messages. Test commit: `55d381e88588461ac56aba5f24ed256a82a22a77`.
+
+| Chrome viewport width | Horizontal overflow | Broken visible images | Collection panel | Navigation / FAQ |
+| --- | --- | --- | --- | --- |
+| 320px | None | 0 | Fits | Mobile menu Escape, focus and selection; FAQ passed |
+| 390px | None | 0 | Fits | Mobile menu Escape, focus and selection; FAQ passed |
+| 768px | None | 0 | Fits | Desktop navigation; FAQ passed |
+| 1440px | None | 0 | Fits | Desktop navigation; FAQ passed |
+
+All four widths loaded the brand font and exact deployed public script. The suite also passed one main H1, sharing metadata, every local anchor target, collection deep links, keyboard skip link, closed commerce routes, branded true HTTP 404 and its home button, and the footer return to the document start. Runtime and console errors: zero. Computed 404 button contrast: 6.8456:1. Retained phone, desktop and 404 screenshots were visually inspected during refinement. These are Chrome viewport checks, not a claim of testing physical devices or every browser.
+
+Public brand frontend acceptance is complete. Orders stay closed and packaging images remain explicitly labelled concepts. This does not complete the separate open-order store requirements recorded above.

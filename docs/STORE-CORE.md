@@ -31,3 +31,9 @@ Deactivate Maqwi Store Core through Plugins to remove its checkout/product displ
 The commerce installer snapshots the four modified theme files before replacement. Its source and target allowlists exclude WordPress root/config, other themes/plugins and customer data. On upload failure it restores modified source and removes only newly created files. Runtime failure requires a reviewed FTPS rollback to that source snapshot and removal of the two new commerce templates; deactivating the core separately does not roll back the theme.
 
 The WooCommerce > Maqwi store setup screen shows product counts, visibility, classic-page/COD setup and installed code/schema versions. Its setup action preserves native page revisions and requires capabilities and nonce verification. Its delivery/email guidance is a checklist, not an automatic integration health test. Native on-hold email wording must be checked for COD confirmation and delivery authenticated before launch.
+
+## Public brand mode — core 0.1.5
+
+The owner approved a public brand introduction with ordering closed. `maqwi_brand_launch` defaults to `yes` when absent. The core disables simple/variation purchasability, removes available gateways and rejects classic checkout validation while brand mode is enabled. Public shop/cart/checkout/account/product routes return to the collection; known category routes return to the corresponding expandable brand section. Native admin remains available.
+
+The nonce/capability protected owner action enables the ordering guard before removing WooCommerce Coming soon. It makes no DNS changes and does not enable sales. There is no one-click sales toggle in this release. Opening orders requires a separate reviewed release, real approved catalogue/shipping/support/policy data, revised public content, authenticated email, completed-order tests and recovery checks.

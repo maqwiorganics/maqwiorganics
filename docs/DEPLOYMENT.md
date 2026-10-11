@@ -18,9 +18,9 @@ To roll back this exact flag, change enable = True to enable = False in the revi
 
 ## Installation baseline
 
-The full UpdraftPlus baseline and independent encrypted copy were created and integrity-verified before installation. Official Kadence and the custom child theme are installed; theme validation and upload verification passed. Full application restore on a separate environment is still required before launch. User has authorized development on the temporary site; real domain, DNS and public launch require separate authorization.
+The full UpdraftPlus baseline and independent encrypted copy were created and integrity-verified before installation. Official Kadence and the custom child theme are installed; theme validation and upload verification passed. Full application restore on a separate environment is still required before launch. User authorized development and the public brand launch on the temporary site. Real domain/DNS remain untouched; accepting orders is a separate release.
 
-Keep store Coming soon and indexing disabled. No production orders while email, checkout, background tasks and restore tests remain unverified.
+The approved public brand launch has Coming soon off, brand mode on and indexing disabled for the temporary hostname. Keep ordering closed while catalogue, delivery, authenticated email, completed-order QA and restore tests remain unverified.
 
 ## Rollback
 
@@ -29,3 +29,9 @@ Re-activate Twenty Twenty-Five through Appearance > Themes. This child theme per
 ## Validation
 
 Automated workflow validates PHP syntax, JSON and asset budgets. Runtime/editor validation still required on the temporary WordPress site. Host REST and loopback restrictions are known; do not attempt to bypass them or rely on inbound webhook integrations.
+
+## Public frontend release
+
+The reviewed refine-commerce-phase workflow can include explicitly listed new owned theme files. It first verifies all existing source hashes against the reviewed prior staging commit and verifies the absence of each new file. Originals are saved in a hidden source snapshot. New assets upload before their referencing templates. All text source must match exact bytes. Native PNG logo masters must retain dimensions and alpha exactly; any host colour recompression is bounded by maximum channel RMS 12/255. Exceptions restore modified originals and remove only newly created files. It never mirrors the root.
+
+Current workflow is a one-release guard: after successful deployment, rerunning it against the prior baseline will intentionally fail. For the next reviewed release update the expected commit and explicit source list; do not disable guards. Browser QA is a separate public-only workflow using normal installed Chrome, four viewport widths and retained screenshots. It has no FTP secret or admin authentication and creates no products, orders, messages or accounts.

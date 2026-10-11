@@ -1,4 +1,4 @@
-> **11 October 2026: public brand launch live** at https://maqwiorganics.gt.tc/. Theme 0.2.3 / Store Core 0.1.4. Ordering is deliberately closed; public cart/checkout/catalogue/account routes return to the collection. Desktop signed-out smoke test passed; mobile runtime and paid-order launch remain pending. See `docs/BUILD-STATUS.md` for evidence and remaining gates.
+> **Public brand frontend — 11 October 2026**: https://maqwiorganics.gt.tc/. Theme 0.3.5 / Store Core 0.1.5. Homepage, collection details, native mobile menu/FAQ, original transparent logo variants, sharing metadata and a branded true-404 page are implemented. Ordering stays closed. See `docs/BUILD-STATUS.md` for verified checks and store-launch requirements.
 
 # Maqwi Organics
 
@@ -12,6 +12,6 @@ WordPress + WooCommerce storefront for Pakistan, developed on InfinityFree at ht
 - `docs/DEPLOYMENT.md`: guarded installation and rollback.
 - `docs/STORE-CORE.md`: checkout/catalogue behaviour and owner instructions.
 
-The storefront theme and site-owned commerce core are installed and activated on the temporary site after backup and Live Preview. The editable Home page is published as the static homepage. Pakistan store settings and four product categories are configured; desktop category, FAQ, shop and cart navigation passed. Source and validation live in staging. Shop, product, cart, checkout and account presentation share the brand shell. Classic cart/checkout and COD confirmation setup are implemented, with a WooCommerce > Maqwi store setup screen for the owner. Store remains Coming soon; real catalogue data, shipping/email integrations and launch QA are still in development. The real domain and DNS remain untouched.
+The storefront theme and site-owned commerce core are installed and activated on the temporary site after backup and Live Preview. The editable Home page is published as the static homepage. Pakistan store settings and four product categories are configured; desktop category, FAQ, shop and cart navigation passed. Source and validation live in staging. Shop, product, cart, checkout and account presentation share the brand shell. Classic cart/checkout and COD confirmation setup are implemented, with a WooCommerce > Maqwi store setup screen for the owner. The approved brand introduction is public with fail-closed ordering guards. Real catalogue data, shipping/email integrations and completed-order QA are still in development. The real domain and DNS remain untouched.
 
 Only custom source and selected brand assets belong here. Never commit credentials, config, customer/order data, database exports, 2FA codes, source archives or purchased theme packages.
