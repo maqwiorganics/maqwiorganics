@@ -6,6 +6,8 @@ An independent encrypted copy also includes the original wp-config.php and .htac
 
 Persistent files are **Maqwi-Encrypted-Recovery.zip** and **Maqwi-Recovery-Key.pem**, owned by the site owner. The key never enters GitHub. The checked-in recipient certificate contains only a public key. GitHub's encrypted transport artifact expires after seven days; the downloaded persistent copy is the retained recovery baseline.
 
+A separate database-only backup completed at admin-displayed 12:49:07 before the scheduled-action investigation. It remains on the host and is not part of the independent encrypted full baseline.
+
 ## Recover the components privately
 
 1. Download both persistent files into a private local directory. Extract `maqwi-prebuild.cms` from the ZIP.
