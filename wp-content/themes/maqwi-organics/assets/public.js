@@ -32,6 +32,13 @@
     if (!anchor) return;
     const url = new URL(anchor.href, window.location.href);
     if (url.origin !== location.origin || url.pathname !== location.pathname) return;
+    if (anchor.classList.contains('mq-back-top') && url.hash === '#top') {
+      event.preventDefault();
+      event.stopPropagation();
+      if (location.hash !== '#top') location.hash = 'top';
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      return;
+    }
     const panel = collectionPanel(url.hash);
     if (panel) panel.open = true;
   }, true);
