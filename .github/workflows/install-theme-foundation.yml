@@ -20,54 +20,6 @@ jobs:
           persist-credentials: false
       - name: Validate PHP syntax
         run: find wp-content/themes/maqwi-organics -name '*.php' -print0 | xargs -0 -n1 php -l
-      - name: Create encrypted independent recovery copy
-        env:
-          FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
-        run: |
-          python3 - <<'PY'
-          import ftplib, ssl, os, pathlib, re, tempfile, tarfile, subprocess, shutil, hashlib, json, gzip, zipfile
-          ftp = ftplib.FTP_TLS(context=ssl.create_default_context(), timeout=25)
-          ftp.connect('ftpupload.net',21)
-          ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
-          ftp.prot_p()
-          ftp.cwd('/htdocs/wp-content/updraft')
-          groups = {}
-          for entry in ftp.nlst():
-              name = pathlib.PurePosixPath(entry).name
-              match = re.match(r'(backup_.*)-(?P<component>db|plugins|themes|uploads|others)(?:\d+)?\.(?:gz|zip)$',name)
-              if match: groups.setdefault(match.group(1),[]).append((name,match.group('component')))
-          complete = [prefix for prefix, entries in groups.items() if {'db','plugins','themes','uploads','others'} <= {entry[1] for entry in entries}]
-          assert complete, 'No complete backup components found'
-          selected = sorted(complete)[-1]
-          private = pathlib.Path(tempfile.mkdtemp(prefix='maqwi-recovery-'))
-          try:
-              for name, component in groups[selected]:
-                  with (private/name).open('wb') as output: ftp.retrbinary('RETR '+name,output.write)
-                  if component == 'db':
-                      with gzip.open(private/name,'rb') as database: assert database.read(1), 'Empty database backup'
-                  else:
-                      with zipfile.ZipFile(private/name) as archive: assert archive.testzip() is None, 'Damaged backup archive'
-              for name in ['wp-config.php','.htaccess']:
-                  with (private/name).open('wb') as output: ftp.retrbinary('RETR /htdocs/'+name,output.write)
-              ftp.quit()
-              hashes = {p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in private.iterdir()}
-              (private/'manifest.json').write_text(json.dumps(hashes,indent=2))
-              archive = private/'recovery.tar'
-              with tarfile.open(archive,'w') as tar:
-                  for p in list(private.iterdir()):
-                      if p != archive: tar.add(p,arcname=p.name)
-              pathlib.Path('encrypted-recovery').mkdir()
-              subprocess.run(['openssl','cms','-encrypt','-binary','-aes256','-in',str(archive),'-out','encrypted-recovery/maqwi-prebuild.cms','-outform','DER','docs/maqwi-backup-recipient.crt'],check=True)
-              print('Recovery components and configuration encrypted; plaintext is excluded from artifacts.')
-          finally: shutil.rmtree(private)
-          PY
-      - name: Retain encrypted recovery copy
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: maqwi-encrypted-prebuild-recovery
-          path: encrypted-recovery/maqwi-prebuild.cms
-          retention-days: 7
-          if-no-files-found: error
       - name: Install new inactive child theme through FTPS
         env:
           FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
@@ -103,7 +55,9 @@ jobs:
               ftp.storbinary('STOR '+remote,io.BytesIO(data))
               received = io.BytesIO()
               ftp.retrbinary('RETR '+remote,received.write)
-              assert hashlib.sha256(data).digest() == hashlib.sha256(received.getvalue()).digest(), relative
+              if hashlib.sha256(data).digest() != hashlib.sha256(received.getvalue()).digest():
+                  print({"file":relative,"sent_bytes":len(data),"received_bytes":len(received.getvalue()),"sent_signature":data[:16].hex(),"received_signature":received.getvalue()[:16].hex()})
+                  raise RuntimeError("Transferred file mismatch; refusing to publish theme directory")
           ftp.rename(temporary,target)
           ftp.quit()
           print('Installed inactive maqwi-organics theme; every file verified; no existing files overwritten.')
