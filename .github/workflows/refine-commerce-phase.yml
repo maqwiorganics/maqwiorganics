@@ -82,7 +82,15 @@ jobs:
                   temporary = str(pathlib.PurePosixPath(target).parent)+'/.maqwi-refine-'+secrets.token_hex(8)+pathlib.Path(source).suffix
                   data = pathlib.Path(source).read_bytes()
                   ftp.storbinary('STOR '+temporary,io.BytesIO(data))
-                  verify(data,read(temporary))
+                  actual = read(temporary)
+                  if data != actual:
+                      print('Readback differs for', source, 'expected bytes', len(data), 'actual bytes', len(actual), flush=True)
+                      if source.endswith('.webp'):
+                          from PIL import Image, ImageChops, ImageStat
+                          a=Image.open(io.BytesIO(data)).convert('RGB')
+                          b=Image.open(io.BytesIO(actual)).convert('RGB')
+                          print('Image dimensions', a.size, b.size, 'channel RMS', ImageStat.Stat(ImageChops.difference(a,b)).rms if a.size == b.size else 'different', flush=True)
+                  verify(data,actual)
                   ftp.rename(temporary,target)
                   temporary = None
                   changed.append(source)
