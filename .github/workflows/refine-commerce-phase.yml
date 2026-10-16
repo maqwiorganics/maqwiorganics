@@ -23,13 +23,17 @@ jobs:
           php tests/store-core.php
           php tests/catalogue.php
           node --check wp-content/themes/maqwi-organics/assets/public.js
+      - name: Install pinned image verifier
+        run: python3 -m pip install --disable-pip-version-check Pillow==12.0.0
       - name: Apply guarded public frontend release
         env:
           FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
         run: |
           python3 - <<'PY'
-          import ftplib, ssl, os, io, hashlib, pathlib, subprocess, secrets
+          import ftplib, ssl, os, io, hashlib, pathlib, subprocess, secrets, json
           sources = ['wp-content/plugins/maqwi-store-core/photography/01-achaar-catalogue.webp', 'wp-content/plugins/maqwi-store-core/photography/01-desi-ghee-catalogue.webp', 'wp-content/plugins/maqwi-store-core/photography/01-honey-catalogue.webp', 'wp-content/plugins/maqwi-store-core/photography/01-itar-catalogue.webp', 'wp-content/plugins/maqwi-store-core/photography/02-achaar-lifestyle.webp', 'wp-content/plugins/maqwi-store-core/photography/02-desi-ghee-lifestyle.webp', 'wp-content/plugins/maqwi-store-core/photography/02-honey-lifestyle.webp', 'wp-content/plugins/maqwi-store-core/photography/02-itar-lifestyle.webp', 'wp-content/plugins/maqwi-store-core/photography/03-achaar-detail.webp', 'wp-content/plugins/maqwi-store-core/photography/03-desi-ghee-detail.webp', 'wp-content/plugins/maqwi-store-core/photography/03-honey-detail.webp', 'wp-content/plugins/maqwi-store-core/photography/03-itar-detail.webp', 'wp-content/plugins/maqwi-store-core/photography/04-achaar-alternate-angle.webp', 'wp-content/plugins/maqwi-store-core/photography/04-desi-ghee-alternate-angle.webp', 'wp-content/plugins/maqwi-store-core/photography/04-honey-alternate-angle.webp', 'wp-content/plugins/maqwi-store-core/photography/04-itar-alternate-angle.webp', 'wp-content/plugins/maqwi-store-core/photography/manifest.json', 'wp-content/plugins/maqwi-store-core/photography/maqwi-collection-banner.webp', 'wp-content/plugins/maqwi-store-core/catalogue-release.php', 'wp-content/plugins/maqwi-store-core/storefront-preview.php', 'wp-content/themes/maqwi-organics/functions.php', 'wp-content/themes/maqwi-organics/header-maqwi.php', 'wp-content/themes/maqwi-organics/style.css', 'wp-content/plugins/maqwi-store-core/maqwi-store-core.php']
+          sources.sort(key=lambda source: (2 if source.endswith('maqwi-store-core.php') else 1 if not source.endswith(('.webp', 'manifest.json', 'catalogue-release.php')) else 0, source.endswith('manifest.json')))
+          server_assets = {}
           new_sources = set(['wp-content/plugins/maqwi-store-core/photography/01-achaar-catalogue.webp', 'wp-content/plugins/maqwi-store-core/photography/01-desi-ghee-catalogue.webp', 'wp-content/plugins/maqwi-store-core/photography/01-honey-catalogue.webp', 'wp-content/plugins/maqwi-store-core/photography/01-itar-catalogue.webp', 'wp-content/plugins/maqwi-store-core/photography/02-achaar-lifestyle.webp', 'wp-content/plugins/maqwi-store-core/photography/02-desi-ghee-lifestyle.webp', 'wp-content/plugins/maqwi-store-core/photography/02-honey-lifestyle.webp', 'wp-content/plugins/maqwi-store-core/photography/02-itar-lifestyle.webp', 'wp-content/plugins/maqwi-store-core/photography/03-achaar-detail.webp', 'wp-content/plugins/maqwi-store-core/photography/03-desi-ghee-detail.webp', 'wp-content/plugins/maqwi-store-core/photography/03-honey-detail.webp', 'wp-content/plugins/maqwi-store-core/photography/03-itar-detail.webp', 'wp-content/plugins/maqwi-store-core/photography/04-achaar-alternate-angle.webp', 'wp-content/plugins/maqwi-store-core/photography/04-desi-ghee-alternate-angle.webp', 'wp-content/plugins/maqwi-store-core/photography/04-honey-alternate-angle.webp', 'wp-content/plugins/maqwi-store-core/photography/04-itar-alternate-angle.webp', 'wp-content/plugins/maqwi-store-core/photography/manifest.json', 'wp-content/plugins/maqwi-store-core/photography/maqwi-collection-banner.webp', 'wp-content/plugins/maqwi-store-core/catalogue-release.php'])
           old_commit = '5b0b69d7287ce537bb1b2897c805f53f0843e356'
           ftp = ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
@@ -42,6 +46,15 @@ jobs:
               return output.getvalue()
           def verify(expected,actual):
               if expected == actual: return
+              if expected.startswith(b'RIFF') and expected[8:12] == b'WEBP':
+                  from PIL import Image, ImageChops, ImageStat
+                  a=Image.open(io.BytesIO(expected)).convert('RGB')
+                  b=Image.open(io.BytesIO(actual)).convert('RGB')
+                  assert a.size == b.size, 'Unexpected product image dimensions'
+                  rms = ImageStat.Stat(ImageChops.difference(a,b)).rms
+                  print('Verified product image channel RMS:', rms, flush=True)
+                  assert max(rms) <= 8, 'Product image changed beyond recompression tolerance'
+                  return
               if expected.startswith(b'\x89PNG\r\n\x1a\n'):
                   from PIL import Image, ImageChops, ImageStat
                   a=Image.open(io.BytesIO(expected)).convert('RGBA')
@@ -81,6 +94,12 @@ jobs:
                   target = '/htdocs/'+source
                   temporary = str(pathlib.PurePosixPath(target).parent)+'/.maqwi-refine-'+secrets.token_hex(8)+pathlib.Path(source).suffix
                   data = pathlib.Path(source).read_bytes()
+                  if source.endswith('photography/manifest.json'):
+                      manifest = json.loads(data)
+                      for asset in manifest:
+                          asset['source_sha256'] = asset['sha256']
+                          asset['sha256'], asset['bytes'] = server_assets[asset['filename']]
+                      data = (json.dumps(manifest, indent=2)+'\n').encode()
                   ftp.storbinary('STOR '+temporary,io.BytesIO(data))
                   actual = read(temporary)
                   if data != actual:
@@ -91,6 +110,8 @@ jobs:
                           b=Image.open(io.BytesIO(actual)).convert('RGB')
                           print('Image dimensions', a.size, b.size, 'channel RMS', ImageStat.Stat(ImageChops.difference(a,b)).rms if a.size == b.size else 'different', flush=True)
                   verify(data,actual)
+                  if source.endswith('.webp'):
+                      server_assets[pathlib.Path(source).name] = (hashlib.sha256(actual).hexdigest(), len(actual))
                   ftp.rename(temporary,target)
                   temporary = None
                   changed.append(source)
