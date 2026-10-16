@@ -2,7 +2,7 @@ name: Public frontend browser QA
 on:
   push:
     branches: [staging]
-    paths: ['.github/workflows/public-frontend-qa.yml', 'tests/frontend/public.cjs', 'tests/frontend/storefront.cjs']
+    paths: ['.github/workflows/public-frontend-qa.yml', 'tests/frontend/public.cjs', 'tests/frontend/storefront.cjs', 'tests/frontend/catalogue.cjs']
   workflow_dispatch:
 permissions:
   contents: read
@@ -19,7 +19,7 @@ jobs:
       - name: Public acceptance checks using normal installed Chrome
         env:
           NODE_PATH: ${{ github.workspace }}/.qa-deps/node_modules
-        run: node tests/frontend/storefront.cjs
+        run: node tests/frontend/catalogue.cjs
       - name: Retain public screenshots and acceptance report
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
