@@ -1,4 +1,4 @@
-name: Deploy premium hero on temporary site
+name: Publish professional storefront copy on temporary site
 on:
   push:
     branches: [staging]
@@ -23,18 +23,15 @@ jobs:
           php tests/store-core.php
           php tests/catalogue.php
           node --check tests/frontend/catalogue.cjs
-      - name: Install pinned image verifier
-        run: python3 -m pip install --disable-pip-version-check Pillow==12.0.0
-      - name: Deploy only reviewed hero files
+      - name: Deploy reviewed customer copy files
         env:
           FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
         run: |
           python3 - <<'PY'
           import ftplib, ssl, os, io, hashlib, pathlib, subprocess, secrets
-          from PIL import Image, ImageChops, ImageStat
-          sources = ['wp-content/themes/maqwi-organics/assets/images/hero-campaign-v2.webp','wp-content/themes/maqwi-organics/functions.php','wp-content/themes/maqwi-organics/style.css']
+          sources = ['wp-content/plugins/maqwi-store-core/storefront-copy.php', 'wp-content/plugins/maqwi-store-core/catalogue-release.php', 'wp-content/plugins/maqwi-store-core/storefront-preview.php', 'wp-content/plugins/maqwi-store-core/maqwi-store-core.php', 'wp-content/themes/maqwi-organics/functions.php', 'wp-content/themes/maqwi-organics/header-maqwi.php', 'wp-content/themes/maqwi-organics/footer-maqwi.php', 'wp-content/themes/maqwi-organics/woocommerce.php', 'wp-content/themes/maqwi-organics/style.css']
           new_sources={sources[0]}
-          old_commit='1628b108e0ce99512e8f822e0aca24779c44b1bb'
+          old_commit='f69d51099fccddc487b24299d5b898df6b3208d0'
           ftp=ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
           ftp.connect('ftpupload.net',21)
           ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
@@ -44,30 +41,21 @@ jobs:
               ftp.retrbinary('RETR '+path,out.write)
               return out.getvalue()
           def verify(expected,actual):
-              if expected==actual: return
-              if expected.startswith(b'RIFF') and expected[8:12]==b'WEBP':
-                  a=Image.open(io.BytesIO(expected)).convert('RGB')
-                  b=Image.open(io.BytesIO(actual)).convert('RGB')
-                  assert a.size==b.size==(1440,960),'Hero dimensions changed'
-                  rms=ImageStat.Stat(ImageChops.difference(a,b)).rms
-                  assert max(rms)<=8,'Hero changed beyond recompression tolerance'
-                  print('Hero visually verified, channel RMS:',rms,flush=True)
-                  return
               assert hashlib.sha256(expected).digest()==hashlib.sha256(actual).digest(),'Unexpected source hash'
           originals={}
           for source in sources:
               if source in new_sources:
                   parent='/htdocs/'+str(pathlib.PurePosixPath(source).parent)
                   names={x.rsplit('/',1)[-1] for x in ftp.nlst(parent)}
-                  assert pathlib.Path(source).name not in names,'New hero already exists'
+                  assert pathlib.Path(source).name not in names,'Copy module already exists'
               else:
                   expected=subprocess.check_output(['git','show',old_commit+':'+source])
                   originals[source]=read('/htdocs/'+source)
                   verify(expected,originals[source])
-          history='/htdocs/wp-content/themes/.maqwi-hero-'+os.environ['GITHUB_RUN_ID']
+          history='/htdocs/wp-content/themes/.maqwi-copy-'+os.environ['GITHUB_RUN_ID']
           ftp.mkd(history)
           for source,data in originals.items():
-              target=history+'/'+pathlib.Path(source).name
+              target=history+'/'+source.replace('/','__')
               ftp.storbinary('STOR '+target,io.BytesIO(data))
               verify(data,read(target))
           changed=[]
@@ -75,7 +63,7 @@ jobs:
           try:
               for source in sources:
                   target='/htdocs/'+source
-                  temporary=str(pathlib.PurePosixPath(target).parent)+'/.maqwi-hero-'+secrets.token_hex(8)+pathlib.Path(source).suffix
+                  temporary=str(pathlib.PurePosixPath(target).parent)+'/.maqwi-copy-'+secrets.token_hex(8)+pathlib.Path(source).suffix
                   data=pathlib.Path(source).read_bytes()
                   ftp.storbinary('STOR '+temporary,io.BytesIO(data))
                   verify(data,read(temporary))
@@ -95,10 +83,10 @@ jobs:
               raise
           finally:
               ftp.quit()
-          print('Premium hero deployed; previous source preserved; exact source and visual image checks passed.')
+          print('Customer copy deployed; original source preserved; exact readback checks passed.')
           PY
 
-  hero-acceptance:
+  copy-acceptance:
     needs: refine
     runs-on: ubuntu-24.04
     timeout-minutes: 8

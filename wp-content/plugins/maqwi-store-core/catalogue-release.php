@@ -37,30 +37,30 @@ function maqwi_launch_catalogue() {
         'maqwi-honey' => array(
             'name' => 'Maqwi Honey', 'folder' => 'honey', 'size' => '1 kg', 'price' => '4500', 'sku' => 'MQ-HNY-STD-1000', 'weight' => '1',
             'short' => 'A spoonful of sweetness for breakfast, drinks and everyday recipes. Net weight: 1 kg.',
-            'description' => '<h2>A little sweetness, your way</h2><p>Bring Maqwi Honey to the table with warm toast, yoghurt, fruit or your favourite breakfast bowl. Stir a spoonful into a drink or use it as a sweet finishing touch in everyday recipes.</p><h3>Your pack</h3><p>Net weight: <strong>1 kg</strong>. Price: <strong>PKR 4,500</strong>. The gallery illustrates the brand packaging in a 500 g jar; it does not show the size of the 1 kg pack.</p><h3>Serving and care</h3><p>Use a clean, dry spoon and close the lid after use. Honey is not suitable for infants under 12 months. Check the supplied label for batch, best-before and storage instructions.</p>',
+            'description' => '<h2>Maqwi Honey</h2><p>Bring Maqwi Honey to the table with warm toast, yoghurt, fruit or your favourite breakfast bowl. Stir a spoonful into a drink or use it as a sweet finishing touch in everyday recipes.</p><h3>Your pack</h3><p>Net weight: <strong>1 kg</strong>. Price: <strong>PKR 4,500</strong>. The gallery illustrates the brand packaging in a 500 g jar; it does not show the size of the 1 kg pack.</p><h3>Serving and care</h3><p>Use a clean, dry spoon and close the lid after use. Honey is not suitable for infants under 12 months. Check the supplied label for batch, best-before and storage instructions.</p>',
             'usage' => 'Use a clean, dry spoon. Honey is not suitable for infants under 12 months.',
-            'photo_note' => 'AI product visuals show a 500 g jar. This listing is for 1 kg; packaging size may differ.'
+            'photo_note' => 'Pictured pack: 500 g. Listed net weight: 1 kg.'
         ),
         'maqwi-desi-ghee' => array(
             'name' => 'Maqwi Desi Ghee', 'folder' => 'desi-ghee', 'size' => '1 kg', 'price' => '3500', 'sku' => 'MQ-GHE-STD-1000', 'weight' => '1',
             'short' => 'A familiar addition to roti, rice, dal and home cooking. Sold by net weight: 1 kg.',
-            'description' => '<h2>For meals that feel like home</h2><p>Add Maqwi Desi Ghee while cooking or use a small spoonful to finish warm roti, rice or dal. A practical choice for the everyday dishes you enjoy sharing at home.</p><h3>Your pack</h3><p>Net weight: <strong>1 kg</strong>. Price: <strong>PKR 3,500</strong>. This product is sold by weight. The 500 ml jar shown in the gallery is an illustration of the branding, not a claim that 500 ml equals 500 g.</p><h3>Serving and care</h3><p>Use a clean, dry utensil and keep the container closed between uses. Ghee is a dairy product. Check the supplied label for the final ingredient, allergen and storage information.</p>',
+            'description' => '<h2>Maqwi Desi Ghee</h2><p>Add Maqwi Desi Ghee while cooking or use a small spoonful to finish warm roti, rice or dal. A practical choice for the everyday dishes you enjoy sharing at home.</p><h3>Your pack</h3><p>Net weight: <strong>1 kg</strong>. Price: <strong>PKR 3,500</strong>. This product is sold by weight. The pictured jar is marked 500 ml. This listing is for 1 kg by weight.</p><h3>Serving and care</h3><p>Use a clean, dry utensil and keep the container closed between uses. Ghee is a dairy product. Check the supplied label for the final ingredient, allergen and storage information.</p>',
             'usage' => 'Use a clean, dry utensil for cooking or as a finishing touch. Dairy product.',
-            'photo_note' => 'AI product visuals show a 500 ml jar. This listing is for 1 kg by weight; volume and weight are not interchangeable.'
+            'photo_note' => 'Pictured pack: 500 ml. Listed net weight: 1 kg. Volume and weight are not interchangeable.'
         ),
         'maqwi-achaar' => array(
             'name' => 'Maqwi Achaar', 'folder' => 'achaar', 'size' => '', 'price' => '', 'sku' => '', 'weight' => '',
             'short' => 'A little extra beside paratha, rice or dal. Pack size, recipe and price will be confirmed before ordering opens.',
-            'description' => '<h2>A place beside your favourite plate</h2><p>Bring a small helping of Maqwi Achaar to the table with paratha, rice, dal or a home-cooked meal.</p><h3>Before you order</h3><p>The available recipe, ingredients, oil, allergens, pack size and price are being confirmed. The gallery shows a 500 g packaging visual; this is not yet an available size or a priced offer.</p><h3>Serving and care</h3><p>Use a clean, dry spoon. Follow the final product label for storage and best-before information.</p>',
+            'description' => '<h2>Maqwi Achaar</h2><p>Bring a small helping of Maqwi Achaar to the table with paratha, rice, dal or a home-cooked meal.</p><h3>Before you order</h3><p>Coming soon. Recipe, ingredient and allergen information, pack sizes and prices will be available before ordering opens.</p><h3>Serving and care</h3><p>Use a clean, dry spoon. Follow the final product label for storage and best-before information.</p>',
             'usage' => 'Use a clean, dry spoon. Consult the final ingredient and allergen label before use.',
-            'photo_note' => 'AI product visuals show a 500 g jar. Sellable pack sizes and pricing are awaiting confirmation.'
+            'photo_note' => 'Pack sizes and pricing will be available when ordering opens.'
         ),
         'maqwi-itar' => array(
             'name' => 'Maqwi Itar', 'folder' => 'itar', 'size' => '12 ml', 'price' => '200', 'sku' => 'MQ-ITR-STD-012', 'weight' => '',
-            'short' => 'A compact 12 ml bottle for your personal fragrance ritual. PKR 200 per bottle.',
-            'description' => '<h2>A fragrance to make your own</h2><p>Make Maqwi Itar part of your daily fragrance ritual. The compact bottle is easy to keep with your personal essentials or give as a small, thoughtful gift.</p><h3>Your bottle</h3><p>Net volume: <strong>12 ml</strong>. Price: <strong>PKR 200</strong>. Scent notes, formulation and alcohol content will be stated once confirmed; no particular fragrance family or lasting time is promised.</p><h3>Use with care</h3><p>For external use only. Avoid contact with eyes and broken skin. Stop use if irritation occurs. Keep the bottle closed, away from heat and out of reach of children. Follow the supplied product label.</p>',
+            'short' => 'Personal fragrance in a compact 12 ml bottle. PKR 200 per bottle.',
+            'description' => '<h2>Maqwi Itar</h2><p>Maqwi Itar comes in a compact 12 ml bottle for everyday personal fragrance.</p><h3>Your bottle</h3><p>Net volume: <strong>12 ml</strong>. Price: <strong>PKR 200</strong>. Scent and ingredient information will be available before ordering opens.</p><h3>Use with care</h3><p>For external use only. Avoid contact with eyes and broken skin. Stop use if irritation occurs. Keep the bottle closed, away from heat and out of reach of children. Follow the supplied product label.</p>',
             'usage' => 'For external use only. Avoid eyes and broken skin. Stop use if irritation occurs. Keep out of reach of children.',
-            'photo_note' => 'AI product visuals based on the supplied 12 ml packaging and updated Maqwi logo.'
+            'photo_note' => ''
         ),
     );
 }
@@ -73,7 +73,7 @@ function maqwi_catalogue_media( $filename, $title, $parent = 0 ) {
     $source = __DIR__ . '/photography/' . $filename;
     $upload = wp_upload_bits( 'maqwi-' . $filename, null, file_get_contents( $source ) );
     if ( $upload['error'] ) { throw new Exception( 'Product media could not be saved.' ); }
-    $id = wp_insert_attachment( array( 'post_mime_type' => 'image/webp', 'post_title' => $title, 'post_excerpt' => 'AI product visual based on supplied packaging and updated logo.', 'post_status' => 'inherit' ), $upload['file'], $parent, true );
+    $id = wp_insert_attachment( array( 'post_mime_type' => 'image/webp', 'post_title' => $title, 'post_excerpt' => '', 'post_status' => 'inherit' ), $upload['file'], $parent, true );
     if ( is_wp_error( $id ) ) { throw new Exception( 'Product media registration failed.' ); }
     update_post_meta( $id, $key, $filename );
     update_post_meta( $id, '_wp_attachment_image_alt', $title );
@@ -237,7 +237,7 @@ add_action( 'woocommerce_single_product_summary', function () {
 
 add_filter( 'woocommerce_get_availability_text', function ( $text, $product ) {
     $parent = $product->get_parent_id() ? wc_get_product( $product->get_parent_id() ) : $product;
-    return $parent && $parent->get_meta( '_maqwi_catalogue_release' ) && ! $product->is_in_stock() ? 'Availability will be confirmed before orders open.' : $text;
+    return $parent && $parent->get_meta( '_maqwi_catalogue_release' ) && ! $product->is_in_stock() ? 'Currently unavailable' : $text;
 }, 10, 2 );
 
 add_filter( 'woocommerce_variable_empty_price_html', function ( $html, $product ) {

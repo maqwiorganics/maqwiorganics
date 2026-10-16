@@ -10,16 +10,15 @@ function maqwi_premium_hero() {
         <div class="mq-premium-copy">
             <p class="mq-eyebrow mq-premium-eyebrow"><span aria-hidden="true"></span>Maqwi Organics · Pakistan</p>
             <h1 id="mq-premium-title">A little desi.<br><span>A little closer to home.</span></h1>
-            <p class="mq-premium-description">Honey, desi ghee, achaar and itar. Familiar favourites for the rituals that make a day your own.</p>
+            <p class="mq-premium-description">Honey, desi ghee, achaar and itar. Explore the Maqwi collection.</p>
             <div class="mq-premium-actions">
                 <a class="mq-premium-primary" href="#the-collection">Explore the collection <span aria-hidden="true">↗</span></a>
                 <a class="mq-premium-story" href="<?php echo esc_url( home_url( '/about/' ) ); ?>">Our story <span aria-hidden="true">→</span></a>
             </div>
-            <p class="mq-premium-note"><span aria-hidden="true"></span>Four traditions. One thoughtful beginning.</p>
+            <p class="mq-premium-note"><span aria-hidden="true"></span>Honey · Desi Ghee · Achaar · Itar</p>
         </div>
         <figure class="mq-premium-media">
             <img src="<?php echo esc_url( $image ); ?>" alt="Maqwi Honey, Desi Ghee and Achaar arranged on warm stone with green linen and afternoon light" width="1440" height="960" loading="eager" decoding="async" fetchpriority="high">
-            <figcaption>AI product visual · packaging illustration</figcaption>
         </figure>
     </section>
     <?php return ob_get_clean();
@@ -68,10 +67,10 @@ add_shortcode( 'maqwi_featured_products', function () {
     ob_start();
     ?>
     <section class="mq-section mq-featured" aria-labelledby="mq-featured-title">
-        <div class="mq-section-top"><div><p class="mq-eyebrow">A place in your everyday</p><h2 id="mq-featured-title">Explore the collection</h2></div><a href="<?php echo esc_url( maqwi_shop_url() ); ?>">View all products &rarr;</a></div>
+        <div class="mq-section-top"><div><p class="mq-eyebrow">Shop Maqwi</p><h2 id="mq-featured-title">Explore the collection</h2></div><a href="<?php echo esc_url( maqwi_shop_url() ); ?>">View all products &rarr;</a></div>
         <div class="mq-product-grid">
         <?php foreach ( $products as $product ) : ?>
-            <article class="mq-product-card"><a href="<?php echo esc_url( $product->get_permalink() ); ?>"><?php echo wp_kses_post( $product->get_image( 'woocommerce_thumbnail', array( 'loading' => 'lazy' ) ) ); ?><h3><?php echo esc_html( $product->get_name() ); ?></h3></a><div class="mq-price"><?php echo wp_kses_post( $product->get_price_html() ); ?></div><a class="mq-text-link" href="<?php echo esc_url( $product->get_permalink() ); ?>">Choose options &rarr;</a></article>
+            <article class="mq-product-card"><a href="<?php echo esc_url( $product->get_permalink() ); ?>"><?php echo wp_kses_post( $product->get_image( 'woocommerce_thumbnail', array( 'loading' => 'lazy' ) ) ); ?><h3><?php echo esc_html( $product->get_name() ); ?></h3></a><div class="mq-price"><?php echo wp_kses_post( $product->get_price_html() ); ?></div><a class="mq-text-link" href="<?php echo esc_url( $product->get_permalink() ); ?>">View product &rarr;</a></article>
         <?php endforeach; ?>
         </div>
     </section>
@@ -91,10 +90,11 @@ add_filter( 'render_block_core/image', function ( $html, $block ) {
         foreach ( $names as $old => $name ) {
             $html = str_replace( get_stylesheet_directory_uri() . '/assets/images/' . $old . '.webp', plugins_url( 'photography/01-' . $name . '-catalogue.webp', WP_PLUGIN_DIR . '/maqwi-store-core/maqwi-store-core.php' ), $html );
         }
-        $html = str_replace( array( 'Packaging concept · final product photography follows before launch.', 'Packaging concept · final photography follows before orders open.' ), 'AI product visual based on supplied packaging and updated logo.', $html );
-        $html = str_replace( ' packaging concept', ' product visual', $html );
+        if ( str_contains( $html, '/photography/01-' ) ) {
+            $html = preg_replace( '#<figcaption\b[^>]*>.*?</figcaption>#s', '', $html );
+            $html = str_replace( ' packaging concept', '', $html );
+        }
     }
-    $html = str_replace( 'Packaging concept · final product photography follows before launch.', 'Packaging concept · final photography follows before orders open.', $html );
     $processor = new WP_HTML_Tag_Processor( $html );
     if ( ! $processor->next_tag( 'img' ) ) { return $html; }
     $src = $processor->get_attribute( 'src' );
@@ -160,12 +160,12 @@ function maqwi_brand_collections() {
 function maqwi_brand_collection_details() {
     ob_start(); ?>
     <section class="mq-section mq-collection-details" aria-labelledby="mq-collection-details-title">
-        <div class="mq-section-top"><div><p class="mq-eyebrow">Meet the Maqwi collection</p><h2 id="mq-collection-details-title">Four favourites.<br>Room for your own ritual.</h2></div><p class="mq-section-aside">Explore each collection below.<br>Orders open once the details are ready.</p></div>
+        <div class="mq-section-top"><div><p class="mq-eyebrow">Meet the Maqwi collection</p><h2 id="mq-collection-details-title">Four favourites.<br>Explore the Maqwi range.</h2></div><p class="mq-section-aside">Explore each collection below.<br>Orders open once the details are ready.</p></div>
         <div class="mq-collection-detail-list">
         <?php $number = 0; foreach ( maqwi_brand_collections() as $slug => $item ) : $number++; ?>
             <details class="mq-collection-detail">
                 <summary><span class="mq-detail-number" aria-hidden="true"><?php echo esc_html( sprintf( '%02d', $number ) ); ?></span><span><span class="mq-detail-title"><?php echo esc_html( $item['name'] ); ?></span><span class="mq-detail-line"><?php echo esc_html( $item['line'] ); ?></span></span><span class="mq-detail-toggle" aria-hidden="true"></span></summary>
-                <div id="<?php echo esc_attr( 'collection-' . $slug ); ?>" class="mq-detail-body"><figure><img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/' . $item['image'] . '.webp' ); ?>" alt="<?php echo esc_attr( 'Maqwi ' . $item['name'] . ' packaging concept' ); ?>" width="900" height="900" loading="lazy" decoding="async"><figcaption>Packaging concept</figcaption></figure><div><p class="mq-eyebrow">Collection in preparation</p><h3><?php echo esc_html( $item['line'] ); ?></h3><p><?php echo esc_html( $item['copy'] ); ?></p><p><?php echo esc_html( $item['details'] ); ?></p><p class="mq-detail-note">Artwork is an early packaging concept. Final product details, photographs, prices and availability will be confirmed before orders open.</p><a class="mq-text-link" href="<?php echo esc_url( maqwi_home_anchor( 'questions' ) ); ?>">Before you order <span aria-hidden="true">&nbsp;↗</span></a></div></div>
+                <div id="<?php echo esc_attr( 'collection-' . $slug ); ?>" class="mq-detail-body"><figure><img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/' . $item['image'] . '.webp' ); ?>" alt="<?php echo esc_attr( 'Maqwi ' . $item['name'] . '' ); ?>" width="900" height="900" loading="lazy" decoding="async"></figure><div><p class="mq-eyebrow">Maqwi collection</p><h3><?php echo esc_html( $item['line'] ); ?></h3><p><?php echo esc_html( $item['copy'] ); ?></p><p><?php echo esc_html( $item['details'] ); ?></p><p class="mq-detail-note">Artwork is an early. Final product details, photographs, prices and availability will be confirmed before orders open.</p><a class="mq-text-link" href="<?php echo esc_url( maqwi_home_anchor( 'questions' ) ); ?>">Before you order <span aria-hidden="true">&nbsp;↗</span></a></div></div>
             </details>
         <?php endforeach; ?>
         </div>
@@ -191,14 +191,12 @@ add_filter( 'render_block_core/heading', function ( $html ) {
     }
     return $processor->get_updated_html();
 } );
-add_filter( 'render_block_core/paragraph', function ( $html ) {
-    if ( get_option( 'maqwi_catalogue_release' ) ) {
-        $html = str_replace( 'Our collection is in preparation. The artwork shows packaging concepts; final ingredients, sizes, sourcing details, prices and availability will be provided before orders open.', 'Explore the Maqwi collection and confirmed prices. Product galleries are AI visuals; pictured labels may show a different pack size. Please read the net weight or volume on each product page. Orders open after stock, delivery and support details are finalised.', $html );
-        $html = str_replace( 'Our starting range is honey, desi ghee, achaar and itar. The final variants, sizes and prices will be listed when the collection is ready.', 'Our starting range is honey, desi ghee, achaar and itar. Confirmed prices and net contents are listed on the product pages. Achaar pricing is being finalised.', $html );
-    }
-    if ( ! maqwi_public_brand_mode() || ! is_front_page() ) { return $html; }
-    return str_replace( 'We are preparing the collection and testing the store before launch.', 'We are preparing the collection. Product details, prices and delivery information will be shared before orders open.', $html );
-} );
+/** Rewrite only known homepage block copy; retain the editable block structure. */
+add_filter( 'render_block', function ( $html, $block ) {
+    if ( ! is_front_page() || ! function_exists( 'maqwi_customer_copy' ) ) { return $html; }
+    if ( 'core/paragraph' === $block['blockName'] && str_contains( $block['attrs']['className'] ?? '', 'mq-artwork-note' ) ) { return ''; }
+    return strtr( $html, maqwi_customer_copy() );
+}, 30, 2 );
 
 /** Accurate sharing metadata; no unverified business contacts or product offers. */
 add_filter( 'document_title_parts', function ( $parts ) {
@@ -207,7 +205,7 @@ add_filter( 'document_title_parts', function ( $parts ) {
 } );
 add_action( 'wp_head', function () {
     if ( ! is_front_page() ) { return; }
-    $description = 'Meet Maqwi Organics: honey, desi ghee, achaar and itar, rooted in everyday traditions. Explore the collection. Orders open soon.';
+    $description = 'Explore Maqwi Honey, Desi Ghee, Achaar and Itar. View pack sizes, prices and product details. Orders open soon.';
     $image = get_option( 'maqwi_collection_banner' ) ? wp_get_attachment_image_url( get_option( 'maqwi_collection_banner' ), 'full' ) : get_stylesheet_directory_uri() . '/assets/images/honey.webp';
     echo '<meta name="description" content="' . esc_attr( $description ) . '">' . "\n";
     foreach ( array( 'og:type' => 'website', 'og:title' => 'Maqwi Organics', 'og:description' => $description, 'og:url' => home_url( '/' ), 'og:image' => $image, 'og:image:alt' => 'Maqwi Organics product collection', 'og:site_name' => 'Maqwi Organics' ) as $name => $value ) {
@@ -229,20 +227,18 @@ add_action( 'woocommerce_before_single_product', function () {
 add_action( 'woocommerce_before_single_product_summary', function () {
     global $product;
     if ( ! $product || ! $product->get_meta( '_maqwi_concept_image' ) || $product->get_image_id() ) { return; }
-    echo '<div class="mq-concept-gallery"><img src="' . esc_url( get_stylesheet_directory_uri() . '/assets/images/' . $product->get_meta( '_maqwi_concept_image' ) . '.webp' ) . '" alt="' . esc_attr( $product->get_name() . ' packaging concept' ) . '" width="900" height="900"><p>Packaging concept · sample catalogue</p></div>';
+    echo '<div class="mq-concept-gallery"><img src="' . esc_url( get_stylesheet_directory_uri() . '/assets/images/' . $product->get_meta( '_maqwi_concept_image' ) . '.webp' ) . '" alt="' . esc_attr( $product->get_name() . '' ) . '" width="900" height="900"></div>';
 }, 19 );
 add_filter( 'woocommerce_product_get_image', function ( $html, $product, $size, $attr, $placeholder ) {
     $image = $product->get_meta( '_maqwi_concept_image' );
     if ( ! $image && $product->get_parent_id() ) { $parent = wc_get_product( $product->get_parent_id() ); $image = $parent ? $parent->get_meta( '_maqwi_concept_image' ) : ''; }
     if ( ! $image || $product->get_image_id() || ! in_array( $image, array( 'honey', 'ghee', 'achaar', 'itar' ), true ) ) { return $html; }
-    return '<img class="mq-product-concept" src="' . esc_url( get_stylesheet_directory_uri() . '/assets/images/' . $image . '.webp' ) . '" alt="' . esc_attr( $product->get_name() . ' packaging concept' ) . '" width="900" height="900" loading="lazy" decoding="async">';
+    return '<img class="mq-product-concept" src="' . esc_url( get_stylesheet_directory_uri() . '/assets/images/' . $image . '.webp' ) . '" alt="' . esc_attr( $product->get_name() . '' ) . '" width="900" height="900" loading="lazy" decoding="async">';
 }, 10, 5 );
 add_action( 'woocommerce_single_product_summary', function () {
     global $product;
-    if ( $product && 'yes' === $product->get_meta( '_maqwi_sample' ) ) { echo '<p class="mq-sample-note">Sample product · editable prices and sizes · orders closed</p>'; }
+    if ( $product && 'yes' === $product->get_meta( '_maqwi_sample' ) ) { echo '<p class="mq-sample-note">Ordering opens soon.</p>'; }
 }, 11 );
 add_action( 'woocommerce_before_shop_loop', function () {
-    if ( get_option( 'maqwi_catalogue_release' ) ) {
-        echo '<p class="mq-sample-note">Confirmed prices are shown where available. Stock and delivery are being finalised before orders open. Product galleries use AI visuals based on our packaging.</p>';
-    } elseif ( function_exists( 'maqwi_storefront_preview' ) && maqwi_storefront_preview() ) { echo '<p class="mq-sample-note">Explore the sample collection. Prices and sizes are examples for testing; packaging is concept artwork.</p>'; }
+    if ( ! get_option( 'maqwi_catalogue_release' ) && function_exists( 'maqwi_storefront_preview' ) && maqwi_storefront_preview() ) { echo '<p class="mq-sample-note">Ordering opens soon.</p>'; }
 }, 5 );

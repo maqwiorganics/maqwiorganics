@@ -15,3 +15,9 @@ foreach ( $items as $item ) {
     if ( preg_match( '/100%|organic certified|alcohol.free|sugar.free|raw honey|pure honey/i', $item['description'] ) ) { throw new Exception( 'Unverified claim in copy.' ); }
 }
 echo "Owner-approved offers, missing-price handling and pack-size disclosure passed.\n";
+
+require __DIR__ . '/../wp-content/plugins/maqwi-store-core/storefront-copy.php';
+foreach ( maqwi_customer_pages() as $page ) {
+    if ( preg_match( '/\\bAI\\b|sample|prototype|preview|for review/i', implode( ' ', $page ) ) ) { throw new Exception( 'Internal wording in customer page.' ); }
+}
+echo "Customer information pages contain no internal project wording.\n";

@@ -15,6 +15,8 @@ fs.mkdirSync(out,{recursive:true});
    async function visit(route){console.log('Visiting',width,route);await page.goto(base+route,{waitUntil:'domcontentloaded',timeout:90000});await page.locator('.mq-header').waitFor({timeout:90000});await page.waitForLoadState('load');}
    async function check(name){
     assert.equal(await page.locator('main h1').count(),1,name+' H1');
+    const copy=await page.locator('body').innerText();
+    assert(!/\bAI\b|AI.generated|packaging concept|sample catalogue|storefront preview|for this preview|proposed guidance|for review|prototype|thoughtful beginning|daily fragrance ritual/i.test(copy),name+' professional customer copy');
     for(const img of await page.locator('main img').all()){if(await img.isVisible()){await img.scrollIntoViewIfNeeded({timeout:10000});await Promise.race([img.evaluate(i=>i.decode()),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Image decode timed out: '+name)),15000))]);}}
     const m=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,broken:[...document.querySelectorAll('main img')].filter(i=>i.getBoundingClientRect().height>0&&(!i.complete||!i.naturalWidth)).length}));
     assert(m.scroll<=width+1,name+' horizontal overflow');assert.equal(m.broken,0,name+' broken images');
@@ -28,7 +30,7 @@ fs.mkdirSync(out,{recursive:true});
    console.log('Photo integrity:', await page.locator('meta[name="maqwi-photo-integrity"]').count() ? await page.locator('meta[name="maqwi-photo-integrity"]').getAttribute('content') : 'no mismatch');
    await page.screenshot({path:out+'/release-status-'+width+'.png',fullPage:true});
    assert.equal(await page.locator('.mq-product-card').count(),4,'Four catalogue cards');
-   assert(await page.locator('link[href*="style.css?ver=0.6.0"]').count(),'Current theme');
+   assert(await page.locator('link[href*="style.css?ver=0.6.1"]').count(),'Current theme');
    assert.equal(await page.locator('.mq-announcement').innerText(),'Meet the Maqwi collection · orders open soon');
    assert.equal(await page.locator('.mq-premium-hero').count(),1,'Premium hero renders once');
    assert.equal(await page.locator('.mq-premium-primary').getAttribute('href'),'#the-collection');
@@ -63,9 +65,11 @@ fs.mkdirSync(out,{recursive:true});
     for(const button of await page.getByRole('button',{name:'Add to cart',exact:true}).filter({visible:true}).all()){const classes=await button.getAttribute('class');console.log('Purchase control',slug,classes);assert((await button.isDisabled())||/(?:^|\s)disabled(?:\s|$)/.test(classes),'Unknown stock cannot be ordered');}
     const variationData=await page.locator('form.variations_form').count()?await page.locator('form.variations_form').getAttribute('data-product_variations'):null;
     if(variationData&&variationData!=='false'){const variations=JSON.parse(variationData);console.log('Native variation availability',slug,JSON.stringify(variations.map(v=>({id:v.variation_id,inStock:v.is_in_stock,purchasable:v.is_purchasable}))));assert(variations.every(v=>v.is_in_stock===false&&v.is_purchasable===false),'Every offer remains unavailable');}
+    if(slug==='honey'){assert(summary.includes('500 g')&&summary.includes('1 kg'),'Honey pack distinction retained');}
+    if(slug==='desi-ghee'){assert(summary.includes('500 ml')&&summary.includes('1 kg'),'Ghee pack distinction retained');}
     await check(slug);
    }
-   for(const route of ['about','contact','faq','delivery','returns','privacy-preview','cart']){await visit(route+'/');await check(route);}
+   for(const route of ['about','contact','faq','delivery','returns','privacy-preview','cart','my-account','product-category/honey','product-category/desi-ghee','product-category/achaar','product-category/itar']){await visit(route+'/');await check(route);}
    for(const method of ['GET','POST']){
     const response=await page.request.fetch(base+'?rest_route=/wc/store/v1/checkout',{method});
     assert.equal(response.status(),403,'Closed checkout '+method);

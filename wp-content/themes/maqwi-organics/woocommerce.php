@@ -21,7 +21,7 @@ get_header( 'maqwi' );
     ?>
     <?php if ( ! is_product() ) : ?>
         <div class="mq-shop-intro"><div class="mq-shop-heading"><p class="mq-eyebrow">The Maqwi collection</p><h1><?php woocommerce_page_title(); ?></h1></div>
-        <p>Desi favourites for your kitchen, table and everyday rituals.</p></div>
+        <p>Honey, desi ghee, achaar and itar.</p></div>
         <?php maqwi_collection_navigation(); ?>
         <div class="mq-shop-search"><?php get_product_search_form(); ?></div>
     <?php endif; ?>

@@ -5,7 +5,7 @@
 <body id="top" <?php body_class( 'mq-site' ); ?>>
 <?php wp_body_open(); ?>
 <a class="mq-skip-link" href="#main">Skip to content</a>
-<?php if ( get_option( 'maqwi_catalogue_release' ) ) : ?><div class="mq-announcement">Meet the Maqwi collection · orders open soon</div><?php elseif ( function_exists( 'maqwi_storefront_preview' ) && maqwi_storefront_preview() ) : ?><div class="mq-announcement">Store preview · sample prices and products · orders are closed</div><?php elseif ( $brand_launch ) : ?><div class="mq-announcement">Welcome to Maqwi. Meet the collection — orders open soon.</div><?php elseif ( 'yes' === get_option( 'woocommerce_coming_soon', 'no' ) ) : ?>
+<?php if ( get_option( 'maqwi_catalogue_release' ) ) : ?><div class="mq-announcement">Meet the Maqwi collection · orders open soon</div><?php elseif ( function_exists( 'maqwi_storefront_preview' ) && maqwi_storefront_preview() ) : ?><div class="mq-announcement">Meet the Maqwi collection · orders open soon</div><?php elseif ( $brand_launch ) : ?><div class="mq-announcement">Welcome to Maqwi. Meet the collection — orders open soon.</div><?php elseif ( 'yes' === get_option( 'woocommerce_coming_soon', 'no' ) ) : ?>
 <div class="mq-announcement">Our store is taking shape. Orders open after launch.</div>
 <?php endif; ?>
 <header class="mq-header">

@@ -5,25 +5,26 @@ defined( 'ABSPATH' ) || exit;
 /** Defence in depth: preview never creates orders, including Store API requests. */
 add_filter( 'rest_pre_dispatch', function ( $result, $server, $request ) {
     if ( maqwi_brand_launch_mode() && preg_match( '#^/wc/store/v[0-9]+/checkout(?:/|$)#', $request->get_route() ) ) {
-        return new WP_Error( 'maqwi_orders_closed', 'Orders are closed during the storefront preview.', array( 'status' => 403 ) );
+        return new WP_Error( 'maqwi_orders_closed', 'Ordering is not available yet.', array( 'status' => 403 ) );
     }
     return $result;
 }, 10, 3 );
 add_action( 'woocommerce_checkout_create_order', function () {
-    if ( maqwi_brand_launch_mode() ) { throw new Exception( 'Orders are closed during the storefront preview.' ); }
+    if ( maqwi_brand_launch_mode() ) { throw new Exception( 'Ordering is not available yet.' ); }
 }, 1 );
 add_filter( 'woocommerce_order_button_html', function ( $html ) {
-    return maqwi_storefront_preview() ? '<p class="mq-sample-note">You can test the delivery fields and bag totals. No payment will be taken and no order will be created.</p><button type="button" class="mq-preview-disabled" disabled>Orders open after launch</button>' : $html;
+    return maqwi_storefront_preview() ? '<p class="mq-sample-note">Ordering opens soon.</p><button type="button" class="mq-preview-disabled" disabled>Ordering opens soon</button>' : $html;
 } );
 add_filter( 'option_woocommerce_enable_myaccount_registration', function ( $value ) { return maqwi_storefront_preview() ? 'no' : $value; } );
 add_filter( 'option_woocommerce_enable_signup_and_login_from_checkout', function ( $value ) { return maqwi_storefront_preview() ? 'no' : $value; } );
 add_filter( 'woocommerce_package_rates', function ( $rates, $package ) {
     if ( ! maqwi_storefront_preview() ) { return $rates; }
+    if ( get_option( 'maqwi_catalogue_release' ) ) { return array(); }
     if ( 'PK' !== ( $package['destination']['country'] ?? '' ) ) { return array(); }
     return array( 'maqwi_preview' => new WC_Shipping_Rate( 'maqwi_preview', 'Sample delivery — final rate to be confirmed', 250, array(), 'maqwi_preview' ) );
 }, 100, 2 );
 add_action( 'woocommerce_before_checkout_form', function () {
-    if ( maqwi_storefront_preview() ) { echo '<p class="mq-sample-note mq-preview-checkout-note">Orders are not open yet. Delivery, stock and payment setup are being finalised. The displayed delivery rate is for testing.</p>'; }
+    if ( maqwi_storefront_preview() ) { echo '<p class="mq-sample-note mq-preview-checkout-note">Ordering opens soon.</p>'; }
 }, 5 );
 
 function maqwi_sample_catalogue() {
@@ -119,10 +120,10 @@ add_action( 'admin_post_maqwi_seed_preview', function () {
 
 /** Clear preview wording instead of stock payment and privacy promises. */
 add_filter( 'woocommerce_no_available_payment_methods_message', function ( $message ) {
-    return maqwi_storefront_preview() ? 'Payment options will be enabled before launch. Preview orders cannot be submitted.' : $message;
+    return maqwi_storefront_preview() ? 'Ordering is not available yet.' : $message;
 } );
 add_filter( 'woocommerce_get_privacy_policy_text', function ( $text, $type ) {
-    return maqwi_storefront_preview() ? 'Use sample details to test this preview. No order will be created. Read the privacy information before the final store launches.' : $text;
+    return maqwi_storefront_preview() ? 'Ordering is not available yet. Please do not submit personal details through checkout.' : $text;
 }, 10, 2 );
 /** Purge native page cache once when this approved storefront code release is first executed. */
 add_action( 'init', function () {
@@ -152,7 +153,7 @@ add_action( 'woocommerce_shipping_init', function () {
             $this->supports = array();
         }
         public function calculate_shipping( $package = array() ) {
-            if ( maqwi_storefront_preview() && 'PK' === ( $package['destination']['country'] ?? '' ) ) {
+            if ( maqwi_storefront_preview() && ! get_option( 'maqwi_catalogue_release' ) && 'PK' === ( $package['destination']['country'] ?? '' ) ) {
                 $this->add_rate( array( 'id' => $this->id, 'label' => $this->title, 'cost' => 250, 'taxes' => false ) );
             }
         }
