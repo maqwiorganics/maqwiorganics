@@ -1,0 +1,72 @@
+name: Read-only temporary hosting health audit
+on:
+  push:
+    branches: [staging]
+    paths: ['.github/workflows/hosting-health-audit.yml']
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Read public TLS and source/backup metadata only
+        env:
+          FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
+        run: |
+          python3 - <<'PY'
+          import ftplib, ssl, socket, io, os, hashlib, json, re, pathlib
+          host='maqwiorganics.gt.tc'
+          report={}
+          with socket.create_connection((host,443),timeout=25) as connection:
+              with ssl.create_default_context().wrap_socket(connection,server_hostname=host) as secured:
+                  cert=secured.getpeercert()
+                  report['tls']={'verified':True,'protocol':secured.version(),'not_after':cert.get('notAfter'),'subject_alt_names':cert.get('subjectAltName')}
+          ftp=ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
+          ftp.connect('ftpupload.net',21)
+          ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
+          ftp.prot_p()
+          def read(path):
+              buffer=io.BytesIO()
+              ftp.retrbinary('RETR '+path,buffer.write)
+              return buffer.getvalue()
+          def names(path):
+              return {x.rsplit('/',1)[-1] for x in ftp.nlst(path)}
+          root=names('/htdocs')
+          report['routing']={'wordpress_index':b'wp-blog-header.php' in read('/htdocs/index.php'),'provider_placeholders_present':bool(root & {'index.html','index.htm','index2.html'})}
+          ht=read('/htdocs/.htaccess').decode('utf-8','replace')
+          report['routing'].update({'https_condition':'%{HTTPS}' in ht,'wordpress_rewrites':'RewriteRule' in ht and 'index.php' in ht,'indexes_explicitly_disabled':bool(re.search(r'(?im)^\s*Options\s+-Indexes',ht))})
+          version=read('/htdocs/wp-includes/version.php').decode('utf-8','replace')
+          match=re.search(r"\$wp_version\s*=\s*'([^']+)'",version)
+          report['wordpress_source_version']=match.group(1) if match else 'unknown'
+          source_paths=['wp-content/themes/maqwi-organics/functions.php','wp-content/themes/maqwi-organics/style.css','wp-content/plugins/maqwi-store-core/maqwi-store-core.php','wp-content/plugins/maqwi-store-core/catalogue-release.php','wp-content/plugins/maqwi-store-core/storefront-copy.php','wp-content/plugins/maqwi-store-core/storefront-preview.php']
+          report['owned_source_matches']={p:hashlib.sha256(read('/htdocs/'+p)).digest()==hashlib.sha256(pathlib.Path(p).read_bytes()).digest() for p in source_paths}
+          plugin_paths={'woocommerce':'woocommerce/woocommerce.php','updraftplus':'updraftplus/updraftplus.php','w3-total-cache':'w3-total-cache/w3-total-cache.php','wpvibe':'wpvibe/wpvibe.php'}
+          installed=names('/htdocs/wp-content/plugins')
+          report['plugin_source_versions']={}
+          for label,path in plugin_paths.items():
+              if path.split('/')[0] not in installed: continue
+              try:
+                  header=read('/htdocs/wp-content/plugins/'+path).decode('utf-8','replace')[:8192]
+                  found=re.search(r'(?im)^\s*\*?\s*Version:\s*([^\r\n]+)',header)
+                  report['plugin_source_versions'][label]=found.group(1).strip() if found else 'header not found'
+              except ftplib.error_perm:
+                  report['plugin_source_versions'][label]='entrypoint unavailable'
+          try:
+              backup_names=names('/htdocs/wp-content/updraft')
+              groups={}
+              for name in backup_names:
+                  match=re.match(r'backup_(\d{4}-\d{2}-\d{2})-.*-(db|plugins|themes|uploads|others)(?:\d+)?\.(?:gz|zip)$',name)
+                  if match: groups.setdefault(match.group(1),set()).add(match.group(2))
+              report['backup_metadata']={date:sorted(parts) for date,parts in sorted(groups.items())}
+              protection=read('/htdocs/wp-content/updraft/.htaccess').decode('utf-8','replace') if '.htaccess' in backup_names else ''
+              report['backup_directory_deny_rule']=bool(re.search(r'Deny\s+from\s+all|Require\s+all\s+denied',protection,re.I))
+          except ftplib.error_perm:
+              report['backup_metadata']='unavailable'
+          ftp.quit()
+          print(json.dumps(report,indent=2))
+          assert all(report['owned_source_matches'].values()),'Owned deployed source differs from reviewed staging source'
+          PY
