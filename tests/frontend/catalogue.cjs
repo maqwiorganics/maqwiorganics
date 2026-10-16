@@ -24,6 +24,7 @@ fs.mkdirSync(out,{recursive:true});
    }
    await visit('?catalogue-release=20261016');
    console.log('Catalogue health:', await page.locator('meta[name="maqwi-catalogue-status"]').getAttribute('content'));
+   console.log('Photo integrity:', await page.locator('meta[name="maqwi-photo-integrity"]').count() ? await page.locator('meta[name="maqwi-photo-integrity"]').getAttribute('content') : 'no mismatch');
    await page.screenshot({path:out+'/release-status-'+width+'.png',fullPage:true});
    assert.equal(await page.locator('.mq-product-card').count(),4,'Four catalogue cards');
    assert(await page.locator('link[href*="style.css?ver=0.5.0"]').count(),'Current theme');
