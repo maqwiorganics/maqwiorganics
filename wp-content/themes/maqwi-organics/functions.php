@@ -31,9 +31,9 @@ add_shortcode( 'maqwi_featured_products', function () {
     if ( ! function_exists( 'wc_get_products' ) ) {
         return '';
     }
-    $products = wc_get_products( array( 'status' => 'publish', 'featured' => true, 'stock_status' => 'instock', 'limit' => 4 ) );
+    $products = wc_get_products( array( 'status' => 'publish', 'featured' => true, 'limit' => 4 ) );
     $products = array_filter( $products, function ( $product ) {
-        return $product->is_visible() && $product->is_purchasable();
+        return $product->is_visible() && ( $product->is_purchasable() || $product->get_meta( '_maqwi_catalogue_release' ) );
     } );
     if ( ! $products ) {
         return '';
@@ -59,6 +59,14 @@ function maqwi_default_navigation() {
 
 /** Add delivery attributes at render time so native Image blocks round-trip cleanly. */
 add_filter( 'render_block_core/image', function ( $html, $block ) {
+    if ( get_option( 'maqwi_catalogue_release' ) ) {
+        $names = array( 'honey' => 'honey', 'ghee' => 'desi-ghee', 'achaar' => 'achaar', 'itar' => 'itar' );
+        foreach ( $names as $old => $name ) {
+            $html = str_replace( get_stylesheet_directory_uri() . '/assets/images/' . $old . '.webp', plugins_url( 'photography/01-' . $name . '-catalogue.webp', WP_PLUGIN_DIR . '/maqwi-store-core/maqwi-store-core.php' ), $html );
+        }
+        $html = str_replace( array( 'Packaging concept · final product photography follows before launch.', 'Packaging concept · final photography follows before orders open.' ), 'AI product visual based on supplied packaging and updated logo.', $html );
+        $html = str_replace( ' packaging concept', ' product visual', $html );
+    }
     $html = str_replace( 'Packaging concept · final product photography follows before launch.', 'Packaging concept · final photography follows before orders open.', $html );
     $processor = new WP_HTML_Tag_Processor( $html );
     if ( ! $processor->next_tag( 'img' ) ) { return $html; }
@@ -157,6 +165,10 @@ add_filter( 'render_block_core/heading', function ( $html ) {
     return $processor->get_updated_html();
 } );
 add_filter( 'render_block_core/paragraph', function ( $html ) {
+    if ( get_option( 'maqwi_catalogue_release' ) ) {
+        $html = str_replace( 'Our collection is in preparation. The artwork shows packaging concepts; final ingredients, sizes, sourcing details, prices and availability will be provided before orders open.', 'Explore the Maqwi collection and confirmed prices. Product galleries are AI visuals; pictured labels may show a different pack size. Please read the net weight or volume on each product page. Orders open after stock, delivery and support details are finalised.', $html );
+        $html = str_replace( 'Our starting range is honey, desi ghee, achaar and itar. The final variants, sizes and prices will be listed when the collection is ready.', 'Our starting range is honey, desi ghee, achaar and itar. Confirmed prices and net contents are listed on the product pages. Achaar pricing is being finalised.', $html );
+    }
     if ( ! maqwi_public_brand_mode() || ! is_front_page() ) { return $html; }
     return str_replace( 'We are preparing the collection and testing the store before launch.', 'We are preparing the collection. Product details, prices and delivery information will be shared before orders open.', $html );
 } );
@@ -169,9 +181,9 @@ add_filter( 'document_title_parts', function ( $parts ) {
 add_action( 'wp_head', function () {
     if ( ! is_front_page() ) { return; }
     $description = 'Meet Maqwi Organics: honey, desi ghee, achaar and itar, rooted in everyday traditions. Explore the collection. Orders open soon.';
-    $image = get_stylesheet_directory_uri() . '/assets/images/honey.webp';
+    $image = get_option( 'maqwi_collection_banner' ) ? wp_get_attachment_image_url( get_option( 'maqwi_collection_banner' ), 'full' ) : get_stylesheet_directory_uri() . '/assets/images/honey.webp';
     echo '<meta name="description" content="' . esc_attr( $description ) . '">' . "\n";
-    foreach ( array( 'og:type' => 'website', 'og:title' => 'Maqwi Organics', 'og:description' => $description, 'og:url' => home_url( '/' ), 'og:image' => $image, 'og:image:alt' => 'Maqwi honey packaging concept', 'og:site_name' => 'Maqwi Organics' ) as $name => $value ) {
+    foreach ( array( 'og:type' => 'website', 'og:title' => 'Maqwi Organics', 'og:description' => $description, 'og:url' => home_url( '/' ), 'og:image' => $image, 'og:image:alt' => 'Maqwi Organics product collection', 'og:site_name' => 'Maqwi Organics' ) as $name => $value ) {
         echo '<meta property="' . esc_attr( $name ) . '" content="' . esc_attr( $value ) . '">' . "\n";
     }
     echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
@@ -203,5 +215,7 @@ add_action( 'woocommerce_single_product_summary', function () {
     if ( $product && 'yes' === $product->get_meta( '_maqwi_sample' ) ) { echo '<p class="mq-sample-note">Sample product · editable prices and sizes · orders closed</p>'; }
 }, 11 );
 add_action( 'woocommerce_before_shop_loop', function () {
-    if ( function_exists( 'maqwi_storefront_preview' ) && maqwi_storefront_preview() ) { echo '<p class="mq-sample-note">Explore the sample collection. Prices and sizes are examples for testing; packaging is concept artwork.</p>'; }
+    if ( get_option( 'maqwi_catalogue_release' ) ) {
+        echo '<p class="mq-sample-note">Confirmed prices are shown where available. Stock and delivery are being finalised before orders open. Product galleries use AI visuals based on our packaging.</p>';
+    } elseif ( function_exists( 'maqwi_storefront_preview' ) && maqwi_storefront_preview() ) { echo '<p class="mq-sample-note">Explore the sample collection. Prices and sizes are examples for testing; packaging is concept artwork.</p>'; }
 }, 5 );

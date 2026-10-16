@@ -23,7 +23,7 @@ add_filter( 'woocommerce_package_rates', function ( $rates, $package ) {
     return array( 'maqwi_preview' => new WC_Shipping_Rate( 'maqwi_preview', 'Sample delivery — final rate to be confirmed', 250, array(), 'maqwi_preview' ) );
 }, 100, 2 );
 add_action( 'woocommerce_before_checkout_form', function () {
-    if ( maqwi_storefront_preview() ) { echo '<p class="mq-sample-note mq-preview-checkout-note">Storefront preview: sample products, prices and delivery rate. Order submission is disabled.</p>'; }
+    if ( maqwi_storefront_preview() ) { echo '<p class="mq-sample-note mq-preview-checkout-note">Orders are not open yet. Delivery, stock and payment setup are being finalised. The displayed delivery rate is for testing.</p>'; }
 }, 5 );
 
 function maqwi_sample_catalogue() {
@@ -126,7 +126,7 @@ add_filter( 'woocommerce_get_privacy_policy_text', function ( $text, $type ) {
 }, 10, 2 );
 /** Purge native page cache once when this approved storefront code release is first executed. */
 add_action( 'init', function () {
-    $release = '0.2.5/' . wp_get_theme()->get( 'Version' );
+    $release = '0.3.0/' . wp_get_theme()->get( 'Version' );
     if ( maqwi_storefront_preview() && $release !== get_option( 'maqwi_preview_cache_release', '' ) && function_exists( 'w3tc_flush_all' ) ) {
         delete_transient( 'wc_shipping_method_count' );
         if ( class_exists( 'WC_Cache_Helper' ) ) { WC_Cache_Helper::get_transient_version( 'shipping', true ); }

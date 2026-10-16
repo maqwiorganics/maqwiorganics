@@ -19,7 +19,9 @@ jobs:
       - name: PHP syntax
         run: find wp-content/themes/maqwi-organics wp-content/plugins/maqwi-store-core tests -name '*.php' -print0 | xargs -0 -n1 php -l
       - name: Checkout rule checks
-        run: php tests/store-core.php
+        run: |
+          php tests/store-core.php
+          php tests/catalogue.php
       - name: Public script syntax
         run: node --check wp-content/themes/maqwi-organics/assets/public.js
       - name: Theme metadata and asset budgets
@@ -32,5 +34,14 @@ jobs:
           for image in (root/'assets/images').iterdir():
               assert image.stat().st_size < 150_000, image.name
           assert sum(p.stat().st_size for p in root.rglob('*') if p.is_file()) < 500_000
-          print('Theme metadata valid; each image below 150 KB; whole theme below 500 KB.')
+          photos = pathlib.Path('wp-content/plugins/maqwi-store-core/photography')
+          assets = json.loads((photos/'manifest.json').read_text())
+          import hashlib
+          assert len(assets) == 17
+          assert sum(a['bytes'] for a in assets) < 3_000_000
+          for a in assets:
+              p = photos/a['filename']
+              assert p.stat().st_size < 250_000
+              assert hashlib.sha256(p.read_bytes()).hexdigest() == a['sha256']
+          print('Theme valid; 17 photography assets verified under 3 MB total.')
           PY
