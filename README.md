@@ -1,4 +1,4 @@
-> **Catalogue review — 16 October 2026**: https://maqwiorganics.gt.tc/. Theme0.5.0 / Store Core0.3.0. Four native product galleries and descriptions, owner-approved Honey1kg PKR4500, Ghee1kg PKR3500 and Itar12ml PKR200. Achaar pricing/pack sizes and real inventory remain unconfirmed; orders stay closed. Public catalogue acceptance38869235803 passed52 page/width checks. See docs/CATALOGUE-RELEASE-20261016.md for release and sales prerequisites.
+> **Catalogue review — 16 October 2026**: https://maqwiorganics.gt.tc/. Theme0.6.0 / Store Core0.3.0. Premium editorial hero with mobile composition and reduced-motion support. Four native product galleries and descriptions, owner-approved Honey1kg PKR4500, Ghee1kg PKR3500 and Itar12ml PKR200. Achaar pricing/pack sizes and real inventory remain unconfirmed; orders stay closed. Public catalogue acceptance38869235803 passed52 page/width checks. See docs/CATALOGUE-RELEASE-20261016.md for release and sales prerequisites.
 
 # Maqwi Organics
 
