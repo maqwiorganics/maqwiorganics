@@ -53,3 +53,12 @@ Information pages: /about/, /contact/, /faq/, /delivery/, /returns/, /privacy-pr
 
 
 The sample delivery adapter is a native non-zone WooCommerce shipping method registered only in preview. This prevents the native zero-method count from skipping delivery calculation; no real shipping-zone or method-instance record is added. Native count/package caches are invalidated with the code revision. Before a real-store release, configure and test genuine shipping methods and clear shipping caches when disabling preview.
+
+
+## Approved catalogue preparation — Core0.3.0, 16 October
+
+The fixed owner-authorised catalogue revision has replaced the four sample records with native galleries/descriptions and three approved single-size offers: Honey1kg4500, Ghee1kg3500 and Itar12ml200 (PKR). New variation IDs62/63/64 respectively. Edit those normal WooCommerce Variations fields for future prices and actual stock; do not treat private legacy sample variations as sellable options. Achaar has no approved size or price. User approval of a per-kg price was not treated as approval to invent smaller sellable packs.
+
+Current stock is zero, backorders disabled and ordering guards remain on. The preview cart allowlist does not include these real catalogue records. Product gallery controls remain functional; native disabled purchase CSS classes settle after WooCommerce variation initialisation. The stock state is not proof of physical inventory. Supplier/recipe/label data must be supplied before sale. AI-image disclosures and net-weight/volume distinctions remain visible, especially500g Honey and500ml Ghee imagery alongside1kg offers.
+
+The fixed import version flag prevents source definitions from overwriting later native edits. A preflight lock, photo integrity checks and non-autoloaded snapshot preserve the previous catalogue; failures require review. The integrity retry applies once only before any product snapshot/mutation. See CATALOGUE-RELEASE-20261016.md for exact deployment/acceptance evidence and remaining sales prerequisites.

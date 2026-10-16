@@ -1,4 +1,4 @@
-> **Full storefront preview — 11 October 2026**: https://maqwiorganics.gt.tc/. Theme0.4.3 / Store Core0.2.5. Native shop, categories, four variable sample products, cart, checkout and account presentation, plus six information pages. Sample prices/sizes are editable in WooCommerce; order submission remains blocked. Acceptance evidence is recorded in `docs/BUILD-STATUS.md`.
+> **Catalogue review — 16 October 2026**: https://maqwiorganics.gt.tc/. Theme0.5.0 / Store Core0.3.0. Four native product galleries and descriptions, owner-approved Honey1kg PKR4500, Ghee1kg PKR3500 and Itar12ml PKR200. Achaar pricing/pack sizes and real inventory remain unconfirmed; orders stay closed. Public catalogue acceptance38869235803 passed52 page/width checks. See docs/CATALOGUE-RELEASE-20261016.md for release and sales prerequisites.
 
 # Maqwi Organics
 
