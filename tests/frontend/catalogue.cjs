@@ -44,7 +44,9 @@ fs.mkdirSync(out,{recursive:true});
     for(let n=0;n<4;n++){await thumbs.nth(n).click();await page.locator('.woocommerce-product-gallery__wrapper>.woocommerce-product-gallery__image').nth(n).locator('img').first().evaluate(i=>i.decode());}
     await thumbs.first().click();
     assert(!summary.includes('Sample product'),'No sample product label');
-    assert.equal(await page.getByRole('button',{name:'Add to cart',exact:true}).filter({visible:true}).count(),0,'Unknown stock cannot be ordered');
+    for(const button of await page.getByRole('button',{name:'Add to cart',exact:true}).filter({visible:true}).all()){assert(await button.isDisabled(),'Unknown stock cannot be ordered');}
+    const variationData=await page.locator('form.variations_form').count()?await page.locator('form.variations_form').getAttribute('data-product_variations'):null;
+    if(variationData&&variationData!=='false'){const variations=JSON.parse(variationData);assert(variations.every(v=>v.is_in_stock===false),'Every offer remains unavailable');}
     await check(slug);
    }
    for(const route of ['about','contact','faq','delivery','returns','privacy-preview','cart']){await visit(route+'/');await check(route);}
