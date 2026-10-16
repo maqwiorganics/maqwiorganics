@@ -1,6 +1,6 @@
 # Maqwi build status
 
-Current release: **theme 0.3.5 / Store Core 0.1.5**, public brand introduction on the temporary hostname, ordering closed. Read the final frontend release section for current QA evidence; older sections below retain installation history.
+Current release: **theme 0.6.1 / Store Core 0.3.1**, native catalogue on the temporary hostname, ordering closed. See CUSTOMER-COPY-20261016.md for the 72-check frontend acceptance and HOSTING-AUDIT-20261016.md for current hosting findings and access limitations. Older sections below retain installation history.
 
 ## Earlier storefront foundation and commerce phase
 
