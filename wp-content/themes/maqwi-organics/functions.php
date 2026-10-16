@@ -26,7 +26,7 @@ function maqwi_premium_hero() {
 }
 add_filter( 'render_block_core/group', function ( $html, $block ) {
     $classes = preg_split( '/\s+/', $block['attrs']['className'] ?? '' );
-    return is_front_page() && in_array( 'mq-hero', $classes, true ) ? maqwi_premium_hero() : $html;
+    return is_front_page() && version_compare( wp_get_theme()->get( 'Version' ), '0.6.0', '>=' ) && in_array( 'mq-hero', $classes, true ) ? maqwi_premium_hero() : $html;
 }, 20, 2 );
 
 add_action( 'after_setup_theme', function () {
