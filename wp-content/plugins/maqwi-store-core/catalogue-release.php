@@ -19,6 +19,17 @@ add_action( 'wp_head', function () {
     $error = get_option( 'maqwi_catalogue_release_error', '' );
     $status = get_option( 'maqwi_catalogue_release' ) ? 'ready' : ( $error ? ( $codes[ $error ] ?? 'runtime-error' ) : 'pending' );
     echo '<meta name="maqwi-catalogue-status" content="' . esc_attr( $status ) . '">' . "\n";
+    if ( 'image-integrity' === $status ) {
+        $manifest = json_decode( file_get_contents( __DIR__ . '/photography/manifest.json' ), true );
+        foreach ( (array) $manifest as $asset ) {
+            $path = __DIR__ . '/photography/' . basename( $asset['filename'] );
+            $actual = is_file( $path ) ? hash_file( 'sha256', $path ) : 'missing';
+            if ( ! in_array( $actual, array( $asset['sha256'], $asset['source_sha256'] ?? '' ), true ) ) {
+                echo '<meta name="maqwi-photo-integrity" content="' . esc_attr( basename( $asset['filename'] ) . ':' . $actual . ':' . ( is_file( $path ) ? filesize( $path ) : 0 ) ) . '">' . "\n";
+                break;
+            }
+        }
+    }
 }, 6 );
 
 function maqwi_launch_catalogue() {
@@ -83,6 +94,13 @@ add_action( 'init', function () {
     $version = '2026-10-16-catalogue-1';
     if ( get_option( 'maqwi_catalogue_release' ) === $version || ! class_exists( 'WC_Product_Variable' ) ) { return; }
     if ( ! maqwi_storefront_preview() || ! maqwi_brand_launch_mode() ) { return; }
+    // The prior hash check failed before snapshots/media/products were touched.
+    // Retry that preflight once for this verifier revision, never a partial import.
+    if ( 'dual-hash-1' !== get_option( 'maqwi_catalogue_integrity_retry' ) && 'Photography integrity check failed.' === get_option( 'maqwi_catalogue_release_error' ) && ! get_option( 'maqwi_catalogue_before_20261016' ) ) {
+        update_option( 'maqwi_catalogue_integrity_retry', 'dual-hash-1', false );
+        delete_option( 'maqwi_catalogue_release_lock' );
+        delete_option( 'maqwi_catalogue_release_error' );
+    }
     if ( ! add_option( 'maqwi_catalogue_release_lock', $version, '', false ) ) { return; }
     try {
         $items = maqwi_launch_catalogue();
@@ -90,7 +108,9 @@ add_action( 'init', function () {
         if ( ! is_array( $manifest ) || 17 !== count( $manifest ) ) { throw new Exception( 'Incomplete photography package.' ); }
         foreach ( $manifest as $asset ) {
             $path = __DIR__ . '/photography/' . basename( $asset['filename'] );
-            if ( ! is_file( $path ) || ! hash_equals( $asset['sha256'], hash_file( 'sha256', $path ) ) ) { throw new Exception( 'Photography integrity check failed.' ); }
+            $hash = is_file( $path ) ? hash_file( 'sha256', $path ) : '';
+            // Accept exact source bytes or the visually verified host readback.
+            if ( ! $hash || ( ! hash_equals( $asset['sha256'], $hash ) && ! hash_equals( $asset['source_sha256'] ?? $asset['sha256'], $hash ) ) ) { throw new Exception( 'Photography integrity check failed.' ); }
         }
         $originals = array();
         $products = array();

@@ -35,7 +35,7 @@ jobs:
           sources.sort(key=lambda source: (2 if source.endswith('maqwi-store-core.php') else 1 if not source.endswith(('.webp', 'manifest.json', 'catalogue-release.php')) else 0, source.endswith('manifest.json')))
           server_assets = {}
           new_sources = set()
-          old_commit = '1889172c4198f6929b196d3aab7a89e3e73d3753'
+          old_commit = '4de49df1a6bd71286f997faa270cd738ef064724'
           ftp = ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
           ftp.connect('ftpupload.net',21)
           ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
