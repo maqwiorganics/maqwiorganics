@@ -12,10 +12,10 @@ fs.mkdirSync(out,{recursive:true});
   for(const width of [320,390,768,1440]){
    const page=await context.newPage();await page.setViewportSize({width,height:900});
    page.on('pageerror',e=>report.runtimeErrors.push(e.message));
-   async function visit(route){await page.goto(base+route,{waitUntil:'domcontentloaded',timeout:90000});await page.locator('.mq-header').waitFor({timeout:90000});await page.waitForLoadState('load');}
+   async function visit(route){console.log('Visiting',width,route);await page.goto(base+route,{waitUntil:'domcontentloaded',timeout:90000});await page.locator('.mq-header').waitFor({timeout:90000});await page.waitForLoadState('load');}
    async function check(name){
     assert.equal(await page.locator('main h1').count(),1,name+' H1');
-    for(const img of await page.locator('main img').all()){if(await img.isVisible()){await img.evaluate(i=>i.decode());}}
+    for(const img of await page.locator('main img').all()){if(await img.isVisible()){await img.scrollIntoViewIfNeeded({timeout:10000});await Promise.race([img.evaluate(i=>i.decode()),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Image decode timed out: '+name)),15000))]);}}
     const m=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,broken:[...document.querySelectorAll('main img')].filter(i=>i.getBoundingClientRect().height>0&&(!i.complete||!i.naturalWidth)).length}));
     assert(m.scroll<=width+1,name+' horizontal overflow');assert.equal(m.broken,0,name+' broken images');
     report.checks.push({width,name,...m});
@@ -39,6 +39,10 @@ fs.mkdirSync(out,{recursive:true});
     else {assert((await page.locator('main').innerText()).includes('Price to be confirmed'),'Achaar has no fabricated price');}
     assert.equal(await page.locator('.woocommerce-product-gallery__wrapper>.woocommerce-product-gallery__image').count(),4,'Four native gallery images '+slug);
     assert.equal(await page.locator('.mq-concept-gallery').count(),0,'Old concept fallback retired');
+    const thumbs=page.locator('.flex-control-thumbs img');
+    assert.equal(await thumbs.count(),4,'Four usable gallery thumbnails '+slug);
+    for(let n=0;n<4;n++){await thumbs.nth(n).click();await page.locator('.woocommerce-product-gallery__wrapper>.woocommerce-product-gallery__image').nth(n).locator('img').first().evaluate(i=>i.decode());}
+    await thumbs.first().click();
     assert(!summary.includes('Sample product'),'No sample product label');
     assert.equal(await page.getByRole('button',{name:'Add to cart',exact:true}).filter({visible:true}).count(),0,'Unknown stock cannot be ordered');
     await check(slug);
