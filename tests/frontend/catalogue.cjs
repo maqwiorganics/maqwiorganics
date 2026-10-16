@@ -23,6 +23,8 @@ fs.mkdirSync(out,{recursive:true});
     console.log(JSON.stringify({passed:name,width}));
    }
    await visit('?catalogue-release=20261016');
+   console.log('Catalogue health:', await page.locator('meta[name="maqwi-catalogue-status"]').getAttribute('content'));
+   await page.screenshot({path:out+'/release-status-'+width+'.png',fullPage:true});
    assert.equal(await page.locator('.mq-product-card').count(),4,'Four catalogue cards');
    assert(await page.locator('link[href*="style.css?ver=0.5.0"]').count(),'Current theme');
    assert.equal(await page.locator('.mq-announcement').innerText(),'Meet the Maqwi collection · orders open soon');
