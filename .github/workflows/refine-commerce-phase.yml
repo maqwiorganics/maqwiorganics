@@ -1,4 +1,4 @@
-name: Deploy complete storefront preview on temporary site
+name: Deploy approved product catalogue on temporary site
 on:
   push:
     branches: [staging]
@@ -11,7 +11,7 @@ concurrency:
 jobs:
   refine:
     runs-on: ubuntu-24.04
-    timeout-minutes: 4
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -21,6 +21,7 @@ jobs:
         run: |
           find wp-content/themes/maqwi-organics wp-content/plugins/maqwi-store-core tests -name '*.php' -print0 | xargs -0 -n1 php -l
           php tests/store-core.php
+          php tests/catalogue.php
           node --check wp-content/themes/maqwi-organics/assets/public.js
       - name: Apply guarded public frontend release
         env:
@@ -28,9 +29,9 @@ jobs:
         run: |
           python3 - <<'PY'
           import ftplib, ssl, os, io, hashlib, pathlib, subprocess, secrets
-          sources = ['wp-content/themes/maqwi-organics/style.css']
-          new_sources = set()
-          old_commit = '19438b3b5ad1d55c5c8e0adc64c97ffde9e0518f'
+          sources = ['wp-content/plugins/maqwi-store-core/photography/01-achaar-catalogue.webp', 'wp-content/plugins/maqwi-store-core/photography/01-desi-ghee-catalogue.webp', 'wp-content/plugins/maqwi-store-core/photography/01-honey-catalogue.webp', 'wp-content/plugins/maqwi-store-core/photography/01-itar-catalogue.webp', 'wp-content/plugins/maqwi-store-core/photography/02-achaar-lifestyle.webp', 'wp-content/plugins/maqwi-store-core/photography/02-desi-ghee-lifestyle.webp', 'wp-content/plugins/maqwi-store-core/photography/02-honey-lifestyle.webp', 'wp-content/plugins/maqwi-store-core/photography/02-itar-lifestyle.webp', 'wp-content/plugins/maqwi-store-core/photography/03-achaar-detail.webp', 'wp-content/plugins/maqwi-store-core/photography/03-desi-ghee-detail.webp', 'wp-content/plugins/maqwi-store-core/photography/03-honey-detail.webp', 'wp-content/plugins/maqwi-store-core/photography/03-itar-detail.webp', 'wp-content/plugins/maqwi-store-core/photography/04-achaar-alternate-angle.webp', 'wp-content/plugins/maqwi-store-core/photography/04-desi-ghee-alternate-angle.webp', 'wp-content/plugins/maqwi-store-core/photography/04-honey-alternate-angle.webp', 'wp-content/plugins/maqwi-store-core/photography/04-itar-alternate-angle.webp', 'wp-content/plugins/maqwi-store-core/photography/manifest.json', 'wp-content/plugins/maqwi-store-core/photography/maqwi-collection-banner.webp', 'wp-content/plugins/maqwi-store-core/catalogue-release.php', 'wp-content/plugins/maqwi-store-core/storefront-preview.php', 'wp-content/themes/maqwi-organics/functions.php', 'wp-content/themes/maqwi-organics/header-maqwi.php', 'wp-content/themes/maqwi-organics/style.css', 'wp-content/plugins/maqwi-store-core/maqwi-store-core.php']
+          new_sources = set(['wp-content/plugins/maqwi-store-core/photography/01-achaar-catalogue.webp', 'wp-content/plugins/maqwi-store-core/photography/01-desi-ghee-catalogue.webp', 'wp-content/plugins/maqwi-store-core/photography/01-honey-catalogue.webp', 'wp-content/plugins/maqwi-store-core/photography/01-itar-catalogue.webp', 'wp-content/plugins/maqwi-store-core/photography/02-achaar-lifestyle.webp', 'wp-content/plugins/maqwi-store-core/photography/02-desi-ghee-lifestyle.webp', 'wp-content/plugins/maqwi-store-core/photography/02-honey-lifestyle.webp', 'wp-content/plugins/maqwi-store-core/photography/02-itar-lifestyle.webp', 'wp-content/plugins/maqwi-store-core/photography/03-achaar-detail.webp', 'wp-content/plugins/maqwi-store-core/photography/03-desi-ghee-detail.webp', 'wp-content/plugins/maqwi-store-core/photography/03-honey-detail.webp', 'wp-content/plugins/maqwi-store-core/photography/03-itar-detail.webp', 'wp-content/plugins/maqwi-store-core/photography/04-achaar-alternate-angle.webp', 'wp-content/plugins/maqwi-store-core/photography/04-desi-ghee-alternate-angle.webp', 'wp-content/plugins/maqwi-store-core/photography/04-honey-alternate-angle.webp', 'wp-content/plugins/maqwi-store-core/photography/04-itar-alternate-angle.webp', 'wp-content/plugins/maqwi-store-core/photography/manifest.json', 'wp-content/plugins/maqwi-store-core/photography/maqwi-collection-banner.webp', 'wp-content/plugins/maqwi-store-core/catalogue-release.php'])
+          old_commit = '5b0b69d7287ce537bb1b2897c805f53f0843e356'
           ftp = ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
           ftp.connect('ftpupload.net',21)
           ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
@@ -54,7 +55,10 @@ jobs:
           for source in sources:
               if source in new_sources:
                   parent = str(pathlib.PurePosixPath('/htdocs/'+source).parent)
-                  names = {x.rsplit('/',1)[-1] for x in ftp.nlst(parent)}
+                  try: names = {x.rsplit('/',1)[-1] for x in ftp.nlst(parent)}
+                  except ftplib.error_perm as e:
+                      if not str(e).startswith('550'): raise
+                      names = set()
                   assert pathlib.Path(source).name not in names, 'Unexpected pre-existing new source'
                   continue
               expected = subprocess.check_output(['git','show',old_commit+':'+source])
@@ -66,6 +70,10 @@ jobs:
               target = history+'/'+pathlib.Path(source).name
               ftp.storbinary('STOR '+target,io.BytesIO(originals[source]))
               verify(originals[source],read(target))
+          photo_dir = '/htdocs/wp-content/plugins/maqwi-store-core/photography'
+          try: ftp.mkd(photo_dir)
+          except ftplib.error_perm as e:
+              if not str(e).startswith('550'): raise
           changed = []
           temporary = None
           try:
@@ -92,5 +100,5 @@ jobs:
               raise
           finally:
               ftp.quit()
-          print('Public frontend deployed; previous source backed up; exact source hashes verified.')
+          print('Approved catalogue source deployed; source snapshot and exact hashes verified. Native revision still needs runtime acceptance; orders remain closed.')
           PY
