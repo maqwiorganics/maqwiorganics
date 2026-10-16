@@ -31,11 +31,11 @@ jobs:
         run: |
           python3 - <<'PY'
           import ftplib, ssl, os, io, hashlib, pathlib, subprocess, secrets, json
-          sources = ['wp-content/plugins/maqwi-store-core/catalogue-release.php']
-          sources.sort(key=lambda source: (2 if source.endswith('maqwi-store-core.php') else 1 if not source.endswith(('.webp', 'manifest.json', 'catalogue-release.php')) else 0, source.endswith('manifest.json')))
+          sources = ['wp-content/plugins/maqwi-store-core/photography/manifest.json', 'wp-content/plugins/maqwi-store-core/catalogue-release.php']
+          # The verified manifest must be installed before the revised preflight.
           server_assets = {}
           new_sources = set()
-          old_commit = '4de49df1a6bd71286f997faa270cd738ef064724'
+          old_commit = '96b2f4f02017c968c810980751466231f83b7ee3'
           ftp = ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
           ftp.connect('ftpupload.net',21)
           ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
@@ -76,7 +76,25 @@ jobs:
                   continue
               expected = subprocess.check_output(['git','show',old_commit+':'+source])
               originals[source] = read('/htdocs/'+source)
-              verify(expected,originals[source])
+              if source.endswith('photography/manifest.json'):
+                  expected_manifest = json.loads(expected)
+                  current_manifest = json.loads(originals[source])
+                  assert len(expected_manifest) == len(current_manifest) == 17
+                  for a, b in zip(expected_manifest, current_manifest):
+                      assert a['filename'] == b['filename'] and a['sha256'] == b['source_sha256']
+                      assert (a['width'],a['height']) == (b['width'],b['height'])
+              else: verify(expected,originals[source])
+          manifest_source = json.loads(pathlib.Path('wp-content/plugins/maqwi-store-core/photography/manifest.json').read_bytes())
+          for asset in manifest_source:
+              source = 'wp-content/plugins/maqwi-store-core/photography/'+asset['filename']
+              data = pathlib.Path(source).read_bytes()
+              actual = read('/htdocs/'+source)
+              verify(data,actual)
+              digest = hashlib.sha256(actual).hexdigest()
+              if asset['filename'] == '01-desi-ghee-catalogue.webp':
+                  assert digest == 'a9dbea3afe9ec75bf2522dcb3e4cc4a965c621b0948722d9ed859710a4340b4f', 'FTP and native file hashes differ'
+              server_assets[asset['filename']] = (digest,len(actual))
+          print('Final installed image hashes verified against source and native readback.',flush=True)
           history = '/htdocs/wp-content/themes/.maqwi-commerce-refine-'+os.environ['GITHUB_RUN_ID']
           ftp.mkd(history)
           for source in originals:
@@ -131,3 +149,25 @@ jobs:
               ftp.quit()
           print('Approved catalogue source deployed; source snapshot and exact hashes verified. Native revision still needs runtime acceptance; orders remain closed.')
           PY
+  catalogue-acceptance:
+    needs: refine
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Install pinned browser driver without lifecycle scripts
+        run: npm install --prefix .qa-deps --ignore-scripts --no-audit --no-fund --no-save playwright@1.62.1
+      - name: Public acceptance checks using normal installed Chrome
+        env:
+          NODE_PATH: ${{ github.workspace }}/.qa-deps/node_modules
+        run: node tests/frontend/catalogue.cjs
+      - name: Retain public screenshots and acceptance report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: maqwi-public-frontend-qa
+          path: frontend-qa/
+          retention-days: 7
+          if-no-files-found: warn

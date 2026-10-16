@@ -96,8 +96,8 @@ add_action( 'init', function () {
     if ( ! maqwi_storefront_preview() || ! maqwi_brand_launch_mode() ) { return; }
     // The prior hash check failed before snapshots/media/products were touched.
     // Retry that preflight once for this verifier revision, never a partial import.
-    if ( 'dual-hash-1' !== get_option( 'maqwi_catalogue_integrity_retry' ) && 'Photography integrity check failed.' === get_option( 'maqwi_catalogue_release_error' ) && ! get_option( 'maqwi_catalogue_before_20261016' ) ) {
-        update_option( 'maqwi_catalogue_integrity_retry', 'dual-hash-1', false );
+    if ( 'final-file-hash-1' !== get_option( 'maqwi_catalogue_integrity_retry' ) && 'Photography integrity check failed.' === get_option( 'maqwi_catalogue_release_error' ) && ! get_option( 'maqwi_catalogue_before_20261016' ) ) {
+        update_option( 'maqwi_catalogue_integrity_retry', 'final-file-hash-1', false );
         delete_option( 'maqwi_catalogue_release_lock' );
         delete_option( 'maqwi_catalogue_release_error' );
     }
