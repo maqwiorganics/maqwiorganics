@@ -2,6 +2,25 @@
 /** Fixed, owner-authorised catalogue revision. No request supplies product data. */
 defined( 'ABSPATH' ) || exit;
 
+/** Non-sensitive release health for automated acceptance, never customer data. */
+add_action( 'wp_head', function () {
+    if ( ! maqwi_storefront_preview() ) { return; }
+    $codes = array(
+        'Incomplete photography package.' => 'incomplete-images',
+        'Photography integrity check failed.' => 'image-integrity',
+        'Expected sample catalogue was changed. Review before importing.' => 'catalogue-conflict',
+        'A release SKU already exists. Review before importing.' => 'sku-conflict',
+        'An earlier catalogue snapshot exists. Review before importing.' => 'snapshot-conflict',
+        'Product media could not be saved.' => 'media-save',
+        'Product media registration failed.' => 'media-register',
+        'Product image metadata could not be generated.' => 'media-metadata',
+        'Information page update failed.' => 'page-update'
+    );
+    $error = get_option( 'maqwi_catalogue_release_error', '' );
+    $status = get_option( 'maqwi_catalogue_release' ) ? 'ready' : ( $error ? ( $codes[ $error ] ?? 'runtime-error' ) : 'pending' );
+    echo '<meta name="maqwi-catalogue-status" content="' . esc_attr( $status ) . '">' . "\n";
+}, 6 );
+
 function maqwi_launch_catalogue() {
     return array(
         'maqwi-honey' => array(
