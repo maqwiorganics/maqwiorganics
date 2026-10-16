@@ -3,7 +3,7 @@ Theme Name: Maqwi Organics
 Description: Lightweight Kadence child theme with an editable Maqwi homepage pattern.
 Author: Maqwi Organics
 Template: kadence
-Version: 0.5.0
+Version: 0.6.0
 Requires at least: 6.6
 Requires PHP: 8.1
 Text Domain: maqwi-organics
@@ -69,3 +69,31 @@ License: GPL-2.0-or-later
 
 /* Retain the child theme breadcrumb and suppress the parent duplicate. */
 .mq-commerce #kadence-breadcrumbs{display:none}
+
+/* Editorial hero: live typography, campaign imagery and a mobile composition. */
+.mq-premium-hero{position:relative;isolation:isolate;overflow:clip;display:flex;align-items:center;min-height:730px;padding:76px max(40px,calc((100vw - 1240px)/2));background:var(--mq-cream)}
+.mq-premium-copy{position:relative;z-index:2;width:42%;max-width:510px;animation:mq-hero-arrive .75s cubic-bezier(.2,.65,.3,1) both}
+.mq-premium-copy .mq-premium-eyebrow{display:flex;align-items:center;gap:12px;font-size:10px;letter-spacing:.2em;margin:0 0 25px!important}
+.mq-premium-eyebrow>span{display:inline-block;width:28px;height:1px;background:#a97a23;flex-shrink:0}
+.mq-home .mq-premium-copy h1{font-size:clamp(64px,6.3vw,92px);font-weight:400;line-height:1.02;letter-spacing:-.045em;margin:0 0 28px;color:var(--mq-green);text-wrap:balance}
+.mq-premium-copy h1>span{font-size:.84em;letter-spacing:-.035em}
+.mq-premium-description{max-width:380px;font-size:17px;line-height:1.8;margin:0 0 30px!important;color:#44463a}
+.mq-premium-actions{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.mq-premium-primary{display:inline-flex;align-items:center;justify-content:center;gap:26px;min-height:54px;padding:16px 24px;background:var(--mq-green);color:var(--mq-cream)!important;border:1px solid var(--mq-green);border-radius:4px;text-decoration:none;font-size:14px;font-weight:500;transition:background .2s,transform .2s}
+.mq-premium-primary:hover{background:#254b2e;transform:translateY(-2px)}
+.mq-premium-primary>span{font-size:20px;line-height:1}
+.mq-premium-story{display:inline-flex;gap:14px;align-items:center;min-height:48px;font-size:14px;text-decoration:none;border-bottom:1px solid #7c846c}
+.mq-premium-story:hover{color:var(--mq-green);border-color:var(--mq-green)}
+.mq-premium-note{display:flex;align-items:center;gap:12px;font-size:11px;line-height:1.7;letter-spacing:.035em;color:#555d4e;margin:32px 0 0!important}
+.mq-premium-note>span{height:6px;width:6px;flex-shrink:0;border:1px solid #a97a23;transform:rotate(45deg)}
+.mq-premium-media{position:absolute;inset:0;margin:0;z-index:0;animation:mq-hero-light 1s ease-out both}
+.mq-premium-media::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#f7f2e7 0%,rgba(247,242,231,.98) 26%,rgba(247,242,231,.88) 36%,rgba(247,242,231,.25) 46%,transparent 55%);pointer-events:none}
+.mq-premium-media>img{display:block;width:100%;height:100%;object-fit:cover;object-position:75% 50%;border-radius:0}
+.mq-premium-media>figcaption{position:absolute;z-index:1;right:max(32px,calc((100vw - 1240px)/2));bottom:18px;font-size:10px;line-height:1.6;color:#394232;background:rgba(247,242,231,.88);padding:4px 9px;border-radius:3px}
+@keyframes mq-hero-arrive{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes mq-hero-light{from{opacity:.65}to{opacity:1}}
+@media(min-width:1600px){.mq-premium-hero{min-height:800px}.mq-premium-media>img{object-position:right 50%}}
+@media(max-width:1099px){.mq-premium-hero{display:flex;flex-direction:column;align-items:stretch;min-height:0;padding:0}.mq-premium-copy{width:100%;max-width:680px;padding:54px 32px 12px;margin:0 auto;animation-duration:.6s}.mq-home .mq-premium-copy h1{font-size:clamp(58px,7.5vw,82px);max-width:640px;letter-spacing:-.04em;margin-bottom:22px}.mq-premium-description{max-width:470px;font-size:16px}.mq-premium-note{margin-top:24px!important}.mq-premium-media{position:relative;inset:auto;flex:none;height:500px;margin-top:-8px;animation:none}.mq-premium-media::after{background:linear-gradient(180deg,var(--mq-cream),rgba(247,242,231,.6) 8%,transparent 25%)}.mq-premium-media>img{object-position:right 50%}.mq-premium-media>figcaption{right:24px;bottom:12px}}
+@media(max-width:639px){.mq-premium-copy{padding:38px 24px 8px}.mq-premium-copy .mq-premium-eyebrow{font-size:9px;gap:10px;letter-spacing:.16em;margin-bottom:20px!important}.mq-premium-eyebrow>span{width:20px}.mq-home .mq-premium-copy h1{font-size:clamp(49px,12.5vw,72px);line-height:1.02;max-width:500px}.mq-premium-copy h1>span{font-size:.88em}.mq-premium-description{font-size:15px;line-height:1.75;max-width:36ch;margin-bottom:24px!important}.mq-premium-actions{gap:20px}.mq-premium-primary{min-height:52px;gap:20px;padding:14px 18px;font-size:13px}.mq-premium-story{font-size:13px;gap:10px}.mq-premium-note{font-size:10px;gap:10px;margin-top:22px!important}.mq-premium-media{height:clamp(330px,100vw,440px);margin-top:0}.mq-premium-media>figcaption{font-size:9px;right:16px;bottom:10px}.mq-premium-media::after{background:linear-gradient(180deg,var(--mq-cream),rgba(247,242,231,.45) 8%,transparent 24%)}}
+@media(max-width:359px){.mq-premium-copy{padding-inline:20px}.mq-premium-actions{gap:16px}.mq-premium-primary{gap:14px;padding-inline:15px}.mq-premium-story{gap:8px}.mq-home .mq-premium-copy h1{font-size:49px}.mq-premium-note{letter-spacing:0}}
+@media(prefers-reduced-motion:reduce){.mq-premium-copy,.mq-premium-media{animation:none;transform:none;opacity:1}.mq-premium-primary{transition:none}.mq-premium-primary:hover{transform:none}}

@@ -2,6 +2,33 @@
 /** Maqwi presentation layer. Commerce data remains in WooCommerce. */
 defined( 'ABSPATH' ) || exit;
 
+/** Editorial hero replaces only the saved homepage hero group at render time. */
+function maqwi_premium_hero() {
+    $image = get_stylesheet_directory_uri() . '/assets/images/hero-campaign-v2.webp';
+    ob_start(); ?>
+    <section class="mq-premium-hero" aria-labelledby="mq-premium-title">
+        <div class="mq-premium-copy">
+            <p class="mq-eyebrow mq-premium-eyebrow"><span aria-hidden="true"></span>Maqwi Organics · Pakistan</p>
+            <h1 id="mq-premium-title">A little desi.<br><span>A little closer to home.</span></h1>
+            <p class="mq-premium-description">Honey, desi ghee, achaar and itar. Familiar favourites for the rituals that make a day your own.</p>
+            <div class="mq-premium-actions">
+                <a class="mq-premium-primary" href="#the-collection">Explore the collection <span aria-hidden="true">↗</span></a>
+                <a class="mq-premium-story" href="<?php echo esc_url( home_url( '/about/' ) ); ?>">Our story <span aria-hidden="true">→</span></a>
+            </div>
+            <p class="mq-premium-note"><span aria-hidden="true"></span>Four traditions. One thoughtful beginning.</p>
+        </div>
+        <figure class="mq-premium-media">
+            <img src="<?php echo esc_url( $image ); ?>" alt="Maqwi Honey, Desi Ghee and Achaar arranged on warm stone with green linen and afternoon light" width="1440" height="960" loading="eager" decoding="async" fetchpriority="high">
+            <figcaption>AI product visual · packaging illustration</figcaption>
+        </figure>
+    </section>
+    <?php return ob_get_clean();
+}
+add_filter( 'render_block_core/group', function ( $html, $block ) {
+    $classes = preg_split( '/\s+/', $block['attrs']['className'] ?? '' );
+    return is_front_page() && in_array( 'mq-hero', $classes, true ) ? maqwi_premium_hero() : $html;
+}, 20, 2 );
+
 add_action( 'after_setup_theme', function () {
     register_nav_menus( array( 'maqwi-primary' => __( 'Maqwi primary navigation', 'maqwi-organics' ) ) );
     add_theme_support( 'editor-styles' );

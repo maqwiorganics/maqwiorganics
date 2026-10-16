@@ -28,9 +28,20 @@ fs.mkdirSync(out,{recursive:true});
    console.log('Photo integrity:', await page.locator('meta[name="maqwi-photo-integrity"]').count() ? await page.locator('meta[name="maqwi-photo-integrity"]').getAttribute('content') : 'no mismatch');
    await page.screenshot({path:out+'/release-status-'+width+'.png',fullPage:true});
    assert.equal(await page.locator('.mq-product-card').count(),4,'Four catalogue cards');
-   assert(await page.locator('link[href*="style.css?ver=0.5.0"]').count(),'Current theme');
+   assert(await page.locator('link[href*="style.css?ver=0.6.0"]').count(),'Current theme');
    assert.equal(await page.locator('.mq-announcement').innerText(),'Meet the Maqwi collection · orders open soon');
+   assert.equal(await page.locator('.mq-premium-hero').count(),1,'Premium hero renders once');
+   assert.equal(await page.locator('.mq-premium-primary').getAttribute('href'),'#the-collection');
+   assert.equal(await page.locator('.mq-premium-story').getAttribute('href'),base+'about/');
+   const heroImg=page.locator('.mq-premium-media>img');
+   assert((await heroImg.getAttribute('src')).includes('hero-campaign-v2.webp'));
+   assert.equal(await heroImg.getAttribute('fetchpriority'),'high');
+   if(width<1100){const c=await page.locator('.mq-premium-copy').boundingBox(),m=await page.locator('.mq-premium-media').boundingBox();assert(c.y+c.height<=m.y+10,'Mobile copy above image');}
    await check('home');
+   await page.locator('.mq-premium-primary').click();await page.waitForFunction(()=>location.hash==='#the-collection');
+   await page.emulateMedia({reducedMotion:'reduce'});
+   assert.equal(await page.locator('.mq-premium-copy').evaluate(e=>getComputedStyle(e).animationName),'none','Reduced motion respected');
+   await page.emulateMedia({reducedMotion:'no-preference'});
    await visit('shop/');assert.equal(await page.locator('ul.products>li.product').count(),4);await check('shop');
    const products=[['honey','4,500','1 kg'],['desi-ghee','3,500','1 kg'],['itar','200','12 ml'],['achaar',null,null]];
    for(const [slug,price,size] of products){
