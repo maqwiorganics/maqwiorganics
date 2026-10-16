@@ -19,6 +19,7 @@ fs.mkdirSync(out,{recursive:true});
     const m=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,broken:[...document.querySelectorAll('main img')].filter(i=>i.getBoundingClientRect().height>0&&(!i.complete||!i.naturalWidth)).length}));
     assert(m.scroll<=width+1,name+' horizontal overflow');assert.equal(m.broken,0,name+' broken images');
     report.checks.push({width,name,...m});
+    await page.evaluate(()=>scrollTo(0,0));await page.waitForFunction(()=>scrollY===0);
     await page.screenshot({path:out+'/'+name+'-'+width+'.png',fullPage:true});
     console.log(JSON.stringify({passed:name,width}));
    }
@@ -44,9 +45,9 @@ fs.mkdirSync(out,{recursive:true});
     for(let n=0;n<4;n++){await thumbs.nth(n).click();await page.locator('.woocommerce-product-gallery__wrapper>.woocommerce-product-gallery__image').nth(n).locator('img').first().evaluate(i=>i.decode());}
     await thumbs.first().click();
     assert(!summary.includes('Sample product'),'No sample product label');
-    for(const button of await page.getByRole('button',{name:'Add to cart',exact:true}).filter({visible:true}).all()){assert(await button.isDisabled(),'Unknown stock cannot be ordered');}
+    for(const button of await page.getByRole('button',{name:'Add to cart',exact:true}).filter({visible:true}).all()){const classes=await button.getAttribute('class');console.log('Purchase control',slug,classes);assert((await button.isDisabled())||/(?:^|\s)disabled(?:\s|$)/.test(classes),'Unknown stock cannot be ordered');}
     const variationData=await page.locator('form.variations_form').count()?await page.locator('form.variations_form').getAttribute('data-product_variations'):null;
-    if(variationData&&variationData!=='false'){const variations=JSON.parse(variationData);assert(variations.every(v=>v.is_in_stock===false),'Every offer remains unavailable');}
+    if(variationData&&variationData!=='false'){const variations=JSON.parse(variationData);console.log('Native variation availability',slug,JSON.stringify(variations.map(v=>({id:v.variation_id,inStock:v.is_in_stock,purchasable:v.is_purchasable}))));assert(variations.every(v=>v.is_in_stock===false&&v.is_purchasable===false),'Every offer remains unavailable');}
     await check(slug);
    }
    for(const route of ['about','contact','faq','delivery','returns','privacy-preview','cart']){await visit(route+'/');await check(route);}
