@@ -289,3 +289,19 @@ License: GPL-2.0-or-later
 .mq-slideshow-hero:focus{outline:none}.mq-slideshow-hero:focus-visible{outline:2px solid var(--mq-green);outline-offset:-4px}
 @media(max-width:767px){.mq-slideshow-hero .mq-premium-description{min-height:72px}}
 @media(prefers-reduced-motion:reduce){.mq-slideshow-hero .mq-copy-arriving{animation:none}}
+
+
+/* Maqwi editorial refinement: elegant retail details without new dependencies. */
+.mq-home .mq-section-top{padding-bottom:22px;border-bottom:1px solid rgba(47,93,58,.22)}
+.mq-home .mq-section-top h2{max-width:17ch;text-wrap:balance}
+.mq-home .mq-section-top>a{display:inline-flex;align-items:center;min-height:44px;text-decoration-thickness:1px;text-underline-offset:6px}
+.mq-home .mq-category img{transition:transform .55s cubic-bezier(.2,.7,.2,1),filter .4s ease}
+.mq-home .mq-category figure{overflow:hidden;border-radius:150px 150px 4px 4px}
+.mq-home .mq-category:hover img,.mq-home .mq-category:focus-within img{transform:scale(1.035)}
+.mq-home .mq-category h3{letter-spacing:-.018em}
+.mq-home .mq-premium-primary,.mq-home .mq-button-link{transition:background-color .2s ease,border-color .2s ease,transform .2s ease}
+.mq-home .mq-premium-primary:hover,.mq-home .mq-button-link:hover{transform:translateY(-2px)}
+.mq-home .mq-hero-gallery-note{letter-spacing:.025em}
+.mq-home .mq-eyebrow{font-variant-caps:all-small-caps;letter-spacing:.2em}
+@media(max-width:767px){.mq-home .mq-section-top{align-items:flex-start;gap:12px}.mq-home .mq-category figure{border-radius:100px 100px 4px 4px}.mq-home .mq-category img{transition:none}.mq-home .mq-category:hover img,.mq-home .mq-category:focus-within img{transform:none}}
+@media(prefers-reduced-motion:reduce){.mq-home .mq-category img,.mq-home .mq-premium-primary,.mq-home .mq-button-link{transition:none!important;transform:none!important}}
