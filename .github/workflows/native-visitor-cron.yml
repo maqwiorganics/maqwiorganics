@@ -1,8 +1,6 @@
 name: Test native visitor cron on temporary site
 on:
-  push:
-    branches: [staging]
-    paths: ['.github/workflows/native-visitor-cron.yml']
+  workflow_dispatch:
 permissions: {}
 concurrency:
   group: maqwi-temporary-configuration

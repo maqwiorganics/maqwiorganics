@@ -1,0 +1,46 @@
+name: InfinityFree FTP reversible probe
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Create read-back and delete test file in isolated directory
+        env:
+          FTP_HOST: ${{ secrets.INFINITYFREE_FTP_HOST }}
+          FTP_USER: ${{ secrets.INFINITYFREE_FTP_USERNAME }}
+          FTP_PASS: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import ftplib, io, os, secrets, ssl, sys
+          host, user, password = (os.environ[k] for k in ('FTP_HOST','FTP_USER','FTP_PASS'))
+          name = '.maqwi-ci-probe-' + secrets.token_hex(8) + '.txt'
+          payload = secrets.token_hex(24).encode()
+          ftp = ftplib.FTP_TLS(context=ssl.create_default_context(), timeout=25)
+          uploaded = False
+          try:
+              ftp.connect(host,21)
+              ftp.login(user,password)
+              ftp.prot_p()
+              ftp.cwd('/htdocs')
+              ftp.storbinary('STOR '+name, io.BytesIO(payload))
+              uploaded = True
+              chunks=[]
+              ftp.retrbinary('RETR '+name, chunks.append)
+              assert b''.join(chunks)==payload, 'FTP read-back mismatch'
+              print('Upload/readback verification succeeded.')
+          finally:
+              if uploaded:
+                  try:
+                      ftp.delete(name)
+                      print('Probe deleted successfully.')
+                  except Exception as e:
+                      print('Cleanup failed for '+name+': '+type(e).__name__)
+                      sys.exit(1)
+              try: ftp.quit()
+              except Exception: pass
+          PY

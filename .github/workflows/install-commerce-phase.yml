@@ -1,8 +1,6 @@
 name: Install reviewed commerce phase on temporary site
 on:
-  push:
-    branches: [staging]
-    paths: ['.github/workflows/install-commerce-phase.yml']
+  workflow_dispatch:
 permissions:
   contents: read
 concurrency:

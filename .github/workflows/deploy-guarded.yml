@@ -1,0 +1,40 @@
+name: Deploy Maqwi plugin (guarded)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: maqwi-production-plugin-deploy
+  cancel-in-progress: false
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      HOST: ${{ secrets.INFINITYFREE_FTP_HOST }}
+      USERNAME: ${{ secrets.INFINITYFREE_FTP_USERNAME }}
+      PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Require reviewed live source baseline and validate package
+        shell: bash
+        run: |
+          test -s config/remote-plugin-sha256.json
+          find wp-content/plugins/maqwi-store-core -name '*.php' -print0 | xargs -0 -n1 php -l
+          php tests/store-core.php
+          php tests/catalogue.php
+          python3 tests/deploy_plugin.py
+      - name: Read and verify originals without remote writes
+        run: python3 .github/scripts/deploy_plugin.py prepare
+      - name: Persist originals before the first remote write
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: maqwi-predeployment-backup-${{ github.run_id }}
+          path: deploy-backup/
+          retention-days: 30
+          if-no-files-found: error
+      - name: Recheck live baseline, deploy scoped files, verify or restore
+        run: python3 .github/scripts/deploy_plugin.py apply

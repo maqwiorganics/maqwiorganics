@@ -1,8 +1,5 @@
 name: Install theme foundation on temporary site
 on:
-  push:
-    branches: [staging]
-    paths: ['.github/workflows/install-theme-foundation.yml']
   workflow_dispatch:
 permissions:
   contents: read

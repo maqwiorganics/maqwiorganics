@@ -1,8 +1,6 @@
 name: Retire verified InfinityFree default homepage
 on:
-  push:
-    branches: [staging]
-    paths: ['.github/workflows/retire-default-homepage.yml']
+  workflow_dispatch:
 permissions:
   contents: read
 concurrency:

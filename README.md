@@ -1,17 +1,12 @@
-> **Customer copy update — 16 October 2026**: https://maqwiorganics.gt.tc/. Theme 0.6.1 / Store Core 0.3.1. Professional customer copy replaces AI captions, sample-store notices and generic project wording. Public acceptance 38874056833 passed 72 page/width checks. Approved prices and pack-size distinctions remain accurate; orders remain closed. See docs/CUSTOMER-COPY-20261016.md.
-
 # Maqwi Organics
 
-WordPress + WooCommerce storefront for Pakistan, developed on InfinityFree at https://maqwiorganics.gt.tc/.
+WordPress/WooCommerce on the existing InfinityFree temporary domain. Public ordering remains closed.
 
-- `staging`: active development and validation.
-- `main`: controlled baseline; no automatic website deployment.
-- `wp-content/themes/maqwi-organics/`: Kadence child theme with editable native homepage and commerce presentation.
-- `wp-content/plugins/maqwi-store-core/`: checkout rules, verified product details and the owner setup screen.
-- `docs/BUILD-STATUS.md`: delivered work, installation state and remaining requirements.
-- `docs/DEPLOYMENT.md`: guarded installation and rollback.
-- `docs/STORE-CORE.md`: checkout/catalogue behaviour and owner instructions.
+- `staging`: integrated storefront source, approved business configuration and release work.
+- `main`: controlled baseline; source promotion is separate from hosting deployment.
+- No push automatically deploys a theme or plugin. The guarded plugin workflow is manual-only on main and requires a reviewed live-source hash baseline.
+- Approved products, stock, PKR 300 Pakistan-wide shipping and contact details: `config/approved-store.json`. This manifest is not an applied database configuration.
+- Current evidence, remaining integration blockers, deployment safeguards and WooCommerce application steps: [completion status](docs/COMPLETION-STATUS-20261017.md).
+- Existing backup inventory and recovery procedure: [recovery](docs/RECOVERY.md). Preserve those archives and private recovery keys.
 
-The storefront theme and site-owned commerce core are installed and activated on the temporary site after backup and Live Preview. The editable Home page is published as the static homepage. Pakistan store settings and four product categories are configured; desktop category, FAQ, shop and cart navigation passed. Source and validation live in staging. Shop, product, cart, checkout and account presentation share the brand shell. Classic cart/checkout and COD confirmation setup are implemented, with a WooCommerce > Maqwi store setup screen for the owner. The approved brand introduction is public with fail-closed ordering guards. Real catalogue data, shipping/email integrations and completed-order QA are still in development. The real domain and DNS remain untouched.
-
-Only custom source and selected brand assets belong here. Never commit credentials, config, customer/order data, database exports, 2FA codes, source archives or purchased theme packages.
+Do not commit credentials, wp-config.php, database dumps, orders, customer details or recovery keys. Never enable ordering or payments as part of deployment. Launch requires completed tests and a separate owner decision.

@@ -1,8 +1,6 @@
 name: Refine theme foundation on temporary site
 on:
-  push:
-    branches: [staging]
-    paths: ['.github/workflows/refine-theme-foundation.yml']
+  workflow_dispatch:
 permissions:
   contents: read
 concurrency:
