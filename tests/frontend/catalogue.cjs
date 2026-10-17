@@ -30,7 +30,7 @@ fs.mkdirSync(out,{recursive:true});
    console.log('Photo integrity:', await page.locator('meta[name="maqwi-photo-integrity"]').count() ? await page.locator('meta[name="maqwi-photo-integrity"]').getAttribute('content') : 'no mismatch');
    await page.screenshot({path:out+'/release-status-'+width+'.png',fullPage:true});
    assert.equal(await page.locator('.mq-product-card').count(),4,'Four catalogue cards');
-   assert(await page.locator('link[href*="style.css?ver=0.7.1"]').count(),'Current theme');
+   assert(await page.locator('link[href*="style.css?ver=0.7.2"]').count(),'Current theme');
    assert.equal(await page.locator('.mq-announcement').innerText(),'Meet the Maqwi collection · orders open soon');
    assert.equal(await page.locator('.mq-premium-hero').count(),1,'Premium hero renders once');
    assert.equal(await page.locator('.mq-premium-primary').getAttribute('href'),'#the-collection');
@@ -71,6 +71,8 @@ fs.mkdirSync(out,{recursive:true});
     assert.equal(await page.locator('.mq-concept-gallery').count(),0,'Old concept fallback retired');
     const thumbs=page.locator('.flex-control-thumbs img');
     assert.equal(await thumbs.count(),4,'Four usable gallery thumbnails '+slug);
+    const firstThumb=await thumbs.first().boundingBox(),lastThumb=await thumbs.last().boundingBox();
+    assert(Math.abs(firstThumb.y-lastThumb.y)<3,'Gallery thumbnails share one row '+slug);
     for(let n=0;n<4;n++){await thumbs.nth(n).click();await page.locator('.woocommerce-product-gallery__wrapper>.woocommerce-product-gallery__image').nth(n).locator('img').first().evaluate(i=>i.decode());}
     await thumbs.first().click();
     assert(!summary.includes('Sample product'),'No sample product label');
