@@ -1,0 +1,35 @@
+name: InfinityFree FTP read-only connectivity
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  connectivity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check FTP over TLS without modifying files
+        env:
+          FTP_HOST: ${{ secrets.INFINITYFREE_FTP_HOST }}
+          FTP_USER: ${{ secrets.INFINITYFREE_FTP_USERNAME }}
+          FTP_PASS: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
+        run: |
+          python3 - <<'PY'
+          import os, ssl, ftplib, sys
+          host=os.environ.get('FTP_HOST','')
+          user=os.environ.get('FTP_USER','')
+          password=os.environ.get('FTP_PASS','')
+          if not (host and user and password):
+              sys.exit('Missing required repository secret(s)')
+          try:
+              client=ftplib.FTP_TLS(context=ssl.create_default_context(), timeout=20)
+              client.connect(host,21)
+              client.login(user,password)
+              client.prot_p()
+              client.cwd('/htdocs')
+              print('SUCCESS: secure FTP login and /htdocs navigation verified. No files modified.')
+              client.quit()
+          except Exception as error:
+              print('FTP validation failed:',type(error).__name__,str(error)[:150])
+              sys.exit(1)
+          PY
