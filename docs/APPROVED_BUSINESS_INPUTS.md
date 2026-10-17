@@ -6,11 +6,11 @@ Status: planning inputs only. DO NOT unlock orders or write live product records
 - Honey: 1 kg, PKR 4,500; initial total stock 20.
 - Desi Ghee: 1 kg, PKR 3,500; initial total stock 15.
 - Itar: 12 ml, PKR 200; initial total stock 10.
-- Achaar: 500 g, PKR 1,500; 1 kg, PKR 3,000; user reported stock 5 but did not specify whether 5 is shared across both sizes or per variant. Do not invent allocation.
+- Achaar: 500 g, PKR 1,500; 1 kg, PKR 3,000; exactly 5 jars in one shared inventory pool across both variations, not 5 each. Implementation must prevent overselling across size variations; verify against actual inventory units.
 
 ## Fulfilment
 - Offer delivery throughout Pakistan subject to courier coverage and practical delivery exceptions.
-- Courier, shipping tariffs, dispatch timetable and COD remittance fees NOT YET APPROVED.
+- User chose a nationwide flat shipping fee but has NOT approved its PKR amount. Do not configure or publish a shipping amount until explicitly supplied. Courier, dispatch timetable and COD remittance fees NOT YET APPROVED.
 - Do not retain the sample preview shipping rate as a real public tariff.
 
 ## Business / support
@@ -24,6 +24,6 @@ A customer-facing returns/refunds policy was drafted in chat, pending user appro
 
 ## Launch gates
 - Keep Maqwi order guard active.
-- Confirm allocated Achaar stock and per-variant WooCommerce stock handling.
+- Verify shared Achaar stock of 5 across both sizes with concurrency-safe handling; do not assume WooCommerce separate variant counters enforce a shared pool.
 - Approve nationwide courier and rates, payment handling, contact validation and policies.
 - Perform a real checkout test end to end (including order emails, stock handling and refund/cancellation).
