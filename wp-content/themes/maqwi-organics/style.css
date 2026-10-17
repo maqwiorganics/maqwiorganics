@@ -3,7 +3,7 @@ Theme Name: Maqwi Organics
 Description: Lightweight Kadence child theme with an editable Maqwi homepage pattern.
 Author: Maqwi Organics
 Template: kadence
-Version: 0.8.1
+Version: 0.8.2
 Requires at least: 6.6
 Requires PHP: 8.1
 Text Domain: maqwi-organics
@@ -192,7 +192,7 @@ License: GPL-2.0-or-later
 .mq-mobile-nav[open] .mq-menu-glyph>span:nth-child(1){top:9px;transform:rotate(45deg)}
 .mq-mobile-nav[open] .mq-menu-glyph>span:nth-child(2){opacity:0}
 .mq-mobile-nav[open] .mq-menu-glyph>span:nth-child(3){top:9px;transform:rotate(-45deg)}
-.mq-mobile-nav>summary::after{content:none}
+.mq-header .mq-mobile-nav>summary::after,.mq-header .mq-mobile-nav[open]>summary::after{content:none}
 @media(min-width:901px){.mq-desktop-nav .mq-menu{gap:30px}.mq-desktop-nav .mq-menu a{font-size:13px;letter-spacing:.025em;text-decoration:none}.mq-desktop-nav .mq-menu a::after{content:'';position:absolute;left:0;right:0;bottom:6px;height:1px;background:var(--mq-green);transform:scaleX(0);transform-origin:left;transition:transform .2s}.mq-desktop-nav .mq-menu a:hover::after,.mq-desktop-nav .current-menu-item>a::after{transform:scaleX(1)}}
 @media(max-width:900px){
  .mq-header .mq-account{display:none}

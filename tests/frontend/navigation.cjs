@@ -11,12 +11,12 @@ fs.mkdirSync(out,{recursive:true});
   for(const width of [320,390,768,1024,1440]){
    const page=await context.newPage();await page.setViewportSize({width,height:900});
    page.on('pageerror',e=>report.runtimeErrors.push(e.message));
-   for(const route of ['?navigation=081','shop/','product/maqwi-honey/']){
+   for(const route of ['?navigation=082','shop/','product/maqwi-honey/']){
     console.log('Reviewing navigation',width,route);
     await page.goto(base+route,{waitUntil:'domcontentloaded',timeout:60000});
     await page.locator('.mq-header').waitFor({timeout:30000});
     await page.waitForLoadState('load');await page.evaluate(()=>document.fonts.ready);
-    await page.locator('link[href*="style.css?ver=0.8.1"]').waitFor({state:'attached'});
+    await page.locator('link[href*="style.css?ver=0.8.2"]').waitFor({state:'attached'});
     const cart=page.getByRole('link',{name:'Shopping bag',exact:true});
     assert.equal(await cart.count(),1);assert.equal(await cart.locator('svg').count(),1);
     assert.equal((await cart.innerText()).trim(),'0','Cart uses an icon and live count');
@@ -39,6 +39,7 @@ fs.mkdirSync(out,{recursive:true});
      assert(bagRect.width>=42&&bagRect.height>=44&&triggerRect.height>=44,'Comfortable touch targets');
      await summary.focus();await page.keyboard.press('Enter');
      assert(await menu.evaluate(e=>e.open),'Keyboard opens menu');
+     assert.equal(await summary.evaluate(e=>getComputedStyle(e,'::after').content),'none','No extra open-state glyph');
      assert.equal((await summary.innerText()).trim(),'');
      const navRect=await menu.locator('nav').boundingBox(),main=await page.locator('main').boundingBox();
      assert(navRect.x>=0&&navRect.x+navRect.width<=width+1,'Expanded navigation fits viewport');
