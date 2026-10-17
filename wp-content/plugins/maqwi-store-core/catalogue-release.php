@@ -91,6 +91,7 @@ function maqwi_catalogue_media( $filename, $title, $parent = 0 ) {
  * Original native product/variation/meta data is retained in a non-autoloaded option.
  */
 add_action( 'init', function () {
+    if ( ! maqwi_allow_automatic_content_releases() ) { return; }
     $version = '2026-10-16-catalogue-1';
     if ( get_option( 'maqwi_catalogue_release' ) === $version || ! class_exists( 'WC_Product_Variable' ) ) { return; }
     if ( ! maqwi_storefront_preview() || ! maqwi_brand_launch_mode() ) { return; }

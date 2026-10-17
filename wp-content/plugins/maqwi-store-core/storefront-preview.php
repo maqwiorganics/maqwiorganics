@@ -127,6 +127,7 @@ add_filter( 'woocommerce_get_privacy_policy_text', function ( $text, $type ) {
 }, 10, 2 );
 /** Purge native page cache once when this approved storefront code release is first executed. */
 add_action( 'init', function () {
+    if ( ! maqwi_allow_automatic_content_releases() ) { return; }
     $release = '0.3.0/' . wp_get_theme()->get( 'Version' );
     if ( maqwi_storefront_preview() && $release !== get_option( 'maqwi_preview_cache_release', '' ) && function_exists( 'w3tc_flush_all' ) ) {
         delete_transient( 'wc_shipping_method_count' );

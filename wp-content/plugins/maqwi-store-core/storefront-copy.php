@@ -58,6 +58,7 @@ function maqwi_customer_pages() {
 }
 
 add_action( 'init', function () {
+    if ( ! maqwi_allow_automatic_content_releases() ) { return; }
     $version = '2026-10-16-copy-1';
     if ( get_option( 'maqwi_customer_copy_release' ) === $version || ! get_option( 'maqwi_catalogue_release' ) || ! maqwi_storefront_preview() ) { return; }
     if ( ! add_option( 'maqwi_customer_copy_lock', $version, '', false ) ) { return; }
@@ -123,6 +124,7 @@ add_filter( 'woocommerce_short_description', function ( $description ) {
 
 /** Expire cached public pages once after this wording release. */
 add_action( 'wp_loaded', function () {
+    if ( ! maqwi_allow_automatic_content_releases() ) { return; }
     $revision = '2026-10-17-brand-copy-2';
     if ( ! get_option( 'maqwi_catalogue_release' ) || get_option( 'maqwi_brand_wording_release' ) === $revision ) { return; }
     update_option( 'maqwi_brand_wording_release', $revision, false );
