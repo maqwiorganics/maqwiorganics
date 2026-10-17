@@ -3,7 +3,7 @@ Theme Name: Maqwi Organics
 Description: Lightweight Kadence child theme with an editable Maqwi homepage pattern.
 Author: Maqwi Organics
 Template: kadence
-Version: 0.7.2
+Version: 0.8.0
 Requires at least: 6.6
 Requires PHP: 8.1
 Text Domain: maqwi-organics
@@ -178,3 +178,32 @@ License: GPL-2.0-or-later
 .mq-site .woocommerce div.product .woocommerce-product-gallery ol.flex-control-thumbs{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;width:100%!important;padding:0!important;list-style:none}
 .mq-site .woocommerce div.product .woocommerce-product-gallery ol.flex-control-thumbs li{width:auto!important;max-width:100%!important;min-width:0;margin:0!important;padding:0!important;float:none!important;background:transparent}
 .mq-site .woocommerce div.product .woocommerce-product-gallery ol.flex-control-thumbs li img{display:block;width:100%!important;aspect-ratio:1;object-fit:cover}
+
+
+/* Navigation controls: a coordinated set of custom line icons. */
+.mq-header .mq-nav-icon{display:block;width:21px;height:21px;flex-shrink:0}
+.mq-header .mq-account,.mq-header .mq-cart{position:relative;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;min-height:44px;padding:0;border:1px solid #c8cebd;border-radius:50%;background:#fffcf680;color:var(--mq-green);text-decoration:none;gap:0;transition:background .18s,border-color .18s,box-shadow .18s}
+.mq-header .mq-account:hover,.mq-header .mq-cart:hover{background:#e9eddf;border-color:#95a28a;box-shadow:0 2px 8px #2f5d3a0a}
+.mq-header .mq-bag-count{position:absolute;top:-4px;right:-4px;display:flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;border:2px solid var(--mq-cream);border-radius:50%;background:var(--mq-green);color:#fffdf7;font-size:9px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.mq-header-actions{gap:12px}
+.mq-close-label{display:none}
+.mq-mobile-nav[open] .mq-menu-label{display:none}
+.mq-mobile-nav[open] .mq-close-label{display:inline}
+.mq-menu-glyph{position:relative;display:block;width:18px;height:18px;flex-shrink:0}
+.mq-menu-glyph>span{position:absolute;display:block;left:0;width:18px;height:1.5px;background:currentColor;border-radius:2px;transform-origin:center;transition:transform .2s,top .2s,width .2s}
+.mq-menu-glyph>span:first-child{top:5px}.mq-menu-glyph>span:last-child{top:11px;width:13px;left:auto;right:0}
+.mq-mobile-nav[open] .mq-menu-glyph>span:first-child{top:8px;transform:rotate(45deg)}
+.mq-mobile-nav[open] .mq-menu-glyph>span:last-child{top:8px;width:18px;transform:rotate(-45deg)}
+.mq-mobile-nav>summary::after{content:none}
+@media(min-width:901px){.mq-desktop-nav .mq-menu{gap:30px}.mq-desktop-nav .mq-menu a{font-size:13px;letter-spacing:.025em;text-decoration:none}.mq-desktop-nav .mq-menu a::after{content:'';position:absolute;left:0;right:0;bottom:6px;height:1px;background:var(--mq-green);transform:scaleX(0);transform-origin:left;transition:transform .2s}.mq-desktop-nav .mq-menu a:hover::after,.mq-desktop-nav .current-menu-item>a::after{transform:scaleX(1)}}
+@media(max-width:900px){
+ .mq-header .mq-account{display:none}
+ .mq-header .mq-cart{margin-left:auto;margin-right:116px;width:42px;height:42px;min-height:44px}
+ .mq-header .mq-mobile-nav>summary{display:flex;justify-content:space-between;align-items:center;gap:16px;width:102px;min-height:44px;padding:11px 16px;top:16px;right:24px;background:var(--mq-green);border:1px solid var(--mq-green);border-radius:999px;color:#fffdf7;font-size:12px;font-weight:500;letter-spacing:.035em;transition:background .18s,border-color .18s}
+ .mq-header .mq-mobile-nav>summary:hover{background:#254b2e;border-color:#254b2e}
+ .mq-header .mq-mobile-nav[open]>summary{background:transparent;color:var(--mq-green);border-color:#95a28a}
+ .mq-header .mq-mobile-nav .mq-menu a::after{content:'';width:7px;height:7px;border:solid #7f906f;border-width:1px 1px 0 0;transform:rotate(45deg);margin-right:4px}
+ .mq-header .mq-mobile-nav nav{padding-top:12px}
+}
+@media(max-width:639px){.mq-header .mq-mobile-nav>summary{right:20px;top:14px}.mq-header .mq-cart{margin-right:114px}}
+@media(max-width:359px){.mq-header .mq-mobile-nav>summary{right:16px;width:94px;padding-inline:13px;gap:12px}.mq-header .mq-cart{margin-right:106px}.mq-header .mq-brand span{font-size:16px}.mq-header .mq-brand{gap:6px}}

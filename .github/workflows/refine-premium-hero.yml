@@ -1,4 +1,4 @@
-name: Refine responsive storefront on temporary site
+name: Refine premium navigation on temporary site
 on:
   push:
     branches: [staging]
@@ -22,16 +22,16 @@ jobs:
           find wp-content/themes/maqwi-organics wp-content/plugins/maqwi-store-core tests -name '*.php' -print0 | xargs -0 -n1 php -l
           php tests/store-core.php
           php tests/catalogue.php
-          node --check tests/frontend/catalogue.cjs
+          node --check tests/frontend/navigation.cjs
       - name: Deploy reviewed customer copy files
         env:
           FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
         run: |
           python3 - <<'PY'
           import ftplib, ssl, os, io, hashlib, pathlib, subprocess, secrets
-          sources = ['wp-content/themes/maqwi-organics/assets/public.js', 'wp-content/themes/maqwi-organics/style.css']
+          sources = ['wp-content/themes/maqwi-organics/header-maqwi.php', 'wp-content/themes/maqwi-organics/style.css']
           new_sources=set()
-          old_commit='e63237d3d4bdd22c1d29ebe56bd1426d7dca4476'
+          old_commit='aff55ac9524348a3d8ca1af7ea56aed849248b0b'
           ftp=ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
           ftp.connect('ftpupload.net',21)
           ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
@@ -99,7 +99,7 @@ jobs:
       - name: Public acceptance checks using normal installed Chrome
         env:
           NODE_PATH: ${{ github.workspace }}/.qa-deps/node_modules
-        run: node tests/frontend/catalogue.cjs
+        run: node tests/frontend/navigation.cjs
       - name: Retain public screenshots and acceptance report
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
