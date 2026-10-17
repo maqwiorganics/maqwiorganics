@@ -30,7 +30,7 @@ fs.mkdirSync(out,{recursive:true});
    console.log('Photo integrity:', await page.locator('meta[name="maqwi-photo-integrity"]').count() ? await page.locator('meta[name="maqwi-photo-integrity"]').getAttribute('content') : 'no mismatch');
    await page.screenshot({path:out+'/release-status-'+width+'.png',fullPage:true});
    assert.equal(await page.locator('.mq-product-card').count(),4,'Four catalogue cards');
-   assert(await page.locator('link[href*="style.css?ver=0.7.0"]').count(),'Current theme');
+   assert(await page.locator('link[href*="style.css?ver=0.7.1"]').count(),'Current theme');
    assert.equal(await page.locator('.mq-announcement').innerText(),'Meet the Maqwi collection · orders open soon');
    assert.equal(await page.locator('.mq-premium-hero').count(),1,'Premium hero renders once');
    assert.equal(await page.locator('.mq-premium-primary').getAttribute('href'),'#the-collection');
@@ -47,6 +47,8 @@ fs.mkdirSync(out,{recursive:true});
    if(width<=900){
     const menu=page.locator('.mq-mobile-nav');await menu.locator('summary').click();
     assert(await menu.evaluate(e=>e.open),'Menu opens');
+    const bag=await page.locator('.mq-cart').boundingBox(),trigger=await menu.locator('summary').boundingBox();
+    assert(bag.x+bag.width+8<=trigger.x,'Bag and menu controls have clear separation');
     const nav=await menu.locator('nav').boundingBox(), hero=await page.locator('.mq-premium-hero').boundingBox();
     assert(nav.x>=0&&nav.x+nav.width<=width+1,'Menu fits viewport');
     assert(nav.y+nav.height<=hero.y+1,'Expanded menu does not cover hero');
