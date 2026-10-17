@@ -3,7 +3,7 @@ Theme Name: Maqwi Organics
 Description: Lightweight Kadence child theme with an editable Maqwi homepage pattern.
 Author: Maqwi Organics
 Template: kadence
-Version: 0.9.0
+Version: 0.9.1
 Requires at least: 6.6
 Requires PHP: 8.1
 Text Domain: maqwi-organics
@@ -243,3 +243,39 @@ License: GPL-2.0-or-later
 @media(max-width:767px){.mq-slideshow-hero{display:flex;flex-direction:column;align-items:stretch;padding:30px 22px 28px;gap:24px}.mq-slideshow-hero .mq-premium-copy{max-width:560px;margin:0 auto}.mq-home .mq-slideshow-hero h1{font-size:clamp(36px,8.8vw,46px);line-height:1.04;max-width:none;margin-bottom:16px}.mq-home .mq-slideshow-hero h1>.mq-hero-line:first-child{white-space:nowrap}.mq-slideshow-hero .mq-premium-eyebrow{font-size:8px;margin-bottom:16px!important}.mq-slideshow-hero .mq-premium-description{font-size:14px;line-height:1.7;max-width:36ch;margin-bottom:18px!important}.mq-slideshow-hero .mq-premium-primary{font-size:12px;min-height:48px;padding-inline:15px}.mq-slideshow-hero .mq-premium-story{font-size:12px}.mq-hero-gallery{width:100%;max-width:560px;align-self:center}.mq-slideshow-hero .mq-premium-media{aspect-ratio:3/2;margin:0}.mq-hero-controls{padding-top:4px}.mq-hero-slide-label{font-size:10px}.mq-hero-gallery-note{font-size:9px}}
 @media(max-width:359px){.mq-slideshow-hero{padding-inline:20px;gap:20px}.mq-home .mq-slideshow-hero h1{font-size:35px}.mq-slideshow-hero .mq-premium-actions{gap:14px}.mq-slideshow-hero .mq-premium-primary{padding-inline:12px;gap:10px}.mq-hero-slide-label{gap:5px}.mq-hero-control-rule{width:12px}}
 @media(prefers-reduced-motion:reduce){.mq-hero-slide.is-active{animation:none}.mq-hero-dots button>span{transition:none}}
+
+/* Campaign refinement: immersive photography instead of an inset image card. */
+@media(min-width:1100px){
+ .mq-slideshow-hero{position:relative;isolation:isolate;display:flex;align-items:center;max-width:none;min-height:620px;padding:48px max(48px,calc((100vw - 1360px)/2));overflow:hidden}
+ .mq-slideshow-hero .mq-premium-copy{position:relative;z-index:2;width:42%;max-width:520px;flex:none}
+ .mq-home .mq-slideshow-hero h1{font-size:clamp(48px,4.1vw,64px)}
+ .mq-slideshow-hero .mq-premium-description{max-width:375px}
+ .mq-slideshow-hero .mq-hero-gallery{position:absolute;z-index:0;inset:0 0 0 auto;width:70%;height:100%;max-width:none;margin:0}
+ .mq-slideshow-hero .mq-premium-media{position:absolute;inset:0;height:100%;width:100%;aspect-ratio:auto;border-radius:0;background:transparent;overflow:hidden}
+ .mq-slideshow-hero .mq-premium-media::after{display:block;content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,var(--mq-cream) 0%,rgba(247,242,231,.94) 8%,rgba(247,242,231,.55) 19%,transparent 34%)}
+ .mq-slideshow-hero .mq-hero-slide>img{object-fit:cover;object-position:center}
+ .mq-slideshow-hero .mq-hero-slide:last-child>img{object-fit:contain;object-position:center;background:#eee3d3}
+ .mq-slideshow-hero .mq-hero-controls{position:absolute;z-index:2;left:30%;right:28px;bottom:26px;padding:0 12px;background:rgba(247,242,231,.93);border:1px solid #f7f2e799;border-radius:6px;min-height:48px}
+ .mq-slideshow-hero .mq-hero-gallery-note{position:absolute;z-index:2;left:30%;right:28px;bottom:7px;padding-left:12px;font-size:9px;color:#35442f}
+}
+@media(min-width:1600px){.mq-slideshow-hero{min-height:680px;padding-block:56px}.mq-slideshow-hero .mq-hero-gallery{width:72%}.mq-slideshow-hero .mq-hero-controls,.mq-slideshow-hero .mq-hero-gallery-note{left:34%;right:40px}}
+@media(min-width:768px) and (max-width:1099px){
+ .mq-slideshow-hero{display:flex;flex-direction:column;align-items:stretch;gap:28px;padding:36px 28px 24px}
+ .mq-slideshow-hero .mq-premium-copy{width:100%;max-width:680px;margin:auto}
+ .mq-home .mq-slideshow-hero h1{font-size:48px}
+ .mq-home .mq-slideshow-hero h1>.mq-hero-line:first-child{white-space:nowrap}
+ .mq-slideshow-hero .mq-premium-description{max-width:480px}
+ .mq-slideshow-hero .mq-hero-gallery{width:calc(100% + 56px);max-width:none;margin-inline:-28px}
+ .mq-slideshow-hero .mq-premium-media{height:440px;aspect-ratio:auto;border-radius:0}
+ .mq-slideshow-hero .mq-hero-slide>img{object-fit:cover;object-position:center}
+ .mq-slideshow-hero .mq-hero-controls{margin-inline:28px}
+ .mq-slideshow-hero .mq-hero-gallery-note{margin-inline:28px!important}
+}
+@media(max-width:767px){
+ .mq-slideshow-hero .mq-hero-gallery{width:calc(100% + 44px);max-width:none;margin-inline:-22px}
+ .mq-slideshow-hero .mq-premium-media{aspect-ratio:4/3;border-radius:0}
+ .mq-slideshow-hero .mq-hero-slide>img{object-fit:cover;object-position:center}
+ .mq-slideshow-hero .mq-hero-controls{margin-inline:22px}
+ .mq-slideshow-hero .mq-hero-gallery-note{margin-inline:22px!important}
+}
+@media(max-width:359px){.mq-slideshow-hero .mq-hero-gallery{width:calc(100% + 40px);margin-inline:-20px}.mq-slideshow-hero .mq-hero-controls{margin-inline:20px}.mq-slideshow-hero .mq-hero-gallery-note{margin-inline:20px!important}}

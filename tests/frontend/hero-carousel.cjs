@@ -35,9 +35,9 @@ const base='https://maqwiorganics.gt.tc/',out='frontend-qa';fs.mkdirSync(out,{re
   assert.equal(await gallery.getByRole('button',{name:'Play slideshow',exact:true}).getAttribute('aria-pressed'),'true','Interaction pauses autoplay');
   const sizes=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,heroHeight:document.querySelector('.mq-slideshow-hero').getBoundingClientRect().height,collectionTop:document.querySelector('#the-collection').getBoundingClientRect().top}));
   assert(sizes.scroll<=width+1,'No horizontal overflow');
-  if(width>=1024)assert(sizes.heroHeight<620,'Compact desktop hero');
+  if(width>=1100)assert(sizes.heroHeight<=700,'Campaign hero height remains bounded');
   if(width===1366)assert(sizes.collectionTop<768,'Collection begins within laptop viewport');
-  if(width<768){const c=await hero.locator('.mq-premium-copy').boundingBox(),m=await gallery.boundingBox();assert(c.y+c.height<=m.y,'Mobile text above images');}
+  if(width<1100){const c=await hero.locator('.mq-premium-copy').boundingBox(),m=await gallery.boundingBox();assert(c.y+c.height<=m.y,'Mobile text above images');}
   report.checks.push({width,lineCounts,...sizes});console.log('Hero passed',width,JSON.stringify(sizes));await page.close();
  }
  // Automatic rotation is separate from keyboard/hover interactions.

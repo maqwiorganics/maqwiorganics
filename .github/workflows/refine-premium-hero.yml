@@ -39,9 +39,9 @@ jobs:
         run: |
           python3 - <<'PY'
           import ftplib, ssl, os, io, hashlib, pathlib, subprocess, secrets
-          sources = ['wp-content/themes/maqwi-organics/assets/images/hero-collection-v3.webp', 'wp-content/themes/maqwi-organics/assets/images/hero-table-v3.webp', 'wp-content/themes/maqwi-organics/assets/images/hero-itar-v3.webp']
+          sources = ['wp-content/themes/maqwi-organics/style.css', 'wp-content/themes/maqwi-organics/functions.php']
           new_sources=set()
-          old_commit='9ce62421185389504e87fb2b6e13dc1792631169'
+          old_commit='67ba25310055205624f14760ef48418243b2a083'
           ftp=ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
           ftp.connect('ftpupload.net',21)
           ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])

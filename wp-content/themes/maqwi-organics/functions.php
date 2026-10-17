@@ -268,7 +268,7 @@ add_action( 'woocommerce_before_shop_loop', function () {
 
 /** Clear page caches once after the reviewed campaign release. */
 add_action( 'wp_loaded', function () {
-    if ( get_option( 'maqwi_hero_scene_release' ) === '2026-10-17-carousel-1' ) { return; }
-    update_option( 'maqwi_hero_scene_release', '2026-10-17-carousel-1', false );
+    if ( get_option( 'maqwi_hero_scene_release' ) === '2026-10-17-carousel-2' ) { return; }
+    update_option( 'maqwi_hero_scene_release', '2026-10-17-carousel-2', false );
     if ( function_exists( 'w3tc_flush_all' ) ) { w3tc_flush_all(); }
 }, 55 );
