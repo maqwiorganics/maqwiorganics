@@ -25,6 +25,12 @@ jobs:
           node --check tests/frontend/catalogue.cjs
           node --check tests/frontend/hero-carousel.cjs
           node --check wp-content/themes/maqwi-organics/assets/public.js
+          python3 - <<'BUDGET'
+          import pathlib
+          root=pathlib.Path('wp-content/themes/maqwi-organics')
+          assert all(p.stat().st_size<150_000 for p in (root/'assets/images').iterdir())
+          assert sum(p.stat().st_size for p in root.rglob('*') if p.is_file())<900_000
+          BUDGET
       - name: Prepare bounded image verification
         run: python3 -m pip install --disable-pip-version-check Pillow==12.0.0
       - name: Deploy reviewed hero files
@@ -33,9 +39,9 @@ jobs:
         run: |
           python3 - <<'PY'
           import ftplib, ssl, os, io, hashlib, pathlib, subprocess, secrets
-          sources = ['wp-content/themes/maqwi-organics/assets/images/hero-collection-v3.webp', 'wp-content/themes/maqwi-organics/assets/images/hero-table-v3.webp', 'wp-content/themes/maqwi-organics/assets/images/hero-itar-v3.webp', 'wp-content/themes/maqwi-organics/assets/public.js', 'wp-content/themes/maqwi-organics/style.css', 'wp-content/themes/maqwi-organics/functions.php']
-          new_sources=set(['wp-content/themes/maqwi-organics/assets/images/hero-collection-v3.webp', 'wp-content/themes/maqwi-organics/assets/images/hero-table-v3.webp', 'wp-content/themes/maqwi-organics/assets/images/hero-itar-v3.webp'])
-          old_commit='f4db429ae99f362357e7c28d57b2968171e3aa3c'
+          sources = ['wp-content/themes/maqwi-organics/assets/images/hero-collection-v3.webp', 'wp-content/themes/maqwi-organics/assets/images/hero-table-v3.webp', 'wp-content/themes/maqwi-organics/assets/images/hero-itar-v3.webp']
+          new_sources=set()
+          old_commit='9ce62421185389504e87fb2b6e13dc1792631169'
           ftp=ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
           ftp.connect('ftpupload.net',21)
           ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])

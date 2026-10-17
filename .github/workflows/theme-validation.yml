@@ -33,7 +33,8 @@ jobs:
           assert 'Template: kadence' in (root/'style.css').read_text()
           for image in (root/'assets/images').iterdir():
               assert image.stat().st_size < 150_000, image.name
-          assert sum(p.stat().st_size for p in root.rglob('*') if p.is_file()) < 700_000
+          # Includes the approved three-scene hero; each image remains below 150 KB.
+          assert sum(p.stat().st_size for p in root.rglob('*') if p.is_file()) < 900_000
           photos = pathlib.Path('wp-content/plugins/maqwi-store-core/photography')
           assets = json.loads((photos/'manifest.json').read_text())
           import hashlib

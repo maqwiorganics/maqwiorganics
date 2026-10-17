@@ -50,8 +50,12 @@ const base='https://maqwiorganics.gt.tc/',out='frontend-qa';fs.mkdirSync(out,{re
  const reduced=await context.newPage();await reduced.emulateMedia({reducedMotion:'reduce'});await reduced.goto(base+'?hero=reduced-090',{waitUntil:'load',timeout:90000});
  assert.equal(await reduced.locator('.mq-hero-pause').getAttribute('aria-pressed'),'true','Reduced motion starts paused');
  await reduced.waitForTimeout(7400);assert.equal(await reduced.locator('.mq-hero-index').innerText(),'01');await reduced.close();
- const plain=await browser.newContext({javaScriptEnabled:false});const p=await plain.newPage();await p.goto(base+'?hero=native-090',{waitUntil:'load',timeout:90000});
- assert(await p.locator('.mq-hero-slide').first().isVisible());assert(!(await p.locator('.mq-hero-controls').isVisible()));assert(await p.locator('.mq-premium-primary').isVisible());await plain.close();
+ // Keep the host's normal entry scripts; disable only the site-owned carousel script.
+ const p=await context.newPage();let appBlocked=false;
+ await p.route('**/wp-content/themes/maqwi-organics/assets/public.js*',route=>{appBlocked=true;return route.abort();});
+ await p.goto(base+'?hero=native-fallback-090',{waitUntil:'load',timeout:90000});
+ assert(appBlocked,'Site-owned slideshow script disabled');
+ assert(await p.locator('.mq-hero-slide').first().isVisible());assert(!(await p.locator('.mq-hero-controls').isVisible()));assert(await p.locator('.mq-premium-primary').isVisible());await p.close();
  assert.equal(report.errors.length,0);report.passed=true;
  }finally{fs.writeFileSync(out+'/hero-carousel-report.json',JSON.stringify(report,null,2));await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1});
