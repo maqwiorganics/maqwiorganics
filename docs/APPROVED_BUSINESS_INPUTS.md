@@ -10,7 +10,7 @@ Status: planning inputs only. DO NOT unlock orders or write live product records
 
 ## Fulfilment
 - Offer delivery throughout Pakistan subject to courier coverage and practical delivery exceptions.
-- User chose a nationwide flat shipping fee but has NOT approved its PKR amount. Do not configure or publish a shipping amount until explicitly supplied. Courier, dispatch timetable and COD remittance fees NOT YET APPROVED.
+- APPROVED: Flat shipping fee PKR 300 per order throughout Pakistan, independent of basket value. Courier, delivery timing, serviceability exceptions and COD remittance arrangements still need operational verification.
 - Do not retain the sample preview shipping rate as a real public tariff.
 
 ## Business / support
