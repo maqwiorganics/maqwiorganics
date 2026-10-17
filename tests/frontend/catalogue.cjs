@@ -38,6 +38,8 @@ fs.mkdirSync(out,{recursive:true});
    const heroImg=page.locator('.mq-premium-media>img');
    assert((await heroImg.getAttribute('src')).includes('hero-campaign-v2.webp'));
    assert.equal(await heroImg.getAttribute('fetchpriority'),'high');
+   await page.evaluate(()=>document.fonts.ready);
+   await page.locator('.mq-premium-copy').evaluate(e=>Promise.all(e.getAnimations().map(a=>a.finished.catch(()=>{}))));
    if(width<1100){const c=await page.locator('.mq-premium-copy').boundingBox(),m=await page.locator('.mq-premium-media').boundingBox();assert(c.y+c.height<=m.y+10,'Mobile copy above image');}
    await page.evaluate(()=>document.fonts.ready);
    for(const selector of ['.mq-premium-copy','.mq-premium-media']){await page.locator(selector).evaluate(e=>Promise.all(e.getAnimations().map(a=>a.finished.catch(()=>{}))));}
