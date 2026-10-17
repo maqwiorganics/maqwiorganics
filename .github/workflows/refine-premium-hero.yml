@@ -1,4 +1,4 @@
-name: Refine Maqwi brand copy on temporary site
+name: Publish three-scene Maqwi hero on temporary site
 on:
   push:
     branches: [staging]
@@ -23,15 +23,19 @@ jobs:
           php tests/store-core.php
           php tests/catalogue.php
           node --check tests/frontend/catalogue.cjs
-      - name: Deploy reviewed customer copy files
+          node --check tests/frontend/hero-carousel.cjs
+          node --check wp-content/themes/maqwi-organics/assets/public.js
+      - name: Prepare bounded image verification
+        run: python3 -m pip install --disable-pip-version-check Pillow==12.0.0
+      - name: Deploy reviewed hero files
         env:
           FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
         run: |
           python3 - <<'PY'
           import ftplib, ssl, os, io, hashlib, pathlib, subprocess, secrets
-          sources = ['wp-content/plugins/maqwi-store-core/storefront-copy.php', 'wp-content/themes/maqwi-organics/functions.php', 'wp-content/themes/maqwi-organics/footer-maqwi.php']
-          new_sources=set()
-          old_commit='d3dd1be6e4f1c9b0883baa3083d73768a37560d9'
+          sources = ['wp-content/themes/maqwi-organics/assets/images/hero-collection-v3.webp', 'wp-content/themes/maqwi-organics/assets/images/hero-table-v3.webp', 'wp-content/themes/maqwi-organics/assets/images/hero-itar-v3.webp', 'wp-content/themes/maqwi-organics/assets/public.js', 'wp-content/themes/maqwi-organics/style.css', 'wp-content/themes/maqwi-organics/functions.php']
+          new_sources=set(['wp-content/themes/maqwi-organics/assets/images/hero-collection-v3.webp', 'wp-content/themes/maqwi-organics/assets/images/hero-table-v3.webp', 'wp-content/themes/maqwi-organics/assets/images/hero-itar-v3.webp'])
+          old_commit='f4db429ae99f362357e7c28d57b2968171e3aa3c'
           ftp=ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
           ftp.connect('ftpupload.net',21)
           ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
@@ -41,7 +45,16 @@ jobs:
               ftp.retrbinary('RETR '+path,out.write)
               return out.getvalue()
           def verify(expected,actual):
-              assert hashlib.sha256(expected).digest()==hashlib.sha256(actual).digest(),'Unexpected source hash'
+              if hashlib.sha256(expected).digest()==hashlib.sha256(actual).digest(): return
+              if expected[:4] == b'RIFF' and expected[8:12] == b'WEBP':
+                  from PIL import Image, ImageChops, ImageStat
+                  a=Image.open(io.BytesIO(expected)).convert('RGB')
+                  b=Image.open(io.BytesIO(actual)).convert('RGB')
+                  assert a.size==b.size,'Hero image dimensions changed'
+                  rms=ImageStat.Stat(ImageChops.difference(a,b)).rms
+                  assert max(rms)<=8,'Hero image changed beyond recompression tolerance'
+                  return
+              raise AssertionError('Unexpected source hash')
           originals={}
           for source in sources:
               if source in new_sources:
@@ -83,7 +96,7 @@ jobs:
               raise
           finally:
               ftp.quit()
-          print('Customer copy deployed; original source preserved; exact readback checks passed.')
+          print('Hero deployed; source snapshots preserved; code and image integrity checks passed.')
           PY
 
   copy-acceptance:
@@ -100,13 +113,7 @@ jobs:
         env:
           NODE_PATH: ${{ github.workspace }}/.qa-deps/node_modules
         run: |
-          python3 - <<'PYTEST'
-          import pathlib,re
-          test=pathlib.Path('tests/frontend/catalogue.cjs')
-          version=re.search(r'^Version: (.+)$',pathlib.Path('wp-content/themes/maqwi-organics/style.css').read_text(),re.M)[1]
-          source=re.sub(r'style\.css\?ver=[0-9.]+', 'style.css?ver='+version, test.read_text())
-          test.write_text(source)
-          PYTEST
+          node tests/frontend/hero-carousel.cjs
           node tests/frontend/catalogue.cjs
       - name: Retain public screenshots and acceptance report
         if: always()

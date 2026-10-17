@@ -30,17 +30,18 @@ fs.mkdirSync(out,{recursive:true});
    console.log('Photo integrity:', await page.locator('meta[name="maqwi-photo-integrity"]').count() ? await page.locator('meta[name="maqwi-photo-integrity"]').getAttribute('content') : 'no mismatch');
    await page.screenshot({path:out+'/release-status-'+width+'.png',fullPage:true});
    assert.equal(await page.locator('.mq-product-card').count(),4,'Four catalogue cards');
-   assert(await page.locator('link[href*="style.css?ver=0.7.2"]').count(),'Current theme');
+   const themeVersion=fs.readFileSync('wp-content/themes/maqwi-organics/style.css','utf8').match(/^Version: (.+)$/m)[1];
+   assert(await page.locator('link[href*="style.css?ver='+themeVersion+'"]').count(),'Current theme');
    assert.equal(await page.locator('.mq-announcement').innerText(),'Meet the Maqwi collection · orders open soon');
    assert.equal(await page.locator('.mq-premium-hero').count(),1,'Premium hero renders once');
    assert.equal(await page.locator('.mq-premium-primary').getAttribute('href'),'#the-collection');
    assert.equal(await page.locator('.mq-premium-story').getAttribute('href'),base+'about/');
-   const heroImg=page.locator('.mq-premium-media>img');
-   assert((await heroImg.getAttribute('src')).includes('hero-campaign-v2.webp'));
+   const heroImg=page.locator('.mq-hero-slide').first().locator('img');
+   assert((await heroImg.getAttribute('src')).includes('hero-collection-v3.webp'));
    assert.equal(await heroImg.getAttribute('fetchpriority'),'high');
    await page.evaluate(()=>document.fonts.ready);
    await page.locator('.mq-premium-copy').evaluate(e=>Promise.all(e.getAnimations().map(a=>a.finished.catch(()=>{}))));
-   if(width<1100){const c=await page.locator('.mq-premium-copy').boundingBox(),m=await page.locator('.mq-premium-media').boundingBox();assert(c.y+c.height<=m.y+10,'Mobile copy above image');}
+   if(width<768){const c=await page.locator('.mq-premium-copy').boundingBox(),m=await page.locator('.mq-premium-media').boundingBox();assert(c.y+c.height<=m.y+10,'Mobile copy above image');}
    await page.evaluate(()=>document.fonts.ready);
    for(const selector of ['.mq-premium-copy','.mq-premium-media']){await page.locator(selector).evaluate(e=>Promise.all(e.getAnimations().map(a=>a.finished.catch(()=>{}))));}
    await check('home');
