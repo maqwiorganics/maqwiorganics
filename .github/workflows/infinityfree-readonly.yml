@@ -1,0 +1,92 @@
+name: InfinityFree read-only connection test
+
+on:
+  push:
+    branches: [staging]
+    paths: ['.github/workflows/infinityfree-readonly.yml']
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: infinityfree-readonly
+  cancel-in-progress: false
+
+jobs:
+  inspect:
+    if: github.ref == 'refs/heads/staging'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - name: Verify encrypted FTP and list WordPress directories
+        env:
+          FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import ftplib, io, json, os, re, ssl, sys
+          from urllib.request import Request, urlopen
+          from urllib.error import HTTPError
+          ftp = ftplib.FTP_TLS(context=ssl.create_default_context(), timeout=25)
+          stage = "encrypted FTP"
+          def read(path, limit=1048576):
+              chunks = bytearray()
+              def receive(chunk):
+                  chunks.extend(chunk)
+                  if len(chunks) > limit:
+                      raise ValueError("size limit")
+              ftp.retrbinary("RETR " + path, receive)
+              return chunks.decode("utf-8", errors="replace")
+          try:
+              ftp.connect("ftpupload.net", 21)
+              ftp.login("if0_43106867", os.environ["FTP_PASSWORD"])
+              ftp.prot_p()
+              stage = "configuration analysis"
+              config = read("/htdocs/wp-config.php")
+              config = re.sub(r"/\*.*?\*/|//[^\n]*", "", config, flags=re.S)
+              for flag in ["DISABLE_WP_CRON", "ALTERNATE_WP_CRON", "WP_CACHE", "WP_HTTP_BLOCK_EXTERNAL", "DISALLOW_FILE_MODS", "FORCE_SSL_ADMIN"]:
+                  match = re.search(r"""define\s*\(\s*['"]""" + flag + r"""['"]\s*,\s*(true|false|0|1)\s*\)""", config, re.I)
+                  print(json.dumps({"flag":flag, "literal_boolean":match.group(1).lower() if match else "not found or nonliteral"}))
+              del config
+              version = read("/htdocs/wp-includes/version.php")
+              match = re.search(r"""\$wp_version\s*=\s*['"]([0-9.]+)['"]""", version)
+              print("WordPress source version: " + (match.group(1) if match else "not parsed"))
+              htaccess = read("/htdocs/.htaccess")
+              for label, pattern in [
+                  ("wordpress_rewrite_block", r"BEGIN WordPress"),
+                  ("w3tc_rules", r"W3TC"),
+                  ("rest_api_reference", r"wp-json|rest_route"),
+                  ("authorization_header_forwarding", r"HTTP_AUTHORIZATION"),
+                  ("deny_rules_present", r"Deny from|Require all denied")]:
+                  print(json.dumps({"htaccess_check":label, "present":bool(re.search(pattern,htaccess,re.I))}))
+              ftp.cwd("/htdocs/wp-content")
+              names = {x.rstrip("/").split("/")[-1] for x in ftp.nlst()}
+              print(json.dumps({"wp_content": {key:key in names for key in ["advanced-cache.php","object-cache.php","mu-plugins"]}}))
+              if "mu-plugins" in names:
+                  ftp.cwd("/htdocs/wp-content/mu-plugins")
+                  print(json.dumps({"mu_plugin_names":sorted(x.rstrip("/").split("/")[-1] for x in ftp.nlst())}))
+              print("FTP source checks completed; no files modified.")
+          except Exception as exc:
+              print("FTP diagnostics failed at " + stage + " (" + type(exc).__name__ + ").")
+              sys.exit(1)
+          finally:
+              ftp.close()
+          try:
+              req = Request("https://maqwiorganics.gt.tc/wp-json/", headers={"User-Agent":"Maqwi-ReadOnly-Connection-Diagnostic/1.0"})
+              try:
+                  response = urlopen(req, timeout=25)
+              except HTTPError as exc:
+                  response = exc
+              with response:
+                  body = response.read(65536).decode("utf-8", errors="replace")
+                  result = {"rest_http_status":response.status, "content_type":response.headers.get("Content-Type",""), "browser_challenge_markers":any(x in body for x in ["aes.js","__test","requires Javascript","requires JavaScript"])}
+                  try:
+                      data = json.loads(body)
+                      result["wordpress_json"] = isinstance(data,dict) and ("namespaces" in data or "code" in data)
+                  except ValueError:
+                      result["wordpress_json"] = False
+                  print(json.dumps(result))
+                  print("Single REST probe completed; no challenge execution, cookies, or retry.")
+          except Exception as exc:
+              print("REST probe unavailable (" + type(exc).__name__ + ").")
+          PY

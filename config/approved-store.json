@@ -1,0 +1,64 @@
+{
+  "revision": "2026-10-17",
+  "currency": "PKR",
+  "country": "PK",
+  "ordering_enabled": false,
+  "payments_approved": false,
+  "shipping": {
+    "amount": 300,
+    "basis": "per_order",
+    "country": "PK"
+  },
+  "contact": {
+    "address": "Ali Town, Lahore, Punjab, Pakistan",
+    "phone": "03171935828",
+    "email": "info@maqwiorganics.com"
+  },
+  "products": [
+    {
+      "slug": "maqwi-honey",
+      "stock": 20,
+      "variations": [
+        {
+          "size": "1 kg",
+          "price": 4500
+        }
+      ]
+    },
+    {
+      "slug": "maqwi-desi-ghee",
+      "stock": 15,
+      "variations": [
+        {
+          "size": "1 kg",
+          "price": 3500
+        }
+      ]
+    },
+    {
+      "slug": "maqwi-achaar",
+      "stock": 5,
+      "stock_scope": "shared_parent",
+      "variations": [
+        {
+          "size": "500 g",
+          "price": 1500
+        },
+        {
+          "size": "1 kg",
+          "price": 3000
+        }
+      ]
+    },
+    {
+      "slug": "maqwi-itar",
+      "stock": 10,
+      "variations": [
+        {
+          "size": "12 ml",
+          "price": 200
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,171 @@
+name: Deploy approved product catalogue on temporary site
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: maqwi-temporary-theme-install
+  cancel-in-progress: false
+jobs:
+  refine:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Validate PHP and checkout rules
+        run: |
+          find wp-content/themes/maqwi-organics wp-content/plugins/maqwi-store-core tests -name '*.php' -print0 | xargs -0 -n1 php -l
+          php tests/store-core.php
+          php tests/catalogue.php
+          node --check wp-content/themes/maqwi-organics/assets/public.js
+      - name: Install pinned image verifier
+        run: python3 -m pip install --disable-pip-version-check Pillow==12.0.0
+      - name: Apply guarded public frontend release
+        env:
+          FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
+        run: |
+          python3 - <<'PY'
+          import ftplib, ssl, os, io, hashlib, pathlib, subprocess, secrets, json
+          sources = ['wp-content/plugins/maqwi-store-core/photography/manifest.json', 'wp-content/plugins/maqwi-store-core/catalogue-release.php']
+          # The verified manifest must be installed before the revised preflight.
+          server_assets = {}
+          new_sources = set()
+          old_commit = '96b2f4f02017c968c810980751466231f83b7ee3'
+          ftp = ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
+          ftp.connect('ftpupload.net',21)
+          ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
+          ftp.prot_p()
+          def read(path):
+              output = io.BytesIO()
+              ftp.retrbinary('RETR '+path,output.write)
+              return output.getvalue()
+          def verify(expected,actual):
+              if expected == actual: return
+              if expected.startswith(b'RIFF') and expected[8:12] == b'WEBP':
+                  from PIL import Image, ImageChops, ImageStat
+                  a=Image.open(io.BytesIO(expected)).convert('RGB')
+                  b=Image.open(io.BytesIO(actual)).convert('RGB')
+                  assert a.size == b.size, 'Unexpected product image dimensions'
+                  rms = ImageStat.Stat(ImageChops.difference(a,b)).rms
+                  print('Verified product image channel RMS:', rms, flush=True)
+                  assert max(rms) <= 8, 'Product image changed beyond recompression tolerance'
+                  return
+              if expected.startswith(b'\x89PNG\r\n\x1a\n'):
+                  from PIL import Image, ImageChops, ImageStat
+                  a=Image.open(io.BytesIO(expected)).convert('RGBA')
+                  b=Image.open(io.BytesIO(actual)).convert('RGBA')
+                  assert a.size == b.size, 'Unexpected logo dimensions'
+                  assert ImageChops.difference(a.getchannel('A'),b.getchannel('A')).getbbox() is None, 'Logo transparency changed'
+                  assert max(ImageStat.Stat(ImageChops.difference(a.convert('RGB'),b.convert('RGB'))).rms) <= 12, 'Logo colour changed'
+                  return
+              assert hashlib.sha256(expected).digest() == hashlib.sha256(actual).digest(), 'Unexpected source hash'
+          originals = {}
+          for source in sources:
+              if source in new_sources:
+                  parent = str(pathlib.PurePosixPath('/htdocs/'+source).parent)
+                  try: names = {x.rsplit('/',1)[-1] for x in ftp.nlst(parent)}
+                  except ftplib.error_perm as e:
+                      if not str(e).startswith('550'): raise
+                      names = set()
+                  assert pathlib.Path(source).name not in names, 'Unexpected pre-existing new source'
+                  continue
+              expected = subprocess.check_output(['git','show',old_commit+':'+source])
+              originals[source] = read('/htdocs/'+source)
+              if source.endswith('photography/manifest.json'):
+                  expected_manifest = json.loads(expected)
+                  current_manifest = json.loads(originals[source])
+                  assert len(expected_manifest) == len(current_manifest) == 17
+                  for a, b in zip(expected_manifest, current_manifest):
+                      assert a['filename'] == b['filename'] and a['sha256'] == b['source_sha256']
+                      assert (a['width'],a['height']) == (b['width'],b['height'])
+              else: verify(expected,originals[source])
+          manifest_source = json.loads(pathlib.Path('wp-content/plugins/maqwi-store-core/photography/manifest.json').read_bytes())
+          for asset in manifest_source:
+              source = 'wp-content/plugins/maqwi-store-core/photography/'+asset['filename']
+              data = pathlib.Path(source).read_bytes()
+              actual = read('/htdocs/'+source)
+              verify(data,actual)
+              digest = hashlib.sha256(actual).hexdigest()
+              if asset['filename'] == '01-desi-ghee-catalogue.webp':
+                  assert digest == 'a9dbea3afe9ec75bf2522dcb3e4cc4a965c621b0948722d9ed859710a4340b4f', 'FTP and native file hashes differ'
+              server_assets[asset['filename']] = (digest,len(actual))
+          print('Final installed image hashes verified against source and native readback.',flush=True)
+          history = '/htdocs/wp-content/themes/.maqwi-commerce-refine-'+os.environ['GITHUB_RUN_ID']
+          ftp.mkd(history)
+          for source in originals:
+              target = history+'/'+pathlib.Path(source).name
+              ftp.storbinary('STOR '+target,io.BytesIO(originals[source]))
+              verify(originals[source],read(target))
+          photo_dir = '/htdocs/wp-content/plugins/maqwi-store-core/photography'
+          try: ftp.mkd(photo_dir)
+          except ftplib.error_perm as e:
+              if not str(e).startswith('550'): raise
+          changed = []
+          temporary = None
+          try:
+              for source in sources:
+                  target = '/htdocs/'+source
+                  temporary = str(pathlib.PurePosixPath(target).parent)+'/.maqwi-refine-'+secrets.token_hex(8)+pathlib.Path(source).suffix
+                  data = pathlib.Path(source).read_bytes()
+                  if source.endswith('photography/manifest.json'):
+                      manifest = json.loads(data)
+                      for asset in manifest:
+                          asset['source_sha256'] = asset['sha256']
+                          asset['sha256'], asset['bytes'] = server_assets[asset['filename']]
+                      data = (json.dumps(manifest, indent=2)+'\n').encode()
+                  ftp.storbinary('STOR '+temporary,io.BytesIO(data))
+                  actual = read(temporary)
+                  if data != actual:
+                      print('Readback differs for', source, 'expected bytes', len(data), 'actual bytes', len(actual), flush=True)
+                      if source.endswith('.webp'):
+                          from PIL import Image, ImageChops, ImageStat
+                          a=Image.open(io.BytesIO(data)).convert('RGB')
+                          b=Image.open(io.BytesIO(actual)).convert('RGB')
+                          print('Image dimensions', a.size, b.size, 'channel RMS', ImageStat.Stat(ImageChops.difference(a,b)).rms if a.size == b.size else 'different', flush=True)
+                  verify(data,actual)
+                  if source.endswith('.webp'):
+                      server_assets[pathlib.Path(source).name] = (hashlib.sha256(actual).hexdigest(), len(actual))
+                  ftp.rename(temporary,target)
+                  temporary = None
+                  changed.append(source)
+                  verify(data,read(target))
+          except Exception:
+              if temporary:
+                  try: ftp.delete(temporary)
+                  except ftplib.error_perm: pass
+              for source in reversed(changed):
+                  if source in new_sources:
+                      ftp.delete('/htdocs/'+source)
+                      continue
+                  ftp.storbinary('STOR /htdocs/'+source,io.BytesIO(originals[source]))
+                  verify(originals[source],read('/htdocs/'+source))
+              raise
+          finally:
+              ftp.quit()
+          print('Approved catalogue source deployed; source snapshot and exact hashes verified. Native revision still needs runtime acceptance; orders remain closed.')
+          PY
+  catalogue-acceptance:
+    needs: refine
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Install pinned browser driver without lifecycle scripts
+        run: npm install --prefix .qa-deps --ignore-scripts --no-audit --no-fund --no-save playwright@1.62.1
+      - name: Public acceptance checks using normal installed Chrome
+        env:
+          NODE_PATH: ${{ github.workspace }}/.qa-deps/node_modules
+        run: node tests/frontend/catalogue.cjs
+      - name: Retain public screenshots and acceptance report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: maqwi-public-frontend-qa
+          path: frontend-qa/
+          retention-days: 7
+          if-no-files-found: warn

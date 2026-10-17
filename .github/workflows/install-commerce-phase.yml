@@ -1,0 +1,106 @@
+name: Install reviewed commerce phase on temporary site
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: maqwi-temporary-theme-install
+  cancel-in-progress: false
+jobs:
+  install:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Validate PHP and checkout rules before upload
+        run: |
+          find wp-content/themes/maqwi-organics wp-content/plugins/maqwi-store-core tests -name '*.php' -print0 | xargs -0 -n1 php -l
+          php tests/store-core.php
+      - name: Back up reviewed source and install inactive core
+        env:
+          FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
+        run: |
+          python3 - <<'PY'
+          import ftplib, ssl, os, io, hashlib, pathlib, subprocess, secrets
+          local = pathlib.Path('wp-content/themes/maqwi-organics')
+          existing = ['functions.php','style.css','header-maqwi.php','footer-maqwi.php']
+          new = ['woocommerce.php','page-maqwi.php']
+          old_commit = 'f99d9fc66bff1590f6efbf502030e5a8c908be18'
+          ftp = ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
+          ftp.connect('ftpupload.net',21)
+          ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
+          ftp.prot_p()
+          root = '/htdocs/wp-content/themes/maqwi-organics'
+          plugin = '/htdocs/wp-content/plugins/maqwi-store-core'
+          history = '/htdocs/wp-content/themes/.maqwi-commerce-' + os.environ['GITHUB_RUN_ID']
+          def read(path):
+              result = io.BytesIO()
+              ftp.retrbinary('RETR '+path,result.write)
+              return result.getvalue()
+          def verify(expected, actual, label):
+              assert hashlib.sha256(expected).digest() == hashlib.sha256(actual).digest(), 'Unexpected source: '+label
+          def exists(path):
+              try:
+                  ftp.size(path)
+                  return True
+              except ftplib.error_perm as error:
+                  if not str(error).startswith('550'): raise
+                  return False
+          ftp.voidcmd('TYPE I')
+          originals = {}
+          for name in existing:
+              expected = subprocess.check_output(['git','show',old_commit+':'+str(local/name)])
+              originals[name] = read(root+'/'+name)
+              verify(expected,originals[name],name)
+          for name in new: assert not exists(root+'/'+name), 'New template already exists'
+          parent_entries = [name.rsplit('/',1)[-1] for name in ftp.nlst('/htdocs/wp-content/plugins')]
+          assert 'maqwi-store-core' not in parent_entries, 'Core plugin already exists'
+          ftp.mkd(history)
+          for name in existing:
+              ftp.storbinary('STOR '+history+'/'+name,io.BytesIO(originals[name]))
+              verify(originals[name],read(history+'/'+name),'backup '+name)
+          ftp.mkd(plugin)
+          changed = []
+          created = []
+          token = secrets.token_hex(8)
+          temporary = None
+          try:
+              # New templates exist before functions route page requests to them.
+              # Functions exist before the header calls its new helpers.
+              for name in new + ['functions.php','header-maqwi.php','footer-maqwi.php','style.css']:
+                  data = (local/name).read_bytes()
+                  destination = root+'/'+name
+                  temporary = root+'/.maqwi-upload-'+token+'.php'
+                  ftp.storbinary('STOR '+temporary,io.BytesIO(data))
+                  verify(data,read(temporary),name)
+                  ftp.rename(temporary,destination)
+                  temporary = None
+                  (changed if name in existing else created).append(name)
+                  verify(data,read(destination),name)
+              data = pathlib.Path('wp-content/plugins/maqwi-store-core/maqwi-store-core.php').read_bytes()
+              temporary = plugin+'/.maqwi-upload-'+token+'.php'
+              ftp.storbinary('STOR '+temporary,io.BytesIO(data))
+              verify(data,read(temporary),'core plugin')
+              ftp.rename(temporary,plugin+'/maqwi-store-core.php')
+              temporary = None
+              verify(data,read(plugin+'/maqwi-store-core.php'),'core plugin')
+          except Exception:
+              if temporary:
+                  try: ftp.delete(temporary)
+                  except ftplib.error_perm: pass
+              for name in reversed(changed):
+                  ftp.storbinary('STOR '+root+'/'+name,io.BytesIO(originals[name]))
+                  verify(originals[name],read(root+'/'+name),'restored '+name)
+              for name in created: ftp.delete(root+'/'+name)
+              try: ftp.delete(plugin+'/maqwi-store-core.php')
+              except ftplib.error_perm: pass
+              try: ftp.rmd(plugin)
+              except ftplib.error_perm: pass
+              raise
+          finally:
+              ftp.quit()
+          print('Commerce theme source verified; previous source snapshot retained; core installed inactive.')
+          PY

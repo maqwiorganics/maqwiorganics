@@ -1,0 +1,128 @@
+name: Publish coordinated automatic hero on temporary site
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: maqwi-temporary-theme-install
+  cancel-in-progress: false
+jobs:
+  refine:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Validate source before deployment
+        run: |
+          find wp-content/themes/maqwi-organics wp-content/plugins/maqwi-store-core tests -name '*.php' -print0 | xargs -0 -n1 php -l
+          php tests/store-core.php
+          php tests/catalogue.php
+          node --check tests/frontend/catalogue.cjs
+          node --check tests/frontend/hero-carousel.cjs
+          node --check wp-content/themes/maqwi-organics/assets/public.js
+          python3 - <<'BUDGET'
+          import pathlib
+          root=pathlib.Path('wp-content/themes/maqwi-organics')
+          assert all(p.stat().st_size<150_000 for p in (root/'assets/images').iterdir())
+          assert sum(p.stat().st_size for p in root.rglob('*') if p.is_file())<900_000
+          BUDGET
+      - name: Prepare bounded image verification
+        run: python3 -m pip install --disable-pip-version-check Pillow==12.0.0
+      - name: Deploy reviewed hero files
+        env:
+          FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
+        run: |
+          python3 - <<'PY'
+          import ftplib, ssl, os, io, hashlib, pathlib, subprocess, secrets
+          sources = ['wp-content/themes/maqwi-organics/assets/public.js', 'wp-content/themes/maqwi-organics/style.css', 'wp-content/themes/maqwi-organics/functions.php']
+          new_sources=set()
+          old_commit='19898836a64fac1cd1625478f7b4332a053d4333'
+          ftp=ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
+          ftp.connect('ftpupload.net',21)
+          ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
+          ftp.prot_p()
+          def read(path):
+              out=io.BytesIO()
+              ftp.retrbinary('RETR '+path,out.write)
+              return out.getvalue()
+          def verify(expected,actual):
+              if hashlib.sha256(expected).digest()==hashlib.sha256(actual).digest(): return
+              if expected[:4] == b'RIFF' and expected[8:12] == b'WEBP':
+                  from PIL import Image, ImageChops, ImageStat
+                  a=Image.open(io.BytesIO(expected)).convert('RGB')
+                  b=Image.open(io.BytesIO(actual)).convert('RGB')
+                  assert a.size==b.size,'Hero image dimensions changed'
+                  rms=ImageStat.Stat(ImageChops.difference(a,b)).rms
+                  assert max(rms)<=8,'Hero image changed beyond recompression tolerance'
+                  return
+              raise AssertionError('Unexpected source hash')
+          originals={}
+          for source in sources:
+              if source in new_sources:
+                  parent='/htdocs/'+str(pathlib.PurePosixPath(source).parent)
+                  names={x.rsplit('/',1)[-1] for x in ftp.nlst(parent)}
+                  assert pathlib.Path(source).name not in names,'Copy module already exists'
+              else:
+                  expected=subprocess.check_output(['git','show',old_commit+':'+source])
+                  originals[source]=read('/htdocs/'+source)
+                  verify(expected,originals[source])
+          history='/htdocs/wp-content/themes/.maqwi-copy-'+os.environ['GITHUB_RUN_ID']
+          ftp.mkd(history)
+          for source,data in originals.items():
+              target=history+'/'+source.replace('/','__')
+              ftp.storbinary('STOR '+target,io.BytesIO(data))
+              verify(data,read(target))
+          changed=[]
+          temporary=None
+          try:
+              for source in sources:
+                  target='/htdocs/'+source
+                  temporary=str(pathlib.PurePosixPath(target).parent)+'/.maqwi-copy-'+secrets.token_hex(8)+pathlib.Path(source).suffix
+                  data=pathlib.Path(source).read_bytes()
+                  ftp.storbinary('STOR '+temporary,io.BytesIO(data))
+                  verify(data,read(temporary))
+                  ftp.rename(temporary,target)
+                  temporary=None
+                  changed.append(source)
+                  verify(data,read(target))
+          except Exception:
+              if temporary:
+                  try: ftp.delete(temporary)
+                  except ftplib.error_perm: pass
+              for source in reversed(changed):
+                  if source in new_sources: ftp.delete('/htdocs/'+source)
+                  else:
+                      ftp.storbinary('STOR /htdocs/'+source,io.BytesIO(originals[source]))
+                      verify(originals[source],read('/htdocs/'+source))
+              raise
+          finally:
+              ftp.quit()
+          print('Hero deployed; source snapshots preserved; code and image integrity checks passed.')
+          PY
+
+  copy-acceptance:
+    needs: refine
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Install pinned browser driver without lifecycle scripts
+        run: npm install --prefix .qa-deps --ignore-scripts --no-audit --no-fund --no-save playwright@1.62.1
+      - name: Public acceptance checks using normal installed Chrome
+        env:
+          NODE_PATH: ${{ github.workspace }}/.qa-deps/node_modules
+        run: |
+          node tests/frontend/hero-carousel.cjs
+      - name: Retain public screenshots and acceptance report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: maqwi-public-frontend-qa
+          path: frontend-qa/
+          retention-days: 7
+          if-no-files-found: warn

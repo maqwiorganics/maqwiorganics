@@ -1,0 +1,96 @@
+name: Maqwi daily health check
+on:
+  push:
+    branches: [staging]
+    paths: ['.github/workflows/store-health.yml','tests/frontend/health.cjs']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: maqwi-temporary-theme-install
+  cancel-in-progress: false
+jobs:
+  health:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: staging
+          persist-credentials: false
+      - name: Read TLS and backup-file metadata
+        env:
+          FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
+        run: |
+          python3 - <<'PY'
+          import ssl,socket,ftplib,os,re,pathlib,json,datetime
+          root=pathlib.Path('health-report');root.mkdir(exist_ok=True)
+          now=datetime.datetime.now(datetime.timezone.utc)
+          report={'checkedAt':now.isoformat(),'passed':True,'warnings':[],'errors':[]}
+          try:
+              with socket.create_connection(('maqwiorganics.gt.tc',443),timeout=20) as raw:
+                  with ssl.create_default_context().wrap_socket(raw,server_hostname='maqwiorganics.gt.tc') as secured:
+                      certificate=secured.getpeercert()
+                      expires=datetime.datetime.strptime(certificate['notAfter'],'%b %d %H:%M:%S %Y %Z').replace(tzinfo=datetime.timezone.utc)
+                      report['tlsExpires']=expires.isoformat()
+                      if (expires-now).days<14: report['warnings'].append('TLS certificate expires within 14 days.')
+          except Exception as error:
+              report['passed']=False;report['errors'].append('TLS verification failed: '+type(error).__name__)
+          try:
+              ftp=ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=20)
+              ftp.connect('ftpupload.net',21)
+              ftp.login('if0_43106867',os.environ['FTP_PASSWORD']);ftp.prot_p()
+              groups={}
+              for path in ftp.nlst('/htdocs/wp-content/updraft'):
+                  name=path.rsplit('/',1)[-1]
+                  m=re.match(r'^(backup_(\d{4}-\d{2}-\d{2})-.*)-(db|plugins|themes|uploads|others)(?:\d+)?\.(?:gz|zip)$',name)
+                  if m:
+                      group=groups.setdefault(m.group(1),{'date':m.group(2),'parts':set()})
+                      group['parts'].add(m.group(3))
+              ftp.quit()
+              complete=[g['date'] for g in groups.values() if {'db','plugins','themes','uploads','others'}<=g['parts']]
+              report['latestFullBackupFileDate']=max(complete) if complete else None
+              if not complete: report['warnings'].append('No full set of backup-component filenames found.')
+              elif (now.date()-datetime.date.fromisoformat(max(complete))).days>2:
+                  report['warnings'].append('Newest full backup-component filenames are more than two days old. A fresh backup is needed.')
+              report['backupScope']='File metadata only; restore integrity and off-site retention are unverified.'
+          except Exception as error:
+              report['warnings'].append('Backup metadata could not be checked: '+type(error).__name__)
+          (root/'hosting.json').write_text(json.dumps(report,indent=2))
+          print('MAQWI_HOSTING_HEALTH='+json.dumps(report))
+          PY
+      - name: Install pinned browser driver
+        run: npm install --prefix .qa-deps --ignore-scripts --no-audit --no-fund --no-save playwright@1.62.1
+      - name: Check public storefront without creating orders
+        env:
+          NODE_PATH: ${{ github.workspace }}/.qa-deps/node_modules
+        run: node tests/frontend/health.cjs
+      - name: Summarise health and actionable warnings
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import pathlib,json,os
+          root=pathlib.Path('health-report');root.mkdir(exist_ok=True)
+          reports={}
+          for name in ['hosting','public']:
+              path=root/(name+'.json')
+              reports[name]=json.loads(path.read_text()) if path.exists() else {'passed':False,'errors':['Check did not complete.']}
+          passed=all(r.get('passed',False) for r in reports.values())
+          warnings=reports['hosting'].get('warnings',[])
+          result={'passed':passed,'attentionNeeded':not passed or bool(warnings),'checks':reports}
+          (root/'summary.json').write_text(json.dumps(result,indent=2))
+          print('MAQWI_HEALTH_SUMMARY='+json.dumps(result))
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as summary:
+              summary.write('# Maqwi health check\n\n'+('Public checks passed.' if passed else 'A check failed or could not complete.')+'\n\n')
+              for warning in warnings: summary.write('- '+warning+'\n')
+              summary.write('\nNo database writes, orders, deployments or DNS changes were performed.\n')
+          if not passed: raise SystemExit(1)
+          PY
+      - name: Retain health report briefly
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: maqwi-health-report
+          path: health-report/
+          retention-days: 3
+          if-no-files-found: warn

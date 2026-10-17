@@ -34,13 +34,13 @@ jobs:
           print('Retrieved allowlisted live source files.')
           PY
       - name: Verify PHP syntax
-        run: find wp-content/plugins/maqwi-store-core -name '*.php' -exec php -l {} \;
+        run: find wp-content/plugins/maqwi-store-core -name '*.php' -print0 | xargs -0 -n1 php -l
       - name: Commit snapshot on separate branch
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -b snapshot/live-plugin-source
+          git checkout -b snapshot/live-plugin-source-${{ github.run_id }}
           git add wp-content/plugins/maqwi-store-core
           git diff --cached --check
           git commit -m "Snapshot installed Maqwi plugin source"
-          git push origin snapshot/live-plugin-source
+          git push origin snapshot/live-plugin-source-${{ github.run_id }}

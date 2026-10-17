@@ -1,0 +1,50 @@
+name: Validate Maqwi theme
+on:
+  push:
+    branches: [staging, main]
+    paths: ['wp-content/themes/maqwi-organics/**', 'wp-content/plugins/maqwi-store-core/**', 'tests/**', '.github/workflows/theme-validation.yml', '.github/scripts/**', 'config/**']
+  pull_request:
+    paths: ['wp-content/themes/maqwi-organics/**', 'wp-content/plugins/maqwi-store-core/**', 'tests/**', '.github/workflows/theme-validation.yml', '.github/scripts/**', 'config/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: PHP syntax
+        run: find wp-content/themes/maqwi-organics wp-content/plugins/maqwi-store-core tests -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: Checkout rule checks
+        run: |
+          php tests/store-core.php
+          php tests/catalogue.php
+      - name: Deployment recovery checks
+        run: python3 tests/deploy_plugin.py
+      - name: Public script syntax
+        run: node --check wp-content/themes/maqwi-organics/assets/public.js
+      - name: Theme metadata and asset budgets
+        run: |
+          python3 - <<'PY'
+          import json, pathlib
+          root = pathlib.Path('wp-content/themes/maqwi-organics')
+          json.loads((root/'theme.json').read_text())
+          assert 'Template: kadence' in (root/'style.css').read_text()
+          for image in (root/'assets/images').iterdir():
+              assert image.stat().st_size < 150_000, image.name
+          # Includes the approved three-scene hero; each image remains below 150 KB.
+          assert sum(p.stat().st_size for p in root.rglob('*') if p.is_file()) < 900_000
+          photos = pathlib.Path('wp-content/plugins/maqwi-store-core/photography')
+          assets = json.loads((photos/'manifest.json').read_text())
+          import hashlib
+          assert len(assets) == 17
+          assert sum(a['bytes'] for a in assets) < 3_000_000
+          for a in assets:
+              p = photos/a['filename']
+              assert p.stat().st_size < 250_000
+              assert hashlib.sha256(p.read_bytes()).hexdigest() == a['sha256']
+          print('Theme valid; 17 photography assets verified under 3 MB total.')
+          PY

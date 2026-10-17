@@ -1,0 +1,54 @@
+name: Test native visitor cron on temporary site
+on:
+  workflow_dispatch:
+permissions: {}
+concurrency:
+  group: maqwi-temporary-configuration
+  cancel-in-progress: false
+jobs:
+  configure:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - name: Change one native WordPress configuration flag
+        env:
+          FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
+        run: |
+          python3 - <<'PY'
+          import ftplib, ssl, os, io, hashlib, tempfile, pathlib, subprocess, secrets
+          enable = True
+          expected_original = '422935c9e3bd998878ee6df37c0ea130b3e9bb72d96ebf9f8cdc270744d3e969'
+          insertion = b"\ndefine( 'ALTERNATE_WP_CRON', true ); // Maqwi: native visitor cron\n"
+          ftp = ftplib.FTP_TLS(context=ssl.create_default_context(), timeout=25)
+          ftp.connect('ftpupload.net',21)
+          ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
+          ftp.prot_p()
+          received = io.BytesIO()
+          ftp.retrbinary('RETR /htdocs/wp-config.php',received.write)
+          current = received.getvalue()
+          original = current.replace(insertion,b'',1) if insertion in current else current
+          assert hashlib.sha256(original).hexdigest() == expected_original, 'Configuration differs from protected recovery baseline; no changes made'
+          assert original.startswith(b'<?php'), 'Unexpected configuration format'
+          assert b'ALTERNATE_WP_CRON' not in original, 'Unexpected existing cron configuration'
+          replacement = original.replace(b'<?php',b'<?php'+insertion,1) if enable else original
+          if replacement != current:
+              with tempfile.NamedTemporaryFile(suffix='.php') as candidate:
+                  candidate.write(replacement)
+                  candidate.flush()
+                  subprocess.run(['php','-l',candidate.name],check=True,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+              temporary = '/htdocs/wp-config-maintenance-'+secrets.token_hex(16)+'.php'
+              renamed = False
+              try:
+                  ftp.storbinary('STOR '+temporary,io.BytesIO(replacement))
+                  verified = io.BytesIO()
+                  ftp.retrbinary('RETR '+temporary,verified.write)
+                  assert hashlib.sha256(replacement).digest() == hashlib.sha256(verified.getvalue()).digest(), 'Configuration transfer mismatch'
+                  ftp.rename(temporary,'/htdocs/wp-config.php')
+                  renamed = True
+              finally:
+                  if not renamed:
+                      try: ftp.delete(temporary)
+                      except ftplib.error_perm: pass
+          ftp.quit()
+          print('Native visitor cron flag enabled.' if enable else 'Original cron configuration restored.')
+          PY
