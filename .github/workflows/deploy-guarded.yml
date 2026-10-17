@@ -1,0 +1,91 @@
+name: Deploy Maqwi plugin (guarded)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: maqwi-production-plugin-deploy
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check package files and PHP
+        shell: bash
+        run: |
+          test -f wp-content/plugins/maqwi-store-core/maqwi-store-core.php
+          find wp-content/plugins/maqwi-store-core -type f \( -name '*.php' -o -name '*.json' -o -name '*.webp' \) | wc -l
+          find wp-content/plugins/maqwi-store-core -name '*.php' -exec php -l {} \;
+      - name: Backup existing files and deploy strictly scoped changes
+        env:
+          HOST: ${{ secrets.INFINITYFREE_FTP_HOST }}
+          USERNAME: ${{ secrets.INFINITYFREE_FTP_USERNAME }}
+          PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
+        run: |
+          python3 - <<'PY'
+          import ftplib,io,os,pathlib,ssl,hashlib
+          base='/htdocs/wp-content/plugins/maqwi-store-core'
+          local=pathlib.Path('wp-content/plugins/maqwi-store-core')
+          allowed={'.php','.json','.webp'}
+          package={}
+          for file in local.rglob('*'):
+              if not file.is_file(): continue
+              rel=file.relative_to(local).as_posix()
+              if file.suffix.lower() not in allowed or file.stat().st_size > 1000000: raise ValueError('Unexpected packaged file')
+              package[rel]=file.read_bytes()
+          if 'maqwi-store-core.php' not in package or len(package)<4: raise ValueError('Incomplete plugin package')
+          ftp=ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=40)
+          ftp.connect(os.environ['HOST'],21)
+          ftp.login(os.environ['USERNAME'],os.environ['PASSWORD'])
+          ftp.prot_p()
+          backup=pathlib.Path('deploy-backup');backup.mkdir(exist_ok=True)
+          existing={}
+          def remote_dir(path):
+              try: ftp.cwd(path);return True
+              except ftplib.error_perm: return False
+          for rel,data in package.items():
+              remote=base+'/'+rel
+              chunks=[]
+              try: ftp.retrbinary('RETR '+remote,chunks.append)
+              except ftplib.error_perm as e:
+                  if not str(e).startswith('550'):raise
+                  existing[rel]=None
+                  continue
+              original=b''.join(chunks);existing[rel]=original
+              target=backup/rel;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(original)
+          print('Remote originals backed up locally:',sum(x is not None for x in existing.values()))
+          (backup/'BACKUP_MANIFEST.txt').write_text('\n'.join(f'{name}: '+('absent' if blob is None else hashlib.sha256(blob).hexdigest()) for name,blob in existing.items()))
+          changed=[]
+          try:
+              for rel,data in package.items():
+                  if existing[rel]==data: continue
+                  parts=rel.split('/')[:-1];current=base
+                  for part in parts:
+                      current+='/'+part
+                      if not remote_dir(current): ftp.mkd(current)
+                  ftp.storbinary('STOR '+base+'/'+rel,io.BytesIO(data))
+                  verify=[]
+                  ftp.retrbinary('RETR '+base+'/'+rel,verify.append)
+                  if b''.join(verify)!=data: raise RuntimeError('Read-back mismatch: '+rel)
+                  changed.append(rel)
+              print('Deployment verified for',len(changed),'changed files')
+          except Exception:
+              for rel in reversed(changed):
+                  old=existing[rel]
+                  if old is None: ftp.delete(base+'/'+rel)
+                  else: ftp.storbinary('STOR '+base+'/'+rel,io.BytesIO(old))
+              raise
+          finally:
+              try: ftp.quit()
+              except Exception: pass
+          PY
+      - name: Preserve backup for recovery
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maqwi-predeployment-backup
+          path: deploy-backup/
+          retention-days: 30
+          if-no-files-found: warn
