@@ -9,8 +9,8 @@ function maqwi_premium_hero() {
     <section class="mq-premium-hero" aria-labelledby="mq-premium-title">
         <div class="mq-premium-copy">
             <p class="mq-eyebrow mq-premium-eyebrow"><span aria-hidden="true"></span>Maqwi Organics · Pakistan</p>
-            <h1 id="mq-premium-title">A little desi.<br><span>A little closer to home.</span></h1>
-            <p class="mq-premium-description">Honey, desi ghee, achaar and itar. Explore the Maqwi collection.</p>
+            <h1 id="mq-premium-title">Everyday essentials.<br><span>Rooted in tradition.</span></h1>
+            <p class="mq-premium-description">Discover Maqwi honey, desi ghee, achaar and itar — familiar flavours and fragrances for everyday life.</p>
             <div class="mq-premium-actions">
                 <a class="mq-premium-primary" href="#the-collection">Explore the collection <span aria-hidden="true">↗</span></a>
                 <a class="mq-premium-story" href="<?php echo esc_url( home_url( '/about/' ) ); ?>">Our story <span aria-hidden="true">→</span></a>

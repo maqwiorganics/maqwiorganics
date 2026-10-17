@@ -5,31 +5,44 @@ defined( 'ABSPATH' ) || exit;
 function maqwi_customer_copy() {
     return array(
         'Rooted in everyday traditions' => 'The Maqwi collection',
-        'Find your familiar favourite.' => 'Explore the range.',
+        'For your morning toast and evening tea.' => 'For breakfast, drinks and everyday recipes.',
+        'Can I place an order yet?' => 'When can I order?',
+        'What will Maqwi offer?' => 'What is in the collection?',
+        'Where will you deliver?' => 'Where will delivery be available?',
+        'Welcome to Maqwi' => 'Everyday essentials, brought together.',
+        'Maqwi Organics is a Pakistan-based brand bringing together honey, desi ghee, achaar and itar.' => 'Maqwi Organics is a Pakistan-based brand with a collection of honey, desi ghee, achaar and itar, inspired by familiar flavours and fragrances.',
+        'Our range covers everyday cooking, the breakfast table and personal fragrance. Browse each product for its pack size, price and care information.' => 'From everyday cooking and the breakfast table to personal fragrance, our products have a place in the way you live. Each listing provides pack sizes, prices and care information to help you choose.',
+        'A little extra beside paratha, rice or dal.' => 'An accompaniment to paratha, rice and traditional meals.',
+        'A spoonful of sweetness for breakfast, drinks and everyday recipes.' => 'Honey for breakfast, beverages and everyday recipes.',
+        'A familiar addition to roti, rice, dal and home cooking.' => 'Desi ghee for cooking and finishing roti, rice and dal.',
+        'A practical choice for the everyday dishes you enjoy sharing at home.' => 'Use in everyday recipes or add before serving to suit your preference.',
+        'A personal ritual, a familiar fragrance.' => 'Everyday fragrance in a compact 12 ml bottle.',
+
+        'Find your familiar favourite.' => 'Explore our collection.',
         'Four traditions. One thoughtful beginning.' => 'Honey · Desi Ghee · Achaar · Itar',
-        'A personal ritual, a familiar fragrance.' => 'Personal fragrance in a 12 ml bottle.',
-        'A familiar finishing touch to your table.' => 'For roti, rice, dal and everyday cooking.',
-        'The little extra beside a favourite meal.' => 'Serve alongside paratha, rice or dal.',
+        'A personal ritual, a familiar fragrance.' => 'Everyday fragrance in a compact 12 ml bottle.',
+        'A familiar finishing touch to your table.' => 'For everyday cooking and finishing your favourite dishes.',
+        'The little extra beside a favourite meal.' => 'An accompaniment to paratha, rice and traditional meals.',
         'The Maqwi beginning' => 'About Maqwi',
-        'Old favourites.<br>A new chapter.' => 'Maqwi Organics.<br>Made for your everyday.',
-        'Some things belong to more than a meal. A spoonful of ghee. Achaar passed around the table. The fragrance you remember from home.' => 'Maqwi Organics is a Pakistan-based brand offering honey, desi ghee, achaar and itar.',
-        'Maqwi begins with those everyday traditions. We’re building a collection around clear product information and the stories behind what you choose.' => 'Explore the range and find pack sizes, prices and product information on each listing.',
+        'Old favourites.<br>A new chapter.' => 'The Maqwi approach.',
+        'Some things belong to more than a meal. A spoonful of ghee. Achaar passed around the table. The fragrance you remember from home.' => 'Maqwi Organics is a Pakistan-based brand bringing together familiar flavours and personal fragrance in one considered collection.',
+        'Maqwi begins with those everyday traditions. We’re building a collection around clear product information and the stories behind what you choose.' => 'Our range includes honey, desi ghee, achaar and itar. Explore each product for its available pack size, price and care information.',
         'What we are building towards' => 'Product information',
-        'Details that earn your trust.' => 'Choose with confidence.',
-        'The story behind it' => 'Explore the range',
-        'Where a product comes from and how it is prepared, described with care.' => 'Honey, desi ghee, achaar and itar, all in one collection.',
-        'The details that matter' => 'Check your pack size',
-        'Ingredients, pack sizes and storage guidance, clearly stated for each product.' => 'See the listed net weight or volume when choosing a product.',
-        'A clear next step' => 'Read the label',
-        'Payment, delivery and support information before you place an order.' => 'Follow the product label for ingredients, allergens and storage instructions.',
+        'Details that earn your trust.' => 'Product details, clearly presented.',
+        'The story behind it' => 'Our collection',
+        'Where a product comes from and how it is prepared, described with care.' => 'Explore four product categories, from kitchen staples to personal fragrance.',
+        'The details that matter' => 'Pack sizes',
+        'Ingredients, pack sizes and storage guidance, clearly stated for each product.' => 'Refer to the listed net weight or volume for the pack you select.',
+        'A clear next step' => 'Product care',
+        'Payment, delivery and support information before you place an order.' => 'Consult the product details and supplied label for ingredients, allergens and storage guidance.',
         'Before we begin' => 'Common questions',
-        'A few things<br>you may wonder.' => 'How can we help?',
+        'A few things<br>you may wonder.' => 'Your questions, answered.',
         'Orders are not open yet. We are preparing the collection and testing the store before launch.' => 'Ordering opens soon. You can browse the collection and product details now.',
         'Our starting range is honey, desi ghee, achaar and itar. The final variants, sizes and prices will be listed when the collection is ready.' => 'Maqwi Honey: 1 kg, PKR 4,500. Desi Ghee: 1 kg, PKR 3,500. Itar: 12 ml, PKR 200. Achaar is coming soon.',
         'We are preparing for customers in Pakistan. Delivery areas, charges and expected timings will be confirmed before orders open.' => 'Delivery information for Pakistan will be published here when ordering opens.',
         'A thoughtful beginning' => 'Discover Maqwi',
-        'Tradition has a place here.' => 'Find your favourites.',
-        'We’re taking the time to prepare the details. Come back soon to meet the Maqwi collection.' => 'Browse honey, desi ghee, achaar and itar in the Maqwi collection.',
+        'Tradition has a place here.' => 'Explore the Maqwi collection.',
+        'We’re taking the time to prepare the details. Come back soon to meet the Maqwi collection.' => 'View our products, compare pack sizes and find the details you need in one place.',
     );
 }
 
@@ -98,3 +111,20 @@ add_action( 'init', function () {
         update_option( 'maqwi_customer_copy_error', $error->getMessage(), false );
     }
 }, 40 );
+
+/** Apply the approved brand wording to existing public text without changing records. */
+add_filter( 'the_content', function ( $content ) {
+    if ( is_admin() || ! ( is_front_page() || is_page( array( 'about', 'faq' ) ) || ( function_exists( 'is_product' ) && is_product() ) ) ) { return $content; }
+    return strtr( $content, maqwi_customer_copy() );
+}, 25 );
+add_filter( 'woocommerce_short_description', function ( $description ) {
+    return is_admin() ? $description : strtr( $description, maqwi_customer_copy() );
+}, 25 );
+
+/** Expire cached public pages once after this wording release. */
+add_action( 'wp_loaded', function () {
+    $revision = '2026-10-17-brand-copy-2';
+    if ( ! get_option( 'maqwi_catalogue_release' ) || get_option( 'maqwi_brand_wording_release' ) === $revision ) { return; }
+    update_option( 'maqwi_brand_wording_release', $revision, false );
+    if ( function_exists( 'w3tc_flush_all' ) ) { w3tc_flush_all(); }
+}, 50 );

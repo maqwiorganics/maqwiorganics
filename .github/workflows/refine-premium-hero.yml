@@ -1,4 +1,4 @@
-name: Refine premium navigation on temporary site
+name: Refine Maqwi brand copy on temporary site
 on:
   push:
     branches: [staging]
@@ -22,16 +22,16 @@ jobs:
           find wp-content/themes/maqwi-organics wp-content/plugins/maqwi-store-core tests -name '*.php' -print0 | xargs -0 -n1 php -l
           php tests/store-core.php
           php tests/catalogue.php
-          node --check tests/frontend/navigation.cjs
+          node --check tests/frontend/catalogue.cjs
       - name: Deploy reviewed customer copy files
         env:
           FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
         run: |
           python3 - <<'PY'
           import ftplib, ssl, os, io, hashlib, pathlib, subprocess, secrets
-          sources = ['wp-content/themes/maqwi-organics/header-maqwi.php', 'wp-content/themes/maqwi-organics/style.css']
+          sources = ['wp-content/plugins/maqwi-store-core/storefront-copy.php', 'wp-content/themes/maqwi-organics/functions.php', 'wp-content/themes/maqwi-organics/footer-maqwi.php']
           new_sources=set()
-          old_commit='4b2f76d78c30619c6e4626089b7e9cd63cda3787'
+          old_commit='d3dd1be6e4f1c9b0883baa3083d73768a37560d9'
           ftp=ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
           ftp.connect('ftpupload.net',21)
           ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
@@ -99,7 +99,15 @@ jobs:
       - name: Public acceptance checks using normal installed Chrome
         env:
           NODE_PATH: ${{ github.workspace }}/.qa-deps/node_modules
-        run: node tests/frontend/navigation.cjs
+        run: |
+          python3 - <<'PYTEST'
+          import pathlib,re
+          test=pathlib.Path('tests/frontend/catalogue.cjs')
+          version=re.search(r'^Version: (.+)$',pathlib.Path('wp-content/themes/maqwi-organics/style.css').read_text(),re.M)[1]
+          source=re.sub(r'style\.css\?ver=[0-9.]+', 'style.css?ver='+version, test.read_text())
+          test.write_text(source)
+          PYTEST
+          node tests/frontend/catalogue.cjs
       - name: Retain public screenshots and acceptance report
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
