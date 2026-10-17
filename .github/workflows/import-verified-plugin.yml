@@ -1,0 +1,46 @@
+name: Snapshot installed plugin source
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download allowlisted installed plugin files
+        env:
+          HOST: ${{ secrets.INFINITYFREE_FTP_HOST }}
+          USERNAME: ${{ secrets.INFINITYFREE_FTP_USERNAME }}
+          PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
+        run: |
+          python3 - <<'PY'
+          import ftplib,os,ssl,pathlib
+          base='/htdocs/wp-content/plugins/maqwi-store-core'
+          out=pathlib.Path('wp-content/plugins/maqwi-store-core')
+          ftp=ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=30)
+          ftp.connect(os.environ['HOST'],21)
+          ftp.login(os.environ['USERNAME'],os.environ['PASSWORD'])
+          ftp.prot_p()
+          files=['maqwi-store-core.php','catalogue-release.php','storefront-copy.php','storefront-preview.php','photography/manifest.json']
+          for name in files:
+              p=out/name
+              p.parent.mkdir(parents=True,exist_ok=True)
+              with p.open('wb') as dest:
+                  ftp.retrbinary('RETR '+base+'/'+name,dest.write)
+              if p.stat().st_size==0 or p.stat().st_size>300000: raise RuntimeError('Unexpected source size')
+          ftp.quit()
+          print('Retrieved allowlisted live source files.')
+          PY
+      - name: Verify PHP syntax
+        run: find wp-content/plugins/maqwi-store-core -name '*.php' -exec php -l {} \;
+      - name: Commit snapshot on separate branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b snapshot/live-plugin-source
+          git add wp-content/plugins/maqwi-store-core
+          git diff --cached --check
+          git commit -m "Snapshot installed Maqwi plugin source"
+          git push origin snapshot/live-plugin-source
