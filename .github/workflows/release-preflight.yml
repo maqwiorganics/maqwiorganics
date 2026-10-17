@@ -1,0 +1,25 @@
+name: Maqwi release preflight
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate release source exists
+        shell: bash
+        run: |
+          test -f wp-content/plugins/maqwi-store-core/maqwi-store-core.php || { echo "::error::Custom plugin source not imported. No deployment attempted."; exit 1; }
+      - name: PHP syntax checks
+        shell: bash
+        run: |
+          find wp-content/plugins/maqwi-store-core -type f -name '*.php' -print0 | xargs -0 -r -n1 php -l
+      - name: Check forbidden content
+        shell: bash
+        run: |
+          if git ls-files | grep -Ei '(^|/)(wp-config\\.php|\\.env|.*\\.sql(\\.gz)?|.*backup.*\\.zip)$'; then
+            echo "::error::Sensitive or backup files found"; exit 1
+          fi
+          echo "Preflight complete. Deployment intentionally disabled."
