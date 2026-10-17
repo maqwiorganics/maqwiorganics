@@ -31,7 +31,7 @@ jobs:
           import ftplib, ssl, os, io, hashlib, pathlib, subprocess, secrets
           sources = ['wp-content/themes/maqwi-organics/header-maqwi.php', 'wp-content/themes/maqwi-organics/style.css']
           new_sources=set()
-          old_commit='aff55ac9524348a3d8ca1af7ea56aed849248b0b'
+          old_commit='06390fbf4727572b7be9ccb886c8f42a3d561d69'
           ftp=ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
           ftp.connect('ftpupload.net',21)
           ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
