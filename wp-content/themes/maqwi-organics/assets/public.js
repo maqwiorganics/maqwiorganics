@@ -15,7 +15,7 @@
         trigger.focus();
       }
     });
-    window.matchMedia('(min-width: 640px)').addEventListener('change', event => {
+    window.matchMedia('(min-width: 901px)').addEventListener('change', event => {
       if (event.matches) menu.open = false;
     });
   }

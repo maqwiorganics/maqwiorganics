@@ -3,7 +3,7 @@ Theme Name: Maqwi Organics
 Description: Lightweight Kadence child theme with an editable Maqwi homepage pattern.
 Author: Maqwi Organics
 Template: kadence
-Version: 0.6.1
+Version: 0.7.0
 Requires at least: 6.6
 Requires PHP: 8.1
 Text Domain: maqwi-organics
@@ -97,3 +97,72 @@ License: GPL-2.0-or-later
 @media(max-width:639px){.mq-premium-copy{padding:38px 24px 8px}.mq-premium-copy .mq-premium-eyebrow{font-size:9px;gap:10px;letter-spacing:.16em;margin-bottom:20px!important}.mq-premium-eyebrow>span{width:20px}.mq-home .mq-premium-copy h1{font-size:clamp(49px,12.5vw,72px);line-height:1.02;max-width:500px}.mq-premium-copy h1>span{font-size:.88em}.mq-premium-description{font-size:15px;line-height:1.75;max-width:36ch;margin-bottom:24px!important}.mq-premium-actions{gap:20px}.mq-premium-primary{min-height:52px;gap:20px;padding:14px 18px;font-size:13px}.mq-premium-story{font-size:13px;gap:10px}.mq-premium-note{font-size:10px;gap:10px;margin-top:22px!important}.mq-premium-media{height:clamp(330px,100vw,440px);margin-top:0}.mq-premium-media>figcaption{font-size:9px;right:16px;bottom:10px}.mq-premium-media::after{background:linear-gradient(180deg,var(--mq-cream),rgba(247,242,231,.45) 8%,transparent 24%)}}
 @media(max-width:359px){.mq-premium-copy{padding-inline:20px}.mq-premium-actions{gap:16px}.mq-premium-primary{gap:14px;padding-inline:15px}.mq-premium-story{gap:8px}.mq-home .mq-premium-copy h1{font-size:49px}.mq-premium-note{letter-spacing:0}}
 @media(prefers-reduced-motion:reduce){.mq-premium-copy,.mq-premium-media{animation:none;transform:none;opacity:1}.mq-premium-primary{transition:none}.mq-premium-primary:hover{transform:none}}
+
+/* Storefront refinement: consistent editorial rhythm and comfortable controls. */
+:root{--mq-line:#d3d8c9;--mq-muted:#555d4e}
+.mq-header{border-bottom-color:#dfe1d5;box-shadow:0 3px 18px #243b2810}
+.mq-announcement{font-size:11px;padding-block:7px;letter-spacing:.06em}
+.mq-menu a{position:relative}.mq-menu .current-menu-item>a{color:var(--mq-green);text-decoration:underline;text-underline-offset:7px}
+.mq-section{padding-block:clamp(56px,6vw,96px)}
+.mq-section-top{margin-bottom:36px}.mq-section-aside{line-height:1.8}
+.mq-home h2,.mq-page h1,.mq-commerce h1{text-wrap:balance}
+.mq-category img{border-radius:10px;aspect-ratio:4/5}.mq-category figure{overflow:hidden;border-radius:10px}
+.mq-category a:hover img{outline:none;filter:brightness(.97)}
+.mq-product-card{min-width:0}.mq-product-card img{display:block;width:100%;border:1px solid #e8e4d9;border-radius:10px}
+.mq-product-card h3{margin-top:20px}.mq-price{font-variant-numeric:tabular-nums}
+.mq-commerce,.mq-page{padding-top:48px;padding-bottom:88px}
+.mq-page-heading{padding-bottom:12px;margin-bottom:40px}.mq-page-content{line-height:1.85}
+.mq-info-card{border-radius:8px;padding:32px;background:#fffcf6}
+.mq-collection-nav{gap:8px;margin-bottom:28px}.mq-collection-nav a{background:#fffcf6;font-size:13px}
+.mq-site .woocommerce ul.products{gap:40px 24px}
+.mq-site .woocommerce ul.products li.product a img{border:1px solid #e8e4d9;border-radius:10px;margin-bottom:20px}
+.mq-site .woocommerce ul.products li.product .woocommerce-loop-product__title{line-height:1.2;margin-bottom:10px}
+.mq-site .woocommerce ul.products li.product .price{margin-bottom:20px;font-variant-numeric:tabular-nums}
+.mq-site .woocommerce ul.products li.product .button{background:transparent;color:var(--mq-green);border-color:#a8b59a;width:100%;text-align:center}
+.mq-site .woocommerce ul.products li.product .button:hover{background:var(--mq-green);color:var(--mq-cream)}
+.mq-site .woocommerce div.product .summary{line-height:1.8}
+.mq-site .woocommerce div.product .flex-control-thumbs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}
+.mq-site .woocommerce div.product .flex-control-thumbs li{width:100%!important;float:none!important}
+.mq-site .woocommerce div.product .flex-control-thumbs img{border:2px solid transparent;padding:2px;opacity:.7}
+.mq-site .woocommerce div.product .flex-control-thumbs img.flex-active{border-color:var(--mq-green);opacity:1}
+.mq-site .woocommerce div.product .woocommerce-tabs ul.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.mq-site .woocommerce div.product .woocommerce-tabs ul.tabs li{margin:0}
+.mq-site .woocommerce div.product .woocommerce-tabs .panel{border-radius:8px;line-height:1.85}
+.mq-site .woocommerce form.login,.mq-site .woocommerce form.register,.mq-site .woocommerce .cart-collaterals .cart_totals{border-radius:10px}
+.mq-site .woocommerce a.remove{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+.mq-footer{padding-top:64px}.mq-footer nav{gap:8px 28px;max-width:620px}.mq-footer-bottom{border-color:#ffffff30}
+@media(min-width:1100px){.mq-premium-hero{min-height:680px}.mq-home .mq-premium-copy h1{font-size:clamp(64px,6vw,88px)}}
+@media(min-width:640px) and (max-width:1099px){.mq-premium-copy{max-width:760px;padding-top:48px}.mq-premium-media{height:440px}}
+@media(max-width:900px){
+ .mq-header{flex-wrap:wrap;gap:0;padding:14px 24px;min-height:76px;align-content:center}
+ .mq-desktop-nav,.mq-account{display:none}.mq-header-actions{display:contents}
+ .mq-cart{margin-left:auto;margin-right:92px;gap:8px;min-height:44px}
+ .mq-mobile-nav{display:block;position:static;width:0;height:0;font-size:13px}
+ .mq-mobile-nav>summary{position:absolute;right:24px;top:16px;min-height:44px;padding:8px 12px;border-color:transparent;background:#eaece1;border-radius:6px;gap:12px}
+ .mq-mobile-nav[open]{width:100%;height:auto}
+ .mq-mobile-nav nav{position:static;width:100%;max-width:none;max-height:60dvh;overflow-y:auto;border:0;border-top:1px solid var(--mq-line);box-shadow:none;padding:16px 0 4px;margin-top:14px;background:transparent}
+ .mq-mobile-nav .mq-menu{display:flex;flex-direction:column;align-items:stretch;gap:0;font-size:18px}
+ .mq-mobile-nav .mq-menu a{display:flex;justify-content:space-between;width:100%;padding:12px 4px;min-height:52px;border-bottom:1px solid #d3d8c966}
+ .mq-mobile-nav .mq-menu a::after{content:'↗';font-size:16px;color:var(--mq-green)}
+ .mq-mobile-account{font-size:14px;border-top:0;margin-top:8px;padding-inline:4px;min-height:48px}
+ .mq-brand img{width:42px;height:44px}.mq-brand span{font-size:22px}.mq-brand small{font-size:8px}
+}
+@media(max-width:639px){
+ .mq-header{padding:12px 20px;min-height:72px}.mq-mobile-nav>summary{right:20px;top:14px}
+ .mq-brand{gap:8px}.mq-brand span{font-size:20px}.mq-brand img{width:38px;height:42px}
+ .mq-cart{margin-right:86px;font-size:12px;gap:6px}.mq-bag-count{min-width:22px;height:22px}
+ .mq-premium-copy{padding:32px 22px 8px}.mq-home .mq-premium-copy h1{font-size:clamp(42px,11.5vw,64px);line-height:1.06;letter-spacing:-.035em;margin-bottom:20px}
+ .mq-premium-copy .mq-premium-eyebrow{font-size:8px;letter-spacing:.13em;gap:8px;margin-bottom:18px!important}
+ .mq-premium-description{font-size:14px;line-height:1.8;margin-bottom:22px!important}
+ .mq-premium-actions{gap:18px}.mq-premium-primary{font-size:12px;padding:14px 16px;gap:16px;min-height:50px}.mq-premium-story{font-size:12px;min-height:48px}
+ .mq-premium-note{font-size:10px;margin-top:20px!important}.mq-premium-media{height:clamp(310px,92vw,420px)}
+ .mq-section,.mq-commerce,.mq-page{padding-inline:20px}.mq-commerce,.mq-page{padding-top:32px;padding-bottom:56px}
+ .mq-home h2{font-size:36px}.mq-section-top{margin-bottom:28px}.mq-categories,.mq-product-grid{gap:30px 14px}
+ .mq-category h3,.mq-product-card h3{font-size:23px}.mq-category p{line-height:1.65}
+ .mq-site .woocommerce ul.products{gap:30px 14px}.mq-site .woocommerce ul.products li.product .woocommerce-loop-product__title{font-size:23px}
+ .mq-site .woocommerce ul.products li.product .price{font-size:14px}.mq-site .woocommerce ul.products li.product .button{padding:11px 8px;min-height:46px}
+ .mq-site .woocommerce div.product .product_title{font-size:40px}.mq-site .woocommerce div.product p.price{font-size:22px}
+ .mq-site .woocommerce div.product .summary{margin-top:24px}.mq-info-card{padding:24px}.mq-info-grid{gap:16px}
+ .mq-footer{padding:48px 20px 24px}.mq-footer nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 16px}.mq-footer-bottom{font-size:11px;line-height:1.8}
+}
+@media(max-width:359px){.mq-header{padding-inline:16px}.mq-mobile-nav>summary{right:16px;padding-inline:9px}.mq-brand span{font-size:17px}.mq-brand img{width:32px}.mq-cart{margin-right:76px;gap:4px}.mq-premium-copy{padding-inline:20px}.mq-premium-actions{gap:12px}.mq-premium-primary{padding-inline:12px;gap:10px}.mq-home .mq-premium-copy h1{font-size:42px}}

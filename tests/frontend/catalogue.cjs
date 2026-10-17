@@ -30,7 +30,7 @@ fs.mkdirSync(out,{recursive:true});
    console.log('Photo integrity:', await page.locator('meta[name="maqwi-photo-integrity"]').count() ? await page.locator('meta[name="maqwi-photo-integrity"]').getAttribute('content') : 'no mismatch');
    await page.screenshot({path:out+'/release-status-'+width+'.png',fullPage:true});
    assert.equal(await page.locator('.mq-product-card').count(),4,'Four catalogue cards');
-   assert(await page.locator('link[href*="style.css?ver=0.6.1"]').count(),'Current theme');
+   assert(await page.locator('link[href*="style.css?ver=0.7.0"]').count(),'Current theme');
    assert.equal(await page.locator('.mq-announcement').innerText(),'Meet the Maqwi collection · orders open soon');
    assert.equal(await page.locator('.mq-premium-hero').count(),1,'Premium hero renders once');
    assert.equal(await page.locator('.mq-premium-primary').getAttribute('href'),'#the-collection');
@@ -42,6 +42,15 @@ fs.mkdirSync(out,{recursive:true});
    await page.evaluate(()=>document.fonts.ready);
    for(const selector of ['.mq-premium-copy','.mq-premium-media']){await page.locator(selector).evaluate(e=>Promise.all(e.getAnimations().map(a=>a.finished.catch(()=>{}))));}
    await check('home');
+   if(width<=900){
+    const menu=page.locator('.mq-mobile-nav');await menu.locator('summary').click();
+    assert(await menu.evaluate(e=>e.open),'Menu opens');
+    const nav=await menu.locator('nav').boundingBox(), hero=await page.locator('.mq-premium-hero').boundingBox();
+    assert(nav.x>=0&&nav.x+nav.width<=width+1,'Menu fits viewport');
+    assert(nav.y+nav.height<=hero.y+1,'Expanded menu does not cover hero');
+    await page.screenshot({path:out+'/menu-'+width+'.png',fullPage:false});
+    await page.keyboard.press('Escape');assert(!(await menu.evaluate(e=>e.open)),'Escape closes menu');
+   }
    await page.screenshot({path:out+'/hero-'+width+'.png',fullPage:false});
    await page.locator('.mq-premium-primary').click();await page.waitForFunction(()=>location.hash==='#the-collection');
    await page.emulateMedia({reducedMotion:'reduce'});

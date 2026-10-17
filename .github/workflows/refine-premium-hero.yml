@@ -1,4 +1,4 @@
-name: Publish professional storefront copy on temporary site
+name: Refine responsive storefront on temporary site
 on:
   push:
     branches: [staging]
@@ -29,9 +29,9 @@ jobs:
         run: |
           python3 - <<'PY'
           import ftplib, ssl, os, io, hashlib, pathlib, subprocess, secrets
-          sources = ['wp-content/plugins/maqwi-store-core/storefront-copy.php', 'wp-content/plugins/maqwi-store-core/catalogue-release.php', 'wp-content/plugins/maqwi-store-core/storefront-preview.php', 'wp-content/plugins/maqwi-store-core/maqwi-store-core.php', 'wp-content/themes/maqwi-organics/functions.php', 'wp-content/themes/maqwi-organics/header-maqwi.php', 'wp-content/themes/maqwi-organics/footer-maqwi.php', 'wp-content/themes/maqwi-organics/woocommerce.php', 'wp-content/themes/maqwi-organics/style.css']
-          new_sources={sources[0]}
-          old_commit='f69d51099fccddc487b24299d5b898df6b3208d0'
+          sources = ['wp-content/themes/maqwi-organics/assets/public.js', 'wp-content/themes/maqwi-organics/style.css']
+          new_sources=set()
+          old_commit='fb1448d8ddd635e1184ec52917d57ab87683221f'
           ftp=ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
           ftp.connect('ftpupload.net',21)
           ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
