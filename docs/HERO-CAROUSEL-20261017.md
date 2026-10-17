@@ -37,3 +37,17 @@ The first seven-width interaction review passed layout, manual navigation, autop
 ## Larger photographic treatment
 
 The owner reviewed the inset layout and requested stronger product scale. The refinement restores an edge-to-edge desktop campaign treatment with a cream fade behind the copy, larger imagery and controls over the photograph. Desktop height is bounded at 620–680 px; the 1366 × 768 laptop view retains the start of the collection. Tablet photography fills a 440 px panel below the copy; phone photography extends to both viewport edges in a 4:3 panel. The three scenes, corrected hero label sizes, headline, shorter copy and slideshow interactions are retained. The Itar-only desktop image uses contain sizing to retain the complete bottle.
+
+## Minimal studio imagery revision
+
+The owner approved the larger hero layout but requested smaller objects inside the photographs and removal of irrelevant food and fabric props. The layout dimensions and slideshow behaviour stay the same. The three campaign assets are replaced with minimal studio scenes: the four-product collection, Honey & Ghee on low ivory plinths, and Itar on a pale stone plinth. A new image query revision avoids stale browser copies. Product labels retain the listed 1 kg honey/ghee and 12 ml Itar; no unconfirmed achaar quantity appears.
+
+Generation mode: built-in image generation, editing each preceding hero photograph with the authoritative logo reference. New prompt set supersedes the earlier styling instructions:
+
+Shared prompt: Professional minimal studio campaign photograph for a website hero, landscape 1536x1024. Preserve product packaging design and updated green-and-gold Urdu logo. Zoom out substantially; products must look smaller and properly scaled rather than oversized close-ups. Seamless warm ivory/cream studio cyclorama, fine matte limestone or ivory plinths, delicate geometric architectural light and shadow, diffused directional studio light, controlled glass and gold reflections. Remove all cloth, fabric, linen, drapery, roti, chapati, bread, plates, bowls, honey dippers, spilled honey, flowers, leaves, branches, plants, scattered food, ingredients and clutter. Only specified packaged products and geometric display plinths. Generous negative space on all sides. No claims, certification badges, text overlays, UI, watermark or border. Label size text exactly 1 kg for honey/ghee and 12 ml for Itar; achaar has no quantity. Legible product names and Maqwi branding.
+
+Collection: Exactly four products, with realistic relative scale. Three spaced jars and the small Itar bottle forward at the right. Group width around 58% of image; tallest jar 43% of image height; grouping slightly right of centre on one or two low rectangular pale limestone platforms.
+
+Honey & Ghee: Exactly two jars, each marked 1 kg, at two subtle depths on low matte ivory geometric studio plinths. Each jar at most 43% of frame height; grouping in the middle 48% of image width, slightly right of centre. Camera pulled back, no other objects.
+
+Itar: Exactly one small Maqwi Itar 12 ml bottle retaining its transparent glass shape, gold domed cap and label. Entire bottle 45% of frame height with generous clear space, on one understated pale limestone cube, slightly right of centre. No other objects.

@@ -62,7 +62,7 @@
  const controls=gallery.querySelector('.mq-hero-controls');
  if(slides.length<2||!controls)return;
  const dots=[...gallery.querySelectorAll('[data-slide]')],pause=gallery.querySelector('.mq-hero-pause');
- const names=['The collection','For your table','Personal fragrance'];
+ const names=['The collection','Honey & Ghee','Personal fragrance'];
  const motion=window.matchMedia('(prefers-reduced-motion: reduce)');
  let active=0,userPaused=motion.matches,hovering=false,visible=true,timer=null;
  const sync=()=>{

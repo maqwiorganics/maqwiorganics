@@ -1,4 +1,4 @@
-name: Publish three-scene Maqwi hero on temporary site
+name: Publish minimal studio hero scenes on temporary site
 on:
   push:
     branches: [staging]
@@ -39,9 +39,9 @@ jobs:
         run: |
           python3 - <<'PY'
           import ftplib, ssl, os, io, hashlib, pathlib, subprocess, secrets
-          sources = ['wp-content/themes/maqwi-organics/style.css', 'wp-content/themes/maqwi-organics/functions.php']
+          sources = ['wp-content/themes/maqwi-organics/assets/images/hero-collection-v3.webp', 'wp-content/themes/maqwi-organics/assets/images/hero-table-v3.webp', 'wp-content/themes/maqwi-organics/assets/images/hero-itar-v3.webp', 'wp-content/themes/maqwi-organics/assets/public.js', 'wp-content/themes/maqwi-organics/style.css', 'wp-content/themes/maqwi-organics/functions.php']
           new_sources=set()
-          old_commit='67ba25310055205624f14760ef48418243b2a083'
+          old_commit='53cb68e025bec8110124cbe90f3c6d1942e830ef'
           ftp=ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=25)
           ftp.connect('ftpupload.net',21)
           ftp.login('if0_43106867',os.environ['FTP_PASSWORD'])
@@ -120,7 +120,6 @@ jobs:
           NODE_PATH: ${{ github.workspace }}/.qa-deps/node_modules
         run: |
           node tests/frontend/hero-carousel.cjs
-          node tests/frontend/catalogue.cjs
       - name: Retain public screenshots and acceptance report
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

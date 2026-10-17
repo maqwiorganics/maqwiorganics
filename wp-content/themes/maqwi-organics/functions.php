@@ -6,9 +6,9 @@ defined( 'ABSPATH' ) || exit;
 function maqwi_premium_hero() {
     $assets = get_stylesheet_directory_uri() . '/assets/images/';
     $slides = array(
-        array( 'file' => 'hero-collection-v3.webp', 'alt' => 'Maqwi Honey and Desi Ghee labelled 1 kg, Achaar and 12 ml Itar on cream stone', 'name' => 'The collection' ),
-        array( 'file' => 'hero-table-v3.webp', 'alt' => 'Maqwi Honey and Desi Ghee labelled 1 kg beside roti and a honey dipper', 'name' => 'For your table' ),
-        array( 'file' => 'hero-itar-v3.webp', 'alt' => 'Maqwi Itar in a gold-capped 12 ml bottle on cream stone with green linen', 'name' => 'Personal fragrance' ),
+        array( 'file' => 'hero-collection-v3.webp', 'alt' => 'Maqwi Honey and Desi Ghee labelled 1 kg, Achaar and 12 ml Itar in a minimal ivory studio', 'name' => 'The collection' ),
+        array( 'file' => 'hero-table-v3.webp', 'alt' => 'Maqwi Honey and Desi Ghee labelled 1 kg on understated ivory display plinths', 'name' => 'Honey & Ghee' ),
+        array( 'file' => 'hero-itar-v3.webp', 'alt' => 'Maqwi Itar in a gold-capped 12 ml bottle on a pale stone studio plinth', 'name' => 'Personal fragrance' ),
     );
     ob_start(); ?>
     <section class="mq-premium-hero mq-slideshow-hero" aria-labelledby="mq-premium-title">
@@ -25,7 +25,7 @@ function maqwi_premium_hero() {
             <div class="mq-premium-media">
                 <?php foreach ( $slides as $index => $slide ) : ?>
                 <figure class="mq-hero-slide<?php echo 0 === $index ? ' is-active' : ''; ?>" role="group" aria-roledescription="slide" aria-label="<?php echo esc_attr( ( $index + 1 ) . ' of 3: ' . $slide['name'] ); ?>"<?php if ( $index ) { echo ' hidden'; } ?>>
-                    <img src="<?php echo esc_url( $assets . $slide['file'] ); ?>" alt="<?php echo esc_attr( $slide['alt'] ); ?>" width="1440" height="960" loading="<?php echo $index ? 'lazy' : 'eager'; ?>" decoding="async"<?php if ( ! $index ) { echo ' fetchpriority="high"'; } ?>>
+                    <img src="<?php echo esc_url( $assets . $slide['file'] . '?v=studio-1' ); ?>" alt="<?php echo esc_attr( $slide['alt'] ); ?>" width="1440" height="960" loading="<?php echo $index ? 'lazy' : 'eager'; ?>" decoding="async"<?php if ( ! $index ) { echo ' fetchpriority="high"'; } ?>>
                 </figure>
                 <?php endforeach; ?>
             </div>
@@ -268,7 +268,7 @@ add_action( 'woocommerce_before_shop_loop', function () {
 
 /** Clear page caches once after the reviewed campaign release. */
 add_action( 'wp_loaded', function () {
-    if ( get_option( 'maqwi_hero_scene_release' ) === '2026-10-17-carousel-2' ) { return; }
-    update_option( 'maqwi_hero_scene_release', '2026-10-17-carousel-2', false );
+    if ( get_option( 'maqwi_hero_scene_release' ) === '2026-10-17-studio-1' ) { return; }
+    update_option( 'maqwi_hero_scene_release', '2026-10-17-studio-1', false );
     if ( function_exists( 'w3tc_flush_all' ) ) { w3tc_flush_all(); }
 }, 55 );
