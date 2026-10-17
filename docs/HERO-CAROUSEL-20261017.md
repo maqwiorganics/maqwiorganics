@@ -51,3 +51,9 @@ Collection: Exactly four products, with realistic relative scale. Three spaced j
 Honey & Ghee: Exactly two jars, each marked 1 kg, at two subtle depths on low matte ivory geometric studio plinths. Each jar at most 43% of frame height; grouping in the middle 48% of image width, slightly right of centre. Camera pulled back, no other objects.
 
 Itar: Exactly one small Maqwi Itar 12 ml bottle retaining its transparent glass shape, gold domed cap and label. Entire bottle 45% of frame height with generous clear space, on one understated pale limestone cube, slightly right of centre. No other objects.
+
+## Automatic image and copy scenes
+
+The owner requested automatically changing images with relevant copy and no slider buttons. The control bar, arrows, dots, counter and pause/play buttons have been removed from the HTML. Every seven seconds the scene updates its photograph, three-line headline, description and primary-link label/destination in a single synchronous update, using PHP-authored data attributes. Scenes introduce the collection, Honey & Ghee, and Maqwi Itar. The separate Our Story link remains stable. Text reserves sufficient space to avoid vertical movement between descriptions.
+
+There is no hover-based rotation stop, which previously made the carousel appear static while a pointer rested over it. Keyboard focus in the hero pauses rotation so links remain stable while being used; Escape stops rotation. Hidden tabs and offscreen scenes suspend the timer. Reduced-motion preferences keep the initial scene static. The first scene remains readable if the site-owned slideshow script is unavailable. Browser checks observe real automatic changes, compare image/copy/link metadata for each scene at seven widths, confirm the absence of slider controls, and verify focus pause, reduced motion and script-disabled fallback.

@@ -3,7 +3,7 @@ Theme Name: Maqwi Organics
 Description: Lightweight Kadence child theme with an editable Maqwi homepage pattern.
 Author: Maqwi Organics
 Template: kadence
-Version: 0.9.2
+Version: 0.10.0
 Requires at least: 6.6
 Requires PHP: 8.1
 Text Domain: maqwi-organics
@@ -279,3 +279,13 @@ License: GPL-2.0-or-later
  .mq-slideshow-hero .mq-hero-gallery-note{margin-inline:22px!important}
 }
 @media(max-width:359px){.mq-slideshow-hero .mq-hero-gallery{width:calc(100% + 40px);margin-inline:-20px}.mq-slideshow-hero .mq-hero-controls{margin-inline:20px}.mq-slideshow-hero .mq-hero-gallery-note{margin-inline:20px!important}}
+
+
+/* Coordinated campaign copy; controls are intentionally absent. */
+.mq-slideshow-hero .mq-primary-label{font-size:inherit;line-height:inherit}
+.mq-slideshow-hero .mq-premium-description{min-height:81px}
+.mq-slideshow-hero .mq-copy-arriving{animation:mq-copy-reveal .65s ease-out}
+@keyframes mq-copy-reveal{from{opacity:.45;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.mq-slideshow-hero:focus{outline:none}.mq-slideshow-hero:focus-visible{outline:2px solid var(--mq-green);outline-offset:-4px}
+@media(max-width:767px){.mq-slideshow-hero .mq-premium-description{min-height:72px}}
+@media(prefers-reduced-motion:reduce){.mq-slideshow-hero .mq-copy-arriving{animation:none}}

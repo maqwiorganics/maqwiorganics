@@ -6,42 +6,31 @@ defined( 'ABSPATH' ) || exit;
 function maqwi_premium_hero() {
     $assets = get_stylesheet_directory_uri() . '/assets/images/';
     $slides = array(
-        array( 'file' => 'hero-collection-v3.webp', 'alt' => 'Maqwi Honey and Desi Ghee labelled 1 kg, Achaar and 12 ml Itar in a minimal ivory studio', 'name' => 'The collection' ),
-        array( 'file' => 'hero-table-v3.webp', 'alt' => 'Maqwi Honey and Desi Ghee labelled 1 kg on understated ivory display plinths', 'name' => 'Honey & Ghee' ),
-        array( 'file' => 'hero-itar-v3.webp', 'alt' => 'Maqwi Itar in a gold-capped 12 ml bottle on a pale stone studio plinth', 'name' => 'Personal fragrance' ),
+        array( 'file' => 'hero-collection-v3.webp', 'alt' => 'Maqwi Honey and Desi Ghee labelled 1 kg, Achaar and 12 ml Itar in a minimal ivory studio', 'name' => 'The collection', 'headline' => array( 'Everyday essentials.', 'Rooted in', 'tradition.' ), 'description' => 'Honey, desi ghee, achaar and itar — familiar favourites for everyday living.', 'cta' => 'Explore the collection', 'url' => '#the-collection' ),
+        array( 'file' => 'hero-table-v3.webp', 'alt' => 'Maqwi Honey and Desi Ghee labelled 1 kg on understated ivory display plinths', 'name' => 'Honey & Ghee', 'headline' => array( 'For your table.', 'Honey and', 'desi ghee.' ), 'description' => 'Explore Maqwi honey and desi ghee for breakfast, cooking and the dishes you enjoy every day.', 'cta' => 'Explore Honey & Ghee', 'url' => maqwi_shop_url() ),
+        array( 'file' => 'hero-itar-v3.webp', 'alt' => 'Maqwi Itar in a gold-capped 12 ml bottle on a pale stone studio plinth', 'name' => 'Personal fragrance', 'headline' => array( 'Personal fragrance.', 'Discover', 'Maqwi Itar.' ), 'description' => 'Maqwi Itar brings everyday personal fragrance in a compact 12 ml bottle.', 'cta' => 'Explore Itar', 'url' => home_url( '/product/maqwi-itar/' ) ),
     );
     ob_start(); ?>
-    <section class="mq-premium-hero mq-slideshow-hero" aria-labelledby="mq-premium-title">
+    <section class="mq-premium-hero mq-slideshow-hero" aria-labelledby="mq-premium-title" aria-describedby="mq-hero-motion-help" tabindex="0">
         <div class="mq-premium-copy">
             <p class="mq-eyebrow mq-premium-eyebrow"><span aria-hidden="true"></span>Maqwi Organics · Pakistan</p>
             <h1 id="mq-premium-title"><span class="mq-hero-line">Everyday essentials.</span><span class="mq-hero-line">Rooted in</span><span class="mq-hero-line">tradition.</span></h1>
             <p class="mq-premium-description">Honey, desi ghee, achaar and itar — familiar favourites for everyday living.</p>
             <div class="mq-premium-actions">
-                <a class="mq-premium-primary" href="#the-collection">Explore the collection <span aria-hidden="true">↗</span></a>
+                <a class="mq-premium-primary" href="#the-collection"><span class="mq-primary-label">Explore the collection</span><span aria-hidden="true">↗</span></a>
                 <a class="mq-premium-story" href="<?php echo esc_url( home_url( '/about/' ) ); ?>">Our story <span aria-hidden="true">→</span></a>
             </div>
         </div>
         <div class="mq-hero-gallery" role="region" aria-roledescription="carousel" aria-label="Maqwi collection photographs">
             <div class="mq-premium-media">
                 <?php foreach ( $slides as $index => $slide ) : ?>
-                <figure class="mq-hero-slide<?php echo 0 === $index ? ' is-active' : ''; ?>" role="group" aria-roledescription="slide" aria-label="<?php echo esc_attr( ( $index + 1 ) . ' of 3: ' . $slide['name'] ); ?>"<?php if ( $index ) { echo ' hidden'; } ?>>
+                <figure class="mq-hero-slide<?php echo 0 === $index ? ' is-active' : ''; ?>" role="group" aria-roledescription="slide" data-headline="<?php echo esc_attr( wp_json_encode( $slide['headline'] ) ); ?>" data-description="<?php echo esc_attr( $slide['description'] ); ?>" data-cta="<?php echo esc_attr( $slide['cta'] ); ?>" data-url="<?php echo esc_url( $slide['url'] ); ?>" aria-label="<?php echo esc_attr( ( $index + 1 ) . ' of 3: ' . $slide['name'] ); ?>"<?php if ( $index ) { echo ' hidden'; } ?>>
                     <img src="<?php echo esc_url( $assets . $slide['file'] . '?v=studio-1' ); ?>" alt="<?php echo esc_attr( $slide['alt'] ); ?>" width="1440" height="960" loading="<?php echo $index ? 'lazy' : 'eager'; ?>" decoding="async"<?php if ( ! $index ) { echo ' fetchpriority="high"'; } ?>>
                 </figure>
                 <?php endforeach; ?>
             </div>
-            <div class="mq-hero-controls" hidden>
-                <div class="mq-hero-slide-label" aria-hidden="true"><span class="mq-hero-index">01</span><span class="mq-hero-control-rule"></span><span class="mq-hero-name">The collection</span></div>
-                <div class="mq-hero-control-buttons">
-                    <button class="mq-hero-previous" type="button" aria-label="Previous photograph"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m14 6-6 6 6 6"/></svg></button>
-                    <div class="mq-hero-dots" role="group" aria-label="Choose a photograph">
-                        <?php foreach ( $slides as $index => $slide ) : ?><button type="button" data-slide="<?php echo esc_attr( $index ); ?>" aria-label="<?php echo esc_attr( 'Show ' . strtolower( $slide['name'] ) ); ?>"<?php if ( ! $index ) { echo ' aria-current="true"'; } ?>><span></span></button><?php endforeach; ?>
-                    </div>
-                    <button class="mq-hero-next" type="button" aria-label="Next photograph"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m10 6 6 6-6 6"/></svg></button>
-                    <button class="mq-hero-pause" type="button" aria-label="Pause slideshow" aria-pressed="false"><svg class="mq-pause-symbol" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 6v12M15 6v12"/></svg><svg class="mq-play-symbol" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m9 5 10 7-10 7V5Z"/></svg></button>
-                </div>
-            </div>
             <p class="mq-hero-gallery-note">Product presentation shown. Refer to each listing for pack details.</p>
-            <span class="mq-hero-status mq-visually-hidden" aria-live="polite" aria-atomic="true"></span>
+            <p id="mq-hero-motion-help" class="mq-visually-hidden">Images and text change automatically. Keyboard focus within this section pauses the slideshow. Press Escape to stop rotation. Reduced-motion preferences are respected.</p>
         </div>
     </section>
     <?php return ob_get_clean();
@@ -268,7 +257,7 @@ add_action( 'woocommerce_before_shop_loop', function () {
 
 /** Clear page caches once after the reviewed campaign release. */
 add_action( 'wp_loaded', function () {
-    if ( get_option( 'maqwi_hero_scene_release' ) === '2026-10-17-studio-1' ) { return; }
-    update_option( 'maqwi_hero_scene_release', '2026-10-17-studio-1', false );
+    if ( get_option( 'maqwi_hero_scene_release' ) === '2026-10-17-auto-copy-1' ) { return; }
+    update_option( 'maqwi_hero_scene_release', '2026-10-17-auto-copy-1', false );
     if ( function_exists( 'w3tc_flush_all' ) ) { w3tc_flush_all(); }
 }, 55 );

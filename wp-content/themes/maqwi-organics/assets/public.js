@@ -54,55 +54,33 @@
   openCollection();
 })();
 
-/* Lightweight campaign carousel; native first photograph remains without JS. */
+/* Automatic campaign scenes: text and image share one source of truth. */
 (() => {
- const gallery=document.querySelector('.mq-hero-gallery');
- if(!gallery)return;
- const slides=[...gallery.querySelectorAll('.mq-hero-slide')];
- const controls=gallery.querySelector('.mq-hero-controls');
- if(slides.length<2||!controls)return;
- const dots=[...gallery.querySelectorAll('[data-slide]')],pause=gallery.querySelector('.mq-hero-pause');
- const names=['The collection','Honey & Ghee','Personal fragrance'];
+ const hero=document.querySelector('.mq-slideshow-hero');if(!hero)return;
+ const slides=[...hero.querySelectorAll('.mq-hero-slide')];if(slides.length<2)return;
+ const title=hero.querySelector('#mq-premium-title'),description=hero.querySelector('.mq-premium-description');
+ const primary=hero.querySelector('.mq-premium-primary'),label=primary.querySelector('.mq-primary-label'),copy=hero.querySelector('.mq-premium-copy');
  const motion=window.matchMedia('(prefers-reduced-motion: reduce)');
- let active=0,userPaused=motion.matches,hovering=false,visible=true,timer=null;
+ let active=0,visible=true,focused=false,stopped=false,timer=null;
  const sync=()=>{
   clearInterval(timer);timer=null;
-  pause.setAttribute('aria-pressed',String(userPaused));
-  pause.setAttribute('aria-label',userPaused?'Play slideshow':'Pause slideshow');
-  if(!userPaused&&!hovering&&visible&&!document.hidden)timer=setInterval(()=>show(active+1,false),7000);
+  if(!motion.matches&&!focused&&!stopped&&visible&&!document.hidden)timer=setInterval(showNext,7000);
  };
- const show=(next,manual=true)=>{
-  active=(next+slides.length)%slides.length;
-  slides.forEach((slide,i)=>{slide.hidden=i!==active;slide.classList.toggle('is-active',i===active);});
-  dots.forEach((dot,i)=>{if(i===active)dot.setAttribute('aria-current','true');else dot.removeAttribute('aria-current');});
-  gallery.querySelector('.mq-hero-index').textContent=String(active+1).padStart(2,'0');
-  gallery.querySelector('.mq-hero-name').textContent=names[active];
-  if(manual){userPaused=true;gallery.querySelector('.mq-hero-status').textContent=`${active+1} of ${slides.length}: ${names[active]}`;}
-  sync();
+ const showNext=()=>{
+  active=(active+1)%slides.length;const slide=slides[active];
+  // One synchronous update keeps the copy, destination and image aligned.
+  const lines=JSON.parse(slide.dataset.headline);
+  title.querySelectorAll('.mq-hero-line').forEach((line,i)=>{line.textContent=lines[i];});
+  description.textContent=slide.dataset.description;
+  label.textContent=slide.dataset.cta;primary.setAttribute('href',slide.dataset.url);
+  slides.forEach((item,i)=>{item.hidden=i!==active;item.classList.toggle('is-active',i===active);});
+  copy.classList.remove('mq-copy-arriving');void copy.offsetWidth;copy.classList.add('mq-copy-arriving');
  };
- controls.hidden=false;
- gallery.querySelector('.mq-hero-previous').addEventListener('click',()=>show(active-1));
- gallery.querySelector('.mq-hero-next').addEventListener('click',()=>show(active+1));
- dots.forEach(dot=>dot.addEventListener('click',()=>show(Number(dot.dataset.slide))));
- let pointerPauseState=null;
- pause.addEventListener('pointerdown',()=>{pointerPauseState=userPaused;});
- pause.addEventListener('pointercancel',()=>{pointerPauseState=null;});
- pause.addEventListener('click',()=>{userPaused=!(pointerPauseState??userPaused);pointerPauseState=null;sync();});
- gallery.addEventListener('focusin',()=>{userPaused=true;sync();});
- gallery.addEventListener('mouseenter',()=>{hovering=true;sync();});
- gallery.addEventListener('mouseleave',()=>{hovering=false;sync();});
- gallery.addEventListener('keydown',event=>{
-  if(event.key==='ArrowRight'||event.key==='ArrowLeft'){event.preventDefault();show(active+(event.key==='ArrowRight'?1:-1));}
- });
- let touch=null;
- gallery.querySelector('.mq-premium-media').addEventListener('touchstart',event=>{const t=event.touches[0];touch={x:t.clientX,y:t.clientY};},{passive:true});
- gallery.querySelector('.mq-premium-media').addEventListener('touchend',event=>{
-  if(!touch)return;const t=event.changedTouches[0],dx=t.clientX-touch.x,dy=t.clientY-touch.y;
-  if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.5)show(active+(dx<0?1:-1));touch=null;
- },{passive:true});
- document.addEventListener('visibilitychange',sync);
- motion.addEventListener('change',event=>{if(event.matches){userPaused=true;sync();}});
- if('IntersectionObserver' in window)new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;sync();},{threshold:.2}).observe(gallery);
+ hero.addEventListener('focusin',event=>{if(event.target===hero&&!hero.matches(':focus-visible'))return;focused=true;sync();});
+ hero.addEventListener('focusout',event=>{if(!hero.contains(event.relatedTarget)){focused=false;sync();}});
+ hero.addEventListener('keydown',event=>{if(event.key==='Escape'){stopped=true;sync();}});
+ document.addEventListener('visibilitychange',sync);motion.addEventListener('change',sync);
+ if('IntersectionObserver' in window)new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;sync();},{threshold:.2}).observe(hero);
  const warmImages=()=>slides.slice(1).forEach(slide=>{slide.querySelector('img').loading='eager';});
  if(document.readyState==='complete')warmImages();else window.addEventListener('load',warmImages,{once:true});
  sync();
