@@ -3,7 +3,7 @@
  * Title: Maqwi home
  * Slug: maqwi-organics/home
  * Categories: featured
- * Description: A calm, mobile-first homepage for Maqwi Organics. Replace concept images before launch.
+ * Description: Maqwi Organics homepage featuring the collection and brand story.
  */
 defined( 'ABSPATH' ) || exit;
 $assets = get_stylesheet_directory_uri() . '/assets/images/';
@@ -17,7 +17,7 @@ $assets = get_stylesheet_directory_uri() . '/assets/images/';
 <!-- wp:buttons --><div class="wp-block-buttons"><!-- wp:button {"className":"mq-button"} --><div class="wp-block-button mq-button"><a class="wp-block-button__link wp-element-button" href="#the-collection">Meet the collection <span aria-hidden="true">&nbsp;↗</span></a></div><!-- /wp:button --></div><!-- /wp:buttons -->
 <!-- wp:paragraph {"className":"mq-hero-note"} --><p class="mq-hero-note">Four traditions. One thoughtful beginning.</p><!-- /wp:paragraph -->
 </div><!-- /wp:group -->
-<!-- wp:image {"sizeSlug":"full","className":"mq-hero-media"} --><figure class="wp-block-image size-full mq-hero-media"><img src="<?php echo esc_url( $assets . 'honey.webp' ); ?>" alt="Maqwi honey packaging concept in a warm tabletop setting"><figcaption class="wp-element-caption">Packaging concept · final product photography follows before launch.</figcaption></figure><!-- /wp:image -->
+<!-- wp:image {"sizeSlug":"full","className":"mq-hero-media"} --><figure class="wp-block-image size-full mq-hero-media"><img src="<?php echo esc_url( $assets . 'honey.webp' ); ?>" alt="Maqwi honey jar on a warm tabletop"></figure><!-- /wp:image -->
 </div><!-- /wp:group -->
 <!-- wp:group {"className":"mq-section mq-category-section","anchor":"the-collection","layout":{"type":"default"}} --><div id="the-collection" class="wp-block-group mq-section mq-category-section">
 <!-- wp:paragraph {"className":"mq-eyebrow"} --><p class="mq-eyebrow">Rooted in everyday traditions</p><!-- /wp:paragraph -->
@@ -37,13 +37,13 @@ foreach ( $categories as $category ) :
     if ( is_wp_error( $category_url ) ) { $category_url = maqwi_shop_url(); }
 ?>
 <!-- wp:group {"className":"mq-category","layout":{"type":"default"}} --><div class="wp-block-group mq-category">
-<!-- wp:image {"sizeSlug":"full"} --><figure class="wp-block-image size-full"><img src="<?php echo esc_url( $assets . $category[0] . '.webp' ); ?>" alt="<?php echo esc_attr( 'Maqwi ' . $category[1] . ' packaging concept' ); ?>"></figure><!-- /wp:image -->
+<!-- wp:image {"sizeSlug":"full"} --><figure class="wp-block-image size-full"><img src="<?php echo esc_url( $assets . $category[0] . '.webp' ); ?>" alt="<?php echo esc_attr( 'Maqwi ' . $category[1] . ' product' ); ?>"></figure><!-- /wp:image -->
 <!-- wp:heading {"level":3} --><h3 class="wp-block-heading"><a href="<?php echo esc_url( $category_url ); ?>"><?php echo esc_html( $category[1] ); ?> <span aria-hidden="true">↗</span></a></h3><!-- /wp:heading -->
 <!-- wp:paragraph --><p><?php echo esc_html( $category[2] ); ?></p><!-- /wp:paragraph -->
 </div><!-- /wp:group -->
 <?php endforeach; ?>
 </div><!-- /wp:group -->
-<!-- wp:paragraph {"className":"mq-artwork-note"} --><p class="mq-artwork-note">Our collection is in preparation. The artwork shows packaging concepts; final ingredients, sizes, sourcing details, prices and availability will be provided before orders open.</p><!-- /wp:paragraph -->
+<!-- wp:paragraph {"className":"mq-artwork-note"} --><p class="mq-artwork-note">Browse our collection. Ordering is not yet available.</p><!-- /wp:paragraph -->
 </div><!-- /wp:group -->
 <!-- wp:shortcode -->[maqwi_featured_products]<!-- /wp:shortcode -->
 <!-- wp:group {"className":"mq-story","anchor":"our-story","layout":{"type":"default"}} --><div id="our-story" class="wp-block-group mq-story">
@@ -63,7 +63,7 @@ foreach ( $categories as $category ) :
 <!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group"><!-- wp:paragraph {"className":"mq-eyebrow"} --><p class="mq-eyebrow">Before we begin</p><!-- /wp:paragraph --><!-- wp:heading --><h2 class="wp-block-heading">A few things<br>you may wonder.</h2><!-- /wp:heading --></div><!-- /wp:group -->
 <!-- wp:group {"className":"mq-faq","layout":{"type":"default"}} --><div class="wp-block-group mq-faq">
 <!-- wp:details --><details class="wp-block-details"><summary>Can I place an order yet?</summary><!-- wp:paragraph --><p>Orders are not open yet. We are preparing the collection and testing the store before launch.</p><!-- /wp:paragraph --></details><!-- /wp:details -->
-<!-- wp:details --><details class="wp-block-details"><summary>What will Maqwi offer?</summary><!-- wp:paragraph --><p>Our starting range is honey, desi ghee, achaar and itar. The final variants, sizes and prices will be listed when the collection is ready.</p><!-- /wp:paragraph --></details><!-- /wp:details -->
-<!-- wp:details --><details class="wp-block-details"><summary>Where will you deliver?</summary><!-- wp:paragraph --><p>We are preparing for customers in Pakistan. Delivery areas, charges and expected timings will be confirmed before orders open.</p><!-- /wp:paragraph --></details><!-- /wp:details -->
+<!-- wp:details --><details class="wp-block-details"><summary>What will Maqwi offer?</summary><!-- wp:paragraph --><p>Explore honey, desi ghee, achaar and itar. Product listings show available pack sizes and prices.</p><!-- /wp:paragraph --></details><!-- /wp:details -->
+<!-- wp:details --><details class="wp-block-details"><summary>Where will you deliver?</summary><!-- wp:paragraph --><p>Delivery is planned across Pakistan at Rs. 300 per order when ordering opens.</p><!-- /wp:paragraph --></details><!-- /wp:details -->
 </div><!-- /wp:group --></div><!-- /wp:group -->
-<!-- wp:group {"className":"mq-section mq-closing","layout":{"type":"default"}} --><div class="wp-block-group mq-section mq-closing"><!-- wp:paragraph {"className":"mq-eyebrow"} --><p class="mq-eyebrow">A thoughtful beginning</p><!-- /wp:paragraph --><!-- wp:heading --><h2 class="wp-block-heading">Tradition has a place here.</h2><!-- /wp:heading --><!-- wp:paragraph --><p>We’re taking the time to prepare the details. Come back soon to meet the Maqwi collection.</p><!-- /wp:paragraph --></div><!-- /wp:group -->
+<!-- wp:group {"className":"mq-section mq-closing","layout":{"type":"default"}} --><div class="wp-block-group mq-section mq-closing"><!-- wp:paragraph {"className":"mq-eyebrow"} --><p class="mq-eyebrow">A thoughtful beginning</p><!-- /wp:paragraph --><!-- wp:heading --><h2 class="wp-block-heading">Tradition has a place here.</h2><!-- /wp:heading --><!-- wp:paragraph --><p>Explore the Maqwi collection and discover the products we have selected for our range.</p><!-- /wp:paragraph --></div><!-- /wp:group -->
