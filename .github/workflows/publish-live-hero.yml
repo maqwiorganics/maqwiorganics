@@ -1,4 +1,4 @@
-name: Publish verified hero to live temporary site
+name: Publish verified homepage to live temporary site
 on:
   push:
     branches: [main]
@@ -25,6 +25,7 @@ jobs:
           php -l wp-content/themes/maqwi-organics/functions.php
           node --check wp-content/themes/maqwi-organics/assets/public.js
           python3 -m py_compile .github/scripts/deploy_theme_hero.py
+          node --check tests/frontend/hero-carousel.cjs
       - run: python3 .github/scripts/deploy_theme_hero.py prepare
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:

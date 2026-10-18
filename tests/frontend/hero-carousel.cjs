@@ -7,7 +7,12 @@ const base=process.env.HERO_BASE_URL||'https://maqwiorganics.gt.tc/',out='fronte
  try{
   for(const width of [320,390,768,1024,1366,1440,1920]){
    const page=await context.newPage();await page.setViewportSize({width,height:width===1366?768:900});page.on('pageerror',e=>report.errors.push(e.message));
-   await page.goto(base+'?hero=mobile-editorial-0110',{waitUntil:'load',timeout:90000});await page.locator('.mq-slideshow-hero').waitFor({timeout:30000});await page.evaluate(()=>document.fonts.ready);
+   await page.goto(base+'?hero=homepage-clarity-0130',{waitUntil:'load',timeout:90000});await page.locator('.mq-slideshow-hero').waitFor({timeout:30000});await page.evaluate(()=>document.fonts.ready);
+   assert.equal(await page.locator('#the-collection').count(),1,'One collection anchor');
+   assert.equal(await page.locator('.mq-category-section').count(),0,'No duplicate category grid');
+   assert.equal(await page.locator('.mq-featured .mq-product-card').count(),4,'Four product cards remain');
+   assert.equal(await page.locator('.mq-closing-actions a').count(),2,'Closing section has useful destinations');
+   assert(new URL(await page.locator('.mq-closing-actions a').first().getAttribute('href'),base).pathname==='/shop/','Closing action opens shop');
    const hero=page.locator('.mq-slideshow-hero'),slides=hero.locator('.mq-hero-slide');
    assert.equal(await slides.count(),3);assert.equal(await hero.locator('button,.mq-hero-controls,.mq-hero-dots').count(),0,'No slider controls');
    for(let n=0;n<3;n++){
@@ -23,6 +28,10 @@ const base=process.env.HERO_BASE_URL||'https://maqwiorganics.gt.tc/',out='fronte
    if(width===1366){
     await hero.locator('.mq-premium-primary').focus();const title=await hero.locator('h1').innerText();await page.waitForTimeout(7500);assert.equal(await hero.locator('h1').innerText(),title,'Focus pauses linked copy');
    }
+   const faq=page.locator('.mq-faq details').first();await faq.locator('summary').click();assert(await faq.evaluate(e=>e.open));await faq.locator('summary').click();
+   if(width<901){const menu=page.locator('.mq-mobile-nav');await menu.locator('summary').click();assert(await menu.evaluate(e=>e.open));await page.keyboard.press('Escape');assert(!(await menu.evaluate(e=>e.open)));const colour=await menu.locator('summary').evaluate(e=>getComputedStyle(e).backgroundColor);assert.equal(colour,'rgba(0, 0, 0, 0)');}
+   await page.evaluate(()=>window.scrollTo(0,0));
+   if(width===390||width===1440)await page.screenshot({path:out+'/homepage-'+width+'.png',fullPage:true});
    console.log('Automatic scene/copy checks passed',width);await page.close();
   }
   const reduce=await context.newPage();await reduce.emulateMedia({reducedMotion:'reduce'});await reduce.goto(base+'?hero=automatic-reduced-0100',{waitUntil:'load',timeout:90000});await reduce.locator('.mq-slideshow-hero').waitFor();

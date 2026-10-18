@@ -63,23 +63,32 @@ function maqwi_shop_url() {
     return $url && -1 !== $url ? $url : home_url( '/' );
 }
 
+/** Share the same visible product set between homepage navigation and cards. */
+function maqwi_home_featured_products() {
+    static $products = null;
+    if ( null !== $products ) { return $products; }
+    if ( ! function_exists( 'wc_get_products' ) ) { return array(); }
+    $products = wc_get_products( array( 'status' => 'publish', 'featured' => true, 'limit' => 4 ) );
+    $products = array_filter( $products, function ( $product ) {
+        return $product->is_visible() && ( $product->is_purchasable() || $product->get_meta( '_maqwi_catalogue_release' ) );
+    } );
+    return $products;
+}
+
 /** Only public, purchasable, in-stock WooCommerce products appear as featured. */
 add_shortcode( 'maqwi_featured_products', function () {
     if ( maqwi_public_brand_mode() ) { return maqwi_brand_collection_details(); }
     if ( ! function_exists( 'wc_get_products' ) ) {
         return '';
     }
-    $products = wc_get_products( array( 'status' => 'publish', 'featured' => true, 'limit' => 4 ) );
-    $products = array_filter( $products, function ( $product ) {
-        return $product->is_visible() && ( $product->is_purchasable() || $product->get_meta( '_maqwi_catalogue_release' ) );
-    } );
+    $products = maqwi_home_featured_products();
     if ( ! $products ) {
         return '';
     }
     ob_start();
     ?>
-    <section class="mq-section mq-featured" aria-labelledby="mq-featured-title">
-        <div class="mq-section-top"><div><p class="mq-eyebrow">Shop Maqwi</p><h2 id="mq-featured-title">Explore the collection</h2></div><a href="<?php echo esc_url( maqwi_shop_url() ); ?>">View all products &rarr;</a></div>
+    <section id="the-collection" class="mq-section mq-featured" aria-labelledby="mq-featured-title">
+        <div class="mq-section-top"><div><p class="mq-eyebrow">Four everyday favourites</p><h2 id="mq-featured-title">The Maqwi collection.</h2></div><a href="<?php echo esc_url( maqwi_shop_url() ); ?>">View all products &rarr;</a></div>
         <div class="mq-product-grid">
         <?php foreach ( $products as $product ) : ?>
             <article class="mq-product-card"><a href="<?php echo esc_url( $product->get_permalink() ); ?>"><?php echo wp_kses_post( $product->get_image( 'woocommerce_thumbnail', array( 'loading' => 'lazy' ) ) ); ?><h3><?php echo esc_html( $product->get_name() ); ?></h3></a><div class="mq-price"><?php echo wp_kses_post( $product->get_price_html() ); ?></div><a class="mq-text-link" href="<?php echo esc_url( $product->get_permalink() ); ?>">View product &rarr;</a></article>
@@ -257,7 +266,24 @@ add_action( 'woocommerce_before_shop_loop', function () {
 
 /** Clear page caches once after the reviewed campaign release. */
 add_action( 'wp_loaded', function () {
-    if ( get_option( 'maqwi_hero_scene_release' ) === '2026-10-18-mobile-hero-1' ) { return; }
-    update_option( 'maqwi_hero_scene_release', '2026-10-18-mobile-hero-1', false );
+    if ( get_option( 'maqwi_hero_scene_release' ) === '2026-10-18-home-clarity-1' ) { return; }
+    update_option( 'maqwi_hero_scene_release', '2026-10-18-home-clarity-1', false );
     if ( function_exists( 'w3tc_flush_all' ) ) { w3tc_flush_all(); }
 }, 55 );
+
+/** One collection grid and a useful closing action; saved blocks remain editable. */
+add_filter( 'render_block_core/group', function ( $html, $block ) {
+    if ( ! is_front_page() ) { return $html; }
+    $classes = preg_split( '/\\s+/', $block['attrs']['className'] ?? '' );
+    if ( in_array( 'mq-category-section', $classes, true ) && ! maqwi_public_brand_mode() && maqwi_home_featured_products() ) {
+        return '';
+    }
+    if ( in_array( 'mq-closing', $classes, true ) && ! str_contains( $html, 'mq-closing-actions' ) ) {
+        $position = strrpos( $html, '</div>' );
+        if ( false !== $position ) {
+            $actions = '<div class="mq-closing-actions"><a class="mq-premium-primary" href="' . esc_url( maqwi_shop_url() ) . '">Explore products <span aria-hidden="true">↗</span></a><a class="mq-closing-contact" href="' . esc_url( home_url( '/contact/' ) ) . '">Contact Maqwi <span aria-hidden="true">→</span></a></div>';
+            $html = substr_replace( $html, $actions, $position, 0 );
+        }
+    }
+    return $html;
+}, 50, 2 );
