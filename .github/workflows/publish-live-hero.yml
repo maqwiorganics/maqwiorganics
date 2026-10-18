@@ -1,0 +1,53 @@
+name: Publish verified hero to live temporary site
+on:
+  push:
+    branches: [main]
+    paths: ['config/theme-release-baseline.json', '.github/workflows/publish-live-hero.yml']
+permissions:
+  contents: read
+concurrency:
+  group: maqwi-temporary-theme-install
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      HOST: ${{ secrets.INFINITYFREE_FTP_HOST }}
+      USERNAME: ${{ secrets.INFINITYFREE_FTP_USERNAME }}
+      PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Validate reviewed source
+        run: |
+          php -l wp-content/themes/maqwi-organics/functions.php
+          node --check wp-content/themes/maqwi-organics/assets/public.js
+          python3 -m py_compile .github/scripts/deploy_theme_hero.py
+      - run: python3 .github/scripts/deploy_theme_hero.py prepare
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: live-hero-backup-${{ github.run_id }}
+          path: theme-backup/
+          retention-days: 30
+          if-no-files-found: error
+      - run: python3 .github/scripts/deploy_theme_hero.py apply
+  verify:
+    needs: publish
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - run: npm install --prefix .qa-deps --ignore-scripts --no-audit --no-fund --no-save playwright@1.62.1
+      - run: node tests/frontend/hero-carousel.cjs
+        env:
+          NODE_PATH: ${{ github.workspace }}/.qa-deps/node_modules
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: live-hero-verification
+          path: frontend-qa/
+          retention-days: 7

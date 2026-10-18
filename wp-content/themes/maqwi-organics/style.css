@@ -3,7 +3,7 @@ Theme Name: Maqwi Organics
 Description: Lightweight Kadence child theme with an editable Maqwi homepage pattern.
 Author: Maqwi Organics
 Template: kadence
-Version: 0.10.0
+Version: 0.11.0
 Requires at least: 6.6
 Requires PHP: 8.1
 Text Domain: maqwi-organics
@@ -347,3 +347,47 @@ License: GPL-2.0-or-later
  .mq-slideshow-hero .mq-hero-gallery{width:calc(100% + 30px);margin-inline:-15px}
  .mq-home .mq-slideshow-hero h1{font-size:37px}
 }
+
+/* Mobile-first campaign: compact copy and scene-specific photographic framing. */
+.mq-slideshow-hero .mq-premium-description{min-height:54px}
+.mq-slideshow-hero .mq-premium-primary{min-width:206px;justify-content:space-between}
+@keyframes mq-copy-reveal{from{opacity:.35}to{opacity:1}}
+@media(max-width:767px){
+ .mq-slideshow-hero{padding:22px 22px 20px;gap:12px}
+ .mq-slideshow-hero .mq-premium-copy{position:relative;z-index:1}
+ .mq-slideshow-hero .mq-premium-eyebrow{margin-bottom:12px!important}
+ .mq-home .mq-slideshow-hero h1{font-size:clamp(30px,8.2vw,44px);line-height:1.08;margin:0 0 12px;min-height:2.16em}
+ .mq-home .mq-slideshow-hero h1>.mq-hero-line:nth-child(2),.mq-home .mq-slideshow-hero h1>.mq-hero-line:nth-child(3){display:inline;white-space:nowrap}
+ .mq-home .mq-slideshow-hero h1>.mq-hero-line:nth-child(3)::before{content:' '}
+ .mq-slideshow-hero .mq-premium-description{font-size:14px;line-height:1.6;min-height:67.2px;max-width:40ch;margin-bottom:12px!important}
+ .mq-slideshow-hero .mq-premium-actions{gap:18px;flex-wrap:nowrap}
+ .mq-slideshow-hero .mq-premium-primary{min-width:0;width:200px;min-height:48px;padding:12px 15px;gap:12px;flex-shrink:0}
+ .mq-slideshow-hero .mq-premium-story{border:0;min-height:44px;padding:8px 0;white-space:nowrap}
+ .mq-slideshow-hero .mq-premium-media{height:auto;aspect-ratio:1.4;border-radius:0}
+ .mq-slideshow-hero .mq-premium-media::after{display:block;content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,var(--mq-cream),transparent 18%)}
+ .mq-slideshow-hero .mq-hero-slide>img{object-fit:cover;object-position:78% 70%}
+ .mq-slideshow-hero .mq-hero-slide:last-child>img{object-position:62% 60%}
+ .mq-slideshow-hero .mq-hero-gallery-note{padding-top:8px;line-height:1.5;font-size:9px}
+}
+@media(max-width:359px){
+ .mq-slideshow-hero{padding-inline:18px}
+ .mq-slideshow-hero .mq-hero-gallery{width:calc(100% + 36px);margin-inline:-18px}
+ .mq-slideshow-hero .mq-premium-actions{gap:12px}
+ .mq-slideshow-hero .mq-premium-primary{width:182px;padding-inline:12px;font-size:11px}
+ .mq-slideshow-hero .mq-premium-story{font-size:11px}
+}
+@media(min-width:768px) and (max-width:1099px){
+ .mq-slideshow-hero{display:grid;grid-template-columns:1fr 1fr;gap:22px;padding:40px 28px;min-height:480px}
+ .mq-home .mq-slideshow-hero h1{font-size:clamp(36px,4.6vw,48px)}
+ .mq-slideshow-hero .mq-hero-gallery{width:100%;margin:0}
+ .mq-slideshow-hero .mq-premium-media{height:360px;overflow:hidden}
+ .mq-slideshow-hero .mq-hero-slide>img{object-fit:cover;object-position:77% center}
+ .mq-slideshow-hero .mq-hero-slide:last-child>img{object-position:61% center}
+ .mq-slideshow-hero .mq-hero-gallery-note{margin:8px 0 0!important}
+ .mq-slideshow-hero .mq-premium-actions{gap:14px;flex-wrap:wrap}
+ .mq-slideshow-hero .mq-premium-primary{min-width:200px}
+}
+@media(min-width:1100px){.mq-slideshow-hero{min-height:580px}.mq-slideshow-hero .mq-premium-description{margin-bottom:22px!important}}
+@media(min-width:1600px){.mq-slideshow-hero{min-height:640px}}
+
+.mq-slideshow-hero .mq-primary-label{white-space:nowrap}
