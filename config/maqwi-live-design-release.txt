@@ -1,0 +1,1 @@
+Second CSS-only release: 2026-10-18. Apply reviewed premium product-page/cart/checkout styling. Preserve ordering lock, theme fonts and brand colors. Live CSS backup and readback mandatory.
