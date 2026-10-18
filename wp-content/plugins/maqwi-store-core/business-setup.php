@@ -62,7 +62,7 @@ function maqwi_apply_approved_business_setup() {
         }
     }
     foreach ( maqwi_approved_business_pages() as $page ) { $snapshot['pages'][ $page[0] ] = get_post( $page[0] )->post_content; }
-    foreach ( array( 'woocommerce_store_address', 'woocommerce_store_city', 'woocommerce_default_country', 'woocommerce_allowed_countries', 'woocommerce_specific_allowed_countries', 'woocommerce_ship_to_countries', 'woocommerce_specific_ship_to_countries', 'woocommerce_cod_settings', 'woocommerce_bacs_settings', 'woocommerce_cheque_settings' ) as $key ) { $snapshot['options'][ $key ] = get_option( $key, null ); }
+    foreach ( array( 'woocommerce_store_address', 'woocommerce_store_city', 'woocommerce_default_country', 'woocommerce_allowed_countries', 'woocommerce_specific_allowed_countries', 'woocommerce_ship_to_countries', 'woocommerce_specific_ship_to_countries', 'woocommerce_cod_settings', 'woocommerce_bacs_settings', 'woocommerce_cheque_settings', 'woocommerce_email_from_name', 'woocommerce_email_header_image', 'woocommerce_email_base_color', 'woocommerce_email_background_color', 'woocommerce_email_body_background_color', 'woocommerce_email_text_color', 'woocommerce_email_footer_text' ) as $key ) { $snapshot['options'][ $key ] = get_option( $key, null ); }
     if ( ! add_option( 'maqwi_business_setup_before_20261018', $snapshot, '', false ) ) { throw new RuntimeException( 'A setup snapshot already exists; no changes were made.' ); }
     try {
         foreach ( maqwi_approved_business_catalogue() as $slug => $item ) {
@@ -104,6 +104,13 @@ function maqwi_apply_approved_business_setup() {
         foreach ( array( 'cod', 'bacs', 'cheque' ) as $gateway ) {
             $key = 'woocommerce_' . $gateway . '_settings';$settings = get_option( $key, array() );$settings['enabled'] = 'no';update_option( $key, $settings );
         }
+        update_option( 'woocommerce_email_from_name', 'Maqwi Organics' );
+        update_option( 'woocommerce_email_header_image', home_url( '/wp-content/themes/maqwi-organics/assets/images/logo-mark.png' ) );
+        update_option( 'woocommerce_email_base_color', '#173e32' );
+        update_option( 'woocommerce_email_background_color', '#f5f2ea' );
+        update_option( 'woocommerce_email_body_background_color', '#ffffff' );
+        update_option( 'woocommerce_email_text_color', '#283d33' );
+        update_option( 'woocommerce_email_footer_text', 'Maqwi Organics · Ali Town, Lahore, Punjab, Pakistan<br>0317 1935828 · info@maqwiorganics.com' );
         foreach ( maqwi_approved_business_pages() as $page ) {
             wp_save_post_revision( $page[0] );
             $result = wp_update_post( array( 'ID' => $page[0], 'post_content' => '<!-- wp:html -->' . $page[2] . '<!-- /wp:html -->' ), true );

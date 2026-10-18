@@ -290,3 +290,5 @@ require_once __DIR__ . '/catalogue-release.php';
 require_once __DIR__ . '/storefront-copy.php';
 
 require_once __DIR__ . '/business-setup.php';
+
+require_once __DIR__ . '/mail-transport.php';

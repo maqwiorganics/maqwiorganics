@@ -2,12 +2,21 @@
 /** Runs only inside the disposable CI WordPress database; no live URL or credentials. */
 if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) { exit( 1 ); }
 if ( DB_NAME !== 'maqwi_ci' || ! in_array( DB_HOST, array( '127.0.0.1:3306', '127.0.0.1' ), true ) ) { throw new RuntimeException( 'Refusing to run fixtures outside the isolated CI database.' ); }
+global $checks;
 $checks = 0;
 global $wpdb;
 foreach ( $wpdb->get_col( 'SHOW TABLES' ) as $table ) { if ( str_starts_with( $table, $wpdb->prefix ) && preg_match( '/^[a-zA-Z0-9_]+$/', $table ) ) { $wpdb->query( 'ALTER TABLE `' . $table . '` ENGINE=MyISAM' ); } }
 function mq_assert( $value, $message ) { global $checks; if ( ! $value ) { throw new RuntimeException( $message ); } $checks++; }
 function mq_rejects( $callback, $message ) { try { $callback(); } catch ( RuntimeException $error ) { mq_assert( true, $message ); return; } throw new RuntimeException( 'Expected refusal: ' . $message ); }
 add_filter( 'pre_wp_mail', function () { return true; }, PHP_INT_MAX );
+mq_assert( ! maqwi_transactional_mail_configured(), 'Missing credentials are never presented as configured mail' );
+define( 'MAQWI_RESEND_API_KEY', 're_ci_placeholder_never_sent' );
+define( 'MAQWI_TRANSACTIONAL_FROM', 'info@maqwiorganics.com' );
+mq_assert( maqwi_transactional_mail_configured(), 'Explicit server-side mail configuration detected' );
+if ( ! class_exists( '\PHPMailer\PHPMailer\PHPMailer' ) ) { require_once ABSPATH . WPINC . '/PHPMailer/PHPMailer.php'; require_once ABSPATH . WPINC . '/PHPMailer/SMTP.php'; require_once ABSPATH . WPINC . '/PHPMailer/Exception.php'; }
+$transport = new \PHPMailer\PHPMailer\PHPMailer( true );do_action( 'phpmailer_init', $transport );
+mq_assert( $transport->Mailer === 'smtp' && $transport->Host === 'smtp.resend.com' && $transport->Port === 587 && $transport->SMTPSecure === 'tls', 'Native SMTP uses STARTTLS on supported port' );
+mq_assert( $transport->SMTPAuth && $transport->Username === 'resend' && $transport->SMTPDebug === 0 && empty( $transport->SMTPOptions ), 'Authenticated SMTP preserves certificate validation and disables debug logging' );
 $fixture = json_decode( file_get_contents( getenv( 'MAQWI_FIXTURE' ) ), true, 512, JSON_THROW_ON_ERROR );
 foreach ( $fixture['posts'] as $row ) {
     $id = (int) $row['ID'];unset( $row['ID'] );$row['import_id'] = $id;
@@ -74,5 +83,8 @@ sort( $results );mq_assert( $results === array( 'insufficient', 'reserved' ), 'C
 mq_assert( (int) wc_get_held_stock_quantity( $variants['500 g'] ) === 3, 'Reservation uses shared parent stock counter' );
 foreach ( $reservations as $pending ) { wc_release_stock_for_order( $pending ); }
 mq_assert( (int) wc_get_held_stock_quantity( $variants['500 g'] ) === 0, 'Reservations released correctly' );
+$email = WC()->mailer()->get_emails()['WC_Email_Customer_On_Hold_Order'];$email->object = $order;
+$html = $email->get_content_html();
+mq_assert( str_contains( $html, 'logo-mark.png' ) && str_contains( $html, '0317 1935828' ) && str_contains( $html, 'Maqwi Organics' ), 'Native customer email renders approved logo and support footer' );
 mq_assert( maqwi_brand_launch_mode(), 'Ordering remains closed after all tests' );
 echo 'MAQWI_COMMERCE_CHECKS=' . $checks . "\n";
