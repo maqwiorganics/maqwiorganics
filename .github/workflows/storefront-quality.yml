@@ -1,0 +1,46 @@
+name: Maqwi source quality and launch guard
+on:
+  push:
+    branches: [staging, main]
+    paths:
+      - 'wp-content/themes/maqwi-organics/**'
+      - 'wp-content/plugins/maqwi-store-core/**'
+      - 'config/approved-store.json'
+      - '.github/workflows/storefront-quality.yml'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-quality:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Validate PHP syntax
+        run: |
+          set -euo pipefail
+          find wp-content/themes/maqwi-organics wp-content/plugins/maqwi-store-core -type f -name '*.php' -print0 | xargs -0 -r -n1 php -l
+      - name: Check business manifest and launch guard
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path('config/approved-store.json').read_text())
+          assert data['currency']=='PKR' and data['country']=='PK'
+          assert data['ordering_enabled'] is False
+          assert data['payments_approved'] is False
+          assert data['shipping']=={'amount':300,'basis':'per_order','country':'PK'}
+          expected={'maqwi-honey':(20,{'1 kg':4500}), 'maqwi-desi-ghee':(15,{'1 kg':3500}), 'maqwi-achaar':(5,{'500 g':1500,'1 kg':3000}), 'maqwi-itar':(10,{'12 ml':200})}
+          products={p['slug']:p for p in data['products']}
+          assert set(products)==set(expected)
+          for slug,(stock,prices) in expected.items():
+              product=products[slug]
+              assert product['stock']==stock
+              assert {v['size']:v['price'] for v in product['variations']}==prices
+          assert products['maqwi-achaar']['stock_scope']=='shared_parent'
+          print('Approved catalog and closed ordering verified in source')
+          PY
