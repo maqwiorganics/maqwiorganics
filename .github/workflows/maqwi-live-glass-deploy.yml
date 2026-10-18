@@ -1,0 +1,40 @@
+name: Maqwi LIVE glass design deployment
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/maqwi-live-glass-deploy.yml'
+      - 'config/maqwi-live-design-release.txt'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: maqwi-live-theme-design
+  cancel-in-progress: false
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      FTP_HOST: ${{ secrets.INFINITYFREE_FTP_HOST }}
+      FTP_USER: ${{ secrets.INFINITYFREE_FTP_USERNAME }}
+      FTP_PASS: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
+    steps:
+      - name: Checkout reviewed live source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Preflight and save existing live CSS
+        run: |
+          python3 -m py_compile .github/scripts/deploy_live_design.py
+          python3 .github/scripts/deploy_live_design.py prepare
+      - name: Upload original CSS backup BEFORE remote writes
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: maqwi-live-css-before-${{ github.run_id }}
+          path: live-theme-backup/
+          retention-days: 30
+          if-no-files-found: error
+      - name: Update and verify live CSS with rollback
+        run: python3 .github/scripts/deploy_live_design.py apply
