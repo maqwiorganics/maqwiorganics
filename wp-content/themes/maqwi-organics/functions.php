@@ -7,8 +7,8 @@ function maqwi_premium_hero() {
     $assets = get_stylesheet_directory_uri() . '/assets/images/';
     $slides = array(
         array( 'file' => 'hero-collection-v3.webp', 'alt' => 'Maqwi Honey and Desi Ghee labelled 1 kg, Achaar and 12 ml Itar in a minimal ivory studio', 'name' => 'The collection', 'headline' => array( 'Everyday essentials.', 'Rooted in', 'tradition.' ), 'description' => 'Honey, desi ghee, achaar and itar — familiar favourites for everyday living.', 'cta' => 'Explore the collection', 'url' => '#the-collection' ),
-        array( 'file' => 'hero-table-v3.webp', 'alt' => 'Maqwi Honey and Desi Ghee labelled 1 kg on understated ivory display plinths', 'name' => 'Honey & Ghee', 'headline' => array( 'For your table.', 'Honey and', 'desi ghee.' ), 'description' => 'Explore Maqwi honey and desi ghee for breakfast, cooking and the dishes you enjoy every day.', 'cta' => 'Explore Honey & Ghee', 'url' => maqwi_shop_url() ),
-        array( 'file' => 'hero-itar-v3.webp', 'alt' => 'Maqwi Itar in a gold-capped 12 ml bottle on a pale stone studio plinth', 'name' => 'Personal fragrance', 'headline' => array( 'Personal fragrance.', 'Discover', 'Maqwi Itar.' ), 'description' => 'Maqwi Itar brings everyday personal fragrance in a compact 12 ml bottle.', 'cta' => 'Explore Itar', 'url' => home_url( '/product/maqwi-itar/' ) ),
+        array( 'file' => 'hero-table-v3.webp', 'alt' => 'Maqwi Honey and Desi Ghee labelled 1 kg on understated ivory display plinths', 'name' => 'Honey & Ghee', 'headline' => array( 'For your table.', 'Honey and', 'desi ghee.' ), 'description' => 'Honey and desi ghee for breakfast, cooking and everyday favourites.', 'cta' => 'Explore Honey & Ghee', 'url' => maqwi_shop_url() ),
+        array( 'file' => 'hero-itar-v3.webp', 'alt' => 'Maqwi Itar in a gold-capped 12 ml bottle on a pale stone studio plinth', 'name' => 'Personal fragrance', 'headline' => array( 'Personal fragrance.', 'Discover', 'Maqwi Itar.' ), 'description' => 'Discover Maqwi Itar — everyday fragrance in a compact 12 ml bottle.', 'cta' => 'Explore Itar', 'url' => home_url( '/product/maqwi-itar/' ) ),
     );
     ob_start(); ?>
     <section class="mq-premium-hero mq-slideshow-hero" aria-labelledby="mq-premium-title" aria-describedby="mq-hero-motion-help" tabindex="0">
@@ -257,7 +257,7 @@ add_action( 'woocommerce_before_shop_loop', function () {
 
 /** Clear page caches once after the reviewed campaign release. */
 add_action( 'wp_loaded', function () {
-    if ( get_option( 'maqwi_hero_scene_release' ) === '2026-10-17-auto-copy-1' ) { return; }
-    update_option( 'maqwi_hero_scene_release', '2026-10-17-auto-copy-1', false );
+    if ( get_option( 'maqwi_hero_scene_release' ) === '2026-10-18-mobile-hero-1' ) { return; }
+    update_option( 'maqwi_hero_scene_release', '2026-10-18-mobile-hero-1', false );
     if ( function_exists( 'w3tc_flush_all' ) ) { w3tc_flush_all(); }
 }, 55 );
