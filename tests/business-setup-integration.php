@@ -45,7 +45,7 @@ catch ( Exception $error ) { mq_assert( $error->getMessage() === 'Ordering is no
 wc_load_cart();
 $package = array( 'contents' => array( 'h' => array( 'data' => wc_get_product( 62 ), 'quantity' => 2, 'line_total' => 9000, 'line_subtotal' => 9000 ) ), 'contents_cost' => 9000, 'applied_coupons' => array(), 'user' => array( 'ID' => 0 ), 'destination' => array( 'country' => 'PK', 'state' => 'PB', 'postcode' => '', 'city' => 'Lahore', 'address' => '', 'address_1' => '', 'address_2' => '' ) );
 $zone = WC_Shipping_Zones::get_zone_matching_package( $package );$methods = $zone->get_shipping_methods( true );
-mq_assert( count( $methods ) === 1, 'One native Pakistan shipping method' );$method = reset( $methods );$method->calculate_shipping( $package );$rates = apply_filters( 'woocommerce_package_rates', $method->get_rates(), $package );
+mq_assert( count( $methods ) === 1, 'One native Pakistan shipping method' );$method = reset( $methods );$rates = apply_filters( 'woocommerce_package_rates', $method->get_rates_for_package( $package ), $package );
 mq_assert( count( $rates ) === 1 && (float) reset( $rates )->get_cost() === 300.0, 'One PKR 300 delivery charge for multi-item order' );
 $package['destination']['country'] = 'GB';$outside = WC_Shipping_Zones::get_zone_matching_package( $package );
 mq_assert( count( $outside->get_shipping_methods( true ) ) === 0, 'No non-Pakistan shipping method' );
@@ -57,5 +57,22 @@ wc_reduce_stock_levels( $order->get_id() );mq_assert( (int) wc_get_product( 32 )
 $order->update_status( 'cancelled' );mq_assert( (int) wc_get_product( 32 )->get_stock_quantity() === 5, 'Cancellation restores shared stock' );
 wc_update_product_stock( 62, 19 );mq_assert( ! maqwi_apply_approved_business_setup(), 'Completed release is not replayed' );mq_assert( (int) wc_get_product( 62 )->get_stock_quantity() === 19, 'Later sold stock is never reset to opening quantity' );
 foreach ( maqwi_approved_business_pages() as $slug => $page ) { mq_assert( str_contains( get_post( $page[0] )->post_content, $page[2] ), 'Approved page content: ' . $slug );mq_assert( count( wp_get_post_revisions( $page[0] ) ) > 0, 'Previous page content recoverable: ' . $slug ); }
+$reservations = array();
+foreach ( array( $variants['500 g'], $variants['1 kg'] ) as $variant ) {
+    $pending = wc_create_order();$pending->add_product( $variant, 3 );$pending->update_meta_data( '_maqwi_ci_reservation', 'yes' );$pending->calculate_totals();$pending->save();$reservations[] = $pending;
+}
+$workers = array();
+foreach ( $reservations as $pending ) {
+    $pipes = array();$process = proc_open( array( 'php', '/tmp/wp.phar', '--allow-root', '--path=/tmp/maqwi-ci', 'eval-file', getenv( 'MAQWI_RESERVATION_WORKER' ), (string) $pending->get_id() ), array( 0 => array( 'pipe', 'r' ), 1 => array( 'pipe', 'w' ), 2 => array( 'pipe', 'w' ) ), $pipes );
+    mq_assert( is_resource( $process ), 'Concurrent reservation worker started' );fclose( $pipes[0] );$workers[] = array( $process, $pipes );
+}
+$results = array();
+foreach ( $workers as $worker ) {
+    $result = trim( stream_get_contents( $worker[1][1] ) );$stderr = stream_get_contents( $worker[1][2] );fclose( $worker[1][1] );fclose( $worker[1][2] );$exit = proc_close( $worker[0] );mq_assert( $exit === 0, 'Reservation worker completed: ' . $stderr );$results[] = $result;
+}
+sort( $results );mq_assert( $results === array( 'insufficient', 'reserved' ), 'Concurrent mixed-size orders cannot reserve six units from shared stock five' );
+mq_assert( (int) wc_get_held_stock_quantity( $variants['500 g'] ) === 3, 'Reservation uses shared parent stock counter' );
+foreach ( $reservations as $pending ) { wc_release_stock_for_order( $pending ); }
+mq_assert( (int) wc_get_held_stock_quantity( $variants['500 g'] ) === 0, 'Reservations released correctly' );
 mq_assert( maqwi_brand_launch_mode(), 'Ordering remains closed after all tests' );
 echo 'MAQWI_COMMERCE_CHECKS=' . $checks . "\n";

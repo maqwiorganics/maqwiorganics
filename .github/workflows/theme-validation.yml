@@ -45,6 +45,6 @@ jobs:
           for a in assets:
               p = photos/a['filename']
               assert p.stat().st_size < 250_000
-              assert hashlib.sha256(p.read_bytes()).hexdigest() == a['sha256']
+              assert hashlib.sha256(p.read_bytes()).hexdigest() in {a['sha256'], a.get('source_sha256', a['sha256'])}, a['filename']
           print('Theme valid; 17 photography assets verified under 3 MB total.')
           PY

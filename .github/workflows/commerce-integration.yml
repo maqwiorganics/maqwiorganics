@@ -42,5 +42,6 @@ jobs:
           php /tmp/wp.phar --allow-root --path=/tmp/maqwi-ci plugin activate maqwi-store-core
       - name: Native configuration, shipping, order guards and stock lifecycle checks
         env:
+          MAQWI_RESERVATION_WORKER: ${{ github.workspace }}/tests/business-reservation-worker.php
           MAQWI_FIXTURE: ${{ github.workspace }}/tests/business-public-fixture.json
         run: php /tmp/wp.phar --allow-root --path=/tmp/maqwi-ci eval-file tests/business-setup-integration.php
