@@ -29,7 +29,7 @@ function maqwi_premium_hero() {
                 </figure>
                 <?php endforeach; ?>
             </div>
-            <p class="mq-hero-gallery-note">Product presentation shown. Refer to each listing for pack details.</p>
+            <p class="mq-hero-gallery-note">Explore the collection. Product details are listed below.</p>
             <p id="mq-hero-motion-help" class="mq-visually-hidden">Images and text change automatically. Keyboard focus within this section pauses the slideshow. Press Escape to stop rotation. Reduced-motion preferences are respected.</p>
         </div>
     </section>
@@ -163,10 +163,10 @@ function maqwi_public_brand_mode() {
 }
 function maqwi_brand_collections() {
     return array(
-        'honey' => array( 'name' => 'Honey', 'image' => 'honey', 'line' => 'A little sweetness in the everyday.', 'copy' => 'From a spoonful beside breakfast to the cup of tea you make your own, honey has a familiar place at the table.', 'details' => 'Varieties, net weight, origin, ingredients and storage information will accompany the final products.' ),
-        'desi-ghee' => array( 'name' => 'Desi Ghee', 'image' => 'ghee', 'line' => 'A familiar finishing touch.', 'copy' => 'Some meals are remembered by the smallest details. Desi ghee is part of the food traditions that inspired the Maqwi collection.', 'details' => 'Ingredients, dairy allergen information, pack sizes, sourcing and storage instructions will be shared before ordering opens.' ),
-        'achaar' => array( 'name' => 'Achaar', 'image' => 'achaar', 'line' => 'The extra beside a favourite meal.', 'copy' => 'Passed around the table or kept beside a favourite plate, achaar is a small ritual with a place in everyday meals.', 'details' => 'The final flavours, ingredient lists, allergens, net weights and storage guidance will be listed with each product.' ),
-        'itar' => array( 'name' => 'Itar', 'image' => 'itar', 'line' => 'A fragrance. A personal ritual.', 'copy' => 'A fragrance can feel familiar before you can name it. Itar brings a different kind of everyday tradition to the Maqwi collection.', 'details' => 'Fragrance descriptions, bottle sizes, ingredients and safe-use guidance will be provided with the final range.' ),
+        'honey' => array( 'name' => 'Honey', 'image' => 'honey', 'line' => 'A little sweetness in the everyday.', 'copy' => 'From a spoonful beside breakfast to the cup of tea you make your own, honey has a familiar place at the table.', 'details' => '1 kg pack — PKR 4,500. Origin, ingredients and storage information will accompany the final product listing.' ),
+        'desi-ghee' => array( 'name' => 'Desi Ghee', 'image' => 'ghee', 'line' => 'A familiar finishing touch.', 'copy' => 'Some meals are remembered by the smallest details. Desi ghee is part of the food traditions that inspired the Maqwi collection.', 'details' => '1 kg pack — PKR 3,500. Ingredients, dairy allergen details and storage instructions will be available before ordering opens.' ),
+        'achaar' => array( 'name' => 'Achaar', 'image' => 'achaar', 'line' => 'The extra beside a favourite meal.', 'copy' => 'Passed around the table or kept beside a favourite plate, achaar is a small ritual with a place in everyday meals.', 'details' => 'Choose a 500 g pack for PKR 1,500 or a 1 kg pack for PKR 3,000. Ingredients, allergens and care details will be confirmed before ordering opens.' ),
+        'itar' => array( 'name' => 'Itar', 'image' => 'itar', 'line' => 'A fragrance. A personal ritual.', 'copy' => 'A fragrance can feel familiar before you can name it. Itar brings a different kind of everyday tradition to the Maqwi collection.', 'details' => '12 ml bottle — PKR 200. Fragrance notes, ingredients and safe-use guidance will be provided before ordering opens.' ),
     );
 }
 function maqwi_brand_collection_details() {
@@ -177,7 +177,7 @@ function maqwi_brand_collection_details() {
         <?php $number = 0; foreach ( maqwi_brand_collections() as $slug => $item ) : $number++; ?>
             <details class="mq-collection-detail">
                 <summary><span class="mq-detail-number" aria-hidden="true"><?php echo esc_html( sprintf( '%02d', $number ) ); ?></span><span><span class="mq-detail-title"><?php echo esc_html( $item['name'] ); ?></span><span class="mq-detail-line"><?php echo esc_html( $item['line'] ); ?></span></span><span class="mq-detail-toggle" aria-hidden="true"></span></summary>
-                <div id="<?php echo esc_attr( 'collection-' . $slug ); ?>" class="mq-detail-body"><figure><img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/' . $item['image'] . '.webp' ); ?>" alt="<?php echo esc_attr( 'Maqwi ' . $item['name'] . '' ); ?>" width="900" height="900" loading="lazy" decoding="async"></figure><div><p class="mq-eyebrow">Maqwi collection</p><h3><?php echo esc_html( $item['line'] ); ?></h3><p><?php echo esc_html( $item['copy'] ); ?></p><p><?php echo esc_html( $item['details'] ); ?></p><p class="mq-detail-note">Artwork is an early. Final product details, photographs, prices and availability will be confirmed before orders open.</p><a class="mq-text-link" href="<?php echo esc_url( maqwi_home_anchor( 'questions' ) ); ?>">Before you order <span aria-hidden="true">&nbsp;↗</span></a></div></div>
+                <div id="<?php echo esc_attr( 'collection-' . $slug ); ?>" class="mq-detail-body"><figure><img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/' . $item['image'] . '.webp' ); ?>" alt="<?php echo esc_attr( 'Maqwi ' . $item['name'] . '' ); ?>" width="900" height="900" loading="lazy" decoding="async"></figure><div><p class="mq-eyebrow">Maqwi collection</p><h3><?php echo esc_html( $item['line'] ); ?></h3><p><?php echo esc_html( $item['copy'] ); ?></p><p><?php echo esc_html( $item['details'] ); ?></p><p class="mq-detail-note">Online ordering will open after final product and delivery checks.</p><a class="mq-text-link" href="<?php echo esc_url( maqwi_home_anchor( 'questions' ) ); ?>">Before you order <span aria-hidden="true">&nbsp;↗</span></a></div></div>
             </details>
         <?php endforeach; ?>
         </div>
