@@ -3,7 +3,7 @@ Theme Name: Maqwi Organics
 Description: Lightweight Kadence child theme with an editable Maqwi homepage pattern.
 Author: Maqwi Organics
 Template: kadence
-Version: 0.12.0
+Version: 0.12.1
 Requires at least: 6.6
 Requires PHP: 8.1
 Text Domain: maqwi-organics
@@ -623,3 +623,78 @@ License: GPL-2.0-or-later
 }
 
 /* MAQWI-LIVE-GLASS-20261018-END */
+
+
+/* MAQWI-LIVE-COMMERCE-20261018-START */
+
+/* Polished commerce components. Visual styling only; order controls unchanged. */
+.mq-site .mq-commerce{max-width:1320px}
+.mq-site .woocommerce-breadcrumb{margin:8px 0 28px!important;font-size:12px;letter-spacing:.04em;color:var(--mq-muted)}
+.mq-site .mq-shop-intro{
+  padding:clamp(24px,4vw,52px);border:1px solid rgba(47,93,58,.12);
+  border-radius:25px;background:linear-gradient(120deg,rgba(255,255,255,.58),rgba(247,242,231,.82));
+  box-shadow:0 14px 42px rgba(45,41,36,.05);margin-bottom:25px;
+}
+.mq-site .mq-shop-heading h1{font-family:var(--mq-serif);font-weight:400;letter-spacing:-.045em}
+.mq-site .woocommerce div.product .product_title{font-family:var(--mq-serif);font-weight:400;line-height:1.1;letter-spacing:-.035em;font-size:clamp(35px,4.5vw,58px)}
+.mq-site .woocommerce div.product p.price,.mq-site .woocommerce div.product span.price{color:var(--mq-green);font-size:clamp(20px,2.3vw,28px);font-weight:600}
+.mq-site .woocommerce div.product div.images img{
+  border-radius:24px;box-shadow:0 17px 42px rgba(45,41,36,.10);
+  border:1px solid rgba(47,93,58,.08);background:rgba(255,255,255,.6);
+}
+.mq-site .woocommerce div.product .woocommerce-product-gallery .flex-control-thumbs li img{border-radius:10px}
+.mq-site .woocommerce div.product .summary{
+  padding:clamp(15px,2vw,32px);background:rgba(255,255,255,.43);
+  border:1px solid rgba(255,255,255,.72);border-radius:22px;
+}
+.mq-site .woocommerce div.product form.cart .variations select{
+  border-radius:11px;min-height:48px;background:rgba(255,255,255,.8);border-color:rgba(47,93,58,.23);
+}
+.mq-site .woocommerce div.product form.cart .variations label{font-size:13px;letter-spacing:.025em}
+.mq-site .woocommerce div.product .woocommerce-tabs ul.tabs{padding:0;display:flex;gap:8px;flex-wrap:wrap}
+.mq-site .woocommerce div.product .woocommerce-tabs ul.tabs li{
+  background:rgba(255,255,255,.60);border:1px solid rgba(47,93,58,.13);
+  border-radius:999px;padding:0 15px;
+}
+.mq-site .woocommerce div.product .woocommerce-tabs ul.tabs li.active{
+  background:var(--mq-green);color:var(--mq-cream);
+}
+.mq-site .woocommerce .woocommerce-tabs .panel{
+  padding:clamp(19px,3vw,32px);border-radius:20px;
+  background:rgba(255,255,255,.46);border:1px solid rgba(47,93,58,.10);
+}
+.mq-site .woocommerce-cart-form,.mq-site .cart-collaterals .cart_totals,
+.mq-site .woocommerce-checkout-review-order,.mq-site .woocommerce form.checkout_coupon,
+.mq-site .woocommerce form.login,.mq-site .woocommerce-account .woocommerce-MyAccount-content{
+  background:rgba(255,255,255,.64);border:1px solid rgba(47,93,58,.12);
+  border-radius:20px;box-shadow:0 12px 34px rgba(45,41,36,.055);
+  padding:clamp(18px,3vw,30px);
+}
+.mq-site .woocommerce table.shop_table{border-color:rgba(47,93,58,.14);border-radius:12px}
+.mq-site .woocommerce table.shop_table td,.mq-site .woocommerce table.shop_table th{border-color:rgba(47,93,58,.10)}
+.mq-site .woocommerce form .form-row label{font-size:13px;font-weight:600;color:var(--mq-green)}
+.mq-site .woocommerce input.input-text,.mq-site .woocommerce textarea,.mq-site .woocommerce select{
+  min-height:46px;border-radius:11px!important;background:rgba(255,255,255,.9)!important;
+  border:1px solid rgba(47,93,58,.24)!important;padding:11px 13px!important;
+}
+.mq-site .woocommerce .button,.mq-site .woocommerce button.button,.mq-site .woocommerce a.button{
+  min-height:44px;border-radius:999px;font-weight:600;
+}
+.mq-site .woocommerce .woocommerce-info{background:rgba(255,255,255,.68);border:1px solid rgba(47,93,58,.12);border-top:3px solid var(--mq-green);border-radius:12px}
+.mq-site .woocommerce div.product .related.products{margin-top:60px}
+.mq-site .woocommerce div.product .related.products>h2{font-family:var(--mq-serif);font-size:clamp(28px,3vw,38px);font-weight:400}
+@media(max-width:767px){
+ .mq-site .mq-commerce{padding:22px 15px 48px}
+ .mq-site .mq-shop-intro{padding:25px 19px;border-radius:18px}
+ .mq-site .woocommerce div.product .summary{padding:18px 16px;border-radius:17px}
+ .mq-site .woocommerce div.product div.images img{border-radius:16px}
+ .mq-site .woocommerce div.product .product_title{font-size:37px}
+ .mq-site .woocommerce div.product .woocommerce-tabs .panel{padding:18px}
+ .mq-site .woocommerce div.product .woocommerce-tabs ul.tabs li{margin:0}
+ .mq-site .woocommerce-cart-form,.mq-site .cart-collaterals .cart_totals,
+ .mq-site .woocommerce-checkout-review-order{padding:16px;border-radius:15px}
+ .mq-site .woocommerce table.shop_table{font-size:13px}
+ .mq-site .woocommerce div.product .related.products{margin-top:38px}
+}
+
+/* MAQWI-LIVE-COMMERCE-20261018-END */
