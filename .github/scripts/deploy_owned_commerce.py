@@ -71,9 +71,30 @@ def apply(ftp, package, originals):
             raise RuntimeError('Source recovery needs review: ' + ', '.join(failures)) from error
         raise
 
+def rollback_installed(ftp, package):
+    previous = json.loads((BACKUP / 'originals.json').read_text())
+    if set(previous) != set(ORDER):
+        raise RuntimeError('Unexpected recovery scope')
+    for name in ORDER:
+        if read(ftp, name) != package[name]:
+            raise RuntimeError('Installed source changed; refusing to overwrite: ' + name)
+        if previous[name] is not None and sha((BACKUP / name).read_bytes()) != previous[name]:
+            raise RuntimeError('Recovery bytes failed integrity check: ' + name)
+    for name in reversed(ORDER):
+        if previous[name] is None:
+            ftp.delete(BASE + name)
+        else:
+            data = (BACKUP / name).read_bytes()
+            replace(ftp, name, data)
+            if read(ftp, name) != data:
+                raise RuntimeError('Recovery verification failed: ' + name)
+    names = {p.rsplit('/', 1)[-1] for p in ftp.nlst(BASE)}
+    if any(previous[n] is None and n in names for n in ORDER):
+        raise RuntimeError('New module removal could not be verified')
+
 def main(phase):
-    if phase not in ('prepare', 'apply'):
-        raise ValueError('Use prepare or apply')
+    if phase not in ('prepare', 'apply', 'rollback'):
+        raise ValueError('Use prepare, apply or rollback')
     release = json.loads(Path('config/commerce-source-release.json').read_text())
     package = {name: (LOCAL / name).read_bytes() for name in ORDER}
     if set(release['package']) != set(ORDER) or any(sha(data) != release['package'][name] for name, data in package.items()):
@@ -86,6 +107,10 @@ def main(phase):
         ftp.connect(os.environ['HOST'], 21)
         ftp.login(os.environ['USERNAME'], os.environ['PASSWORD'])
         ftp.prot_p()
+        if phase == 'rollback':
+            rollback_installed(ftp, package)
+            print('Previous owned source restored and verified; existing backups preserved.')
+            return
         names = {p.rsplit('/', 1)[-1] for p in ftp.nlst(BASE)}
         if {'business-setup.php', 'mail-transport.php'} & names:
             raise RuntimeError('New module already exists; review before another release')

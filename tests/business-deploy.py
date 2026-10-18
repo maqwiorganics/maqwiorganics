@@ -1,6 +1,8 @@
 import importlib.util
 from pathlib import Path
 import unittest
+import json
+import tempfile
 
 spec = importlib.util.spec_from_file_location('deploy', Path('.github/scripts/deploy_owned_commerce.py'))
 deploy = importlib.util.module_from_spec(spec)
@@ -38,6 +40,19 @@ class Recovery(unittest.TestCase):
             deploy.apply(ftp, package, originals)
             for name in deploy.ORDER: self.assertEqual(ftp.files[deploy.BASE+name], package[name])
             self.assertEqual(ftp.files[deploy.BASE+'preserved-backup.zip'], b'untouched')
+    def test_runtime_rollback(self):
+        original_backup = deploy.BACKUP
+        with tempfile.TemporaryDirectory() as directory:
+            deploy.BACKUP = Path(directory)
+            package = {n: b'new-' + n.encode() for n in deploy.ORDER}
+            originals = {n: (b'old-' + n.encode() if n in ('storefront-preview.php', 'maqwi-store-core.php') else None) for n in deploy.ORDER}
+            for name,data in originals.items():
+                if data is not None: (deploy.BACKUP/name).write_bytes(data)
+            (deploy.BACKUP/'originals.json').write_text(json.dumps({n:deploy.sha(d) if d is not None else None for n,d in originals.items()}))
+            ftp = FTP({deploy.BASE+n:d for n,d in package.items()})
+            deploy.rollback_installed(ftp,package)
+            self.assertEqual(ftp.files,{deploy.BASE+n:d for n,d in originals.items() if d is not None})
+        deploy.BACKUP = original_backup
     def test_success(self): self.run_case(None)
     def test_failure_before_core_commit_restores_existing_and_removes_only_new_modules(self): self.run_case('maqwi-store-core.php')
     def test_failure_during_second_new_module_restores_absence(self): self.run_case('mail-transport.php')
