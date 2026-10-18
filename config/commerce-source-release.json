@@ -1,0 +1,18 @@
+{
+  "tested_commit": "e8c4398fb1721acfc908282b24c2e4295178cb5f",
+  "test_run": 39129917887,
+  "baseline": {
+    "maqwi-store-core.php": "ed859517f3093dce7d90d18a93f04a2cf4e8dd4e1f1637a988bd93da2c6184b6",
+    "storefront-preview.php": "a67926a558dfa0a0afb42889e7a0ad1c3f1329632749727a7263e747a79a567e",
+    "catalogue-release.php": "8c25a1eb26b9c53ccf470421df886a7904dfc7d8d35469ca38fc154bbc16a239",
+    "storefront-copy.php": "67ce34e9ccd40ba2c8528130c030d989a9f412ee6a8fa581780022432ffce8c4",
+    "photography/manifest.json": "d4ce92b976d65ef057d235328935d189756d260e08edf7306225036d02b81c5b"
+  },
+  "package": {
+    "maqwi-store-core.php": "443ae784fc2b789730f51a6ba34872ed825c5c77cfd9eb11474c878130f777d2",
+    "storefront-preview.php": "9766f8b029bcb54701d21309ba65b689a97fa78ecdff2f565b9ca33c54436599",
+    "business-setup.php": "a8f0c5cb65e8eecf363bb666d56e8871f73da3d12635b5fe030e2824d27a2304",
+    "mail-transport.php": "43a29fbb46cd6d51a976abc457d170eec4047eb9e3e50be40429a5285994421d"
+  },
+  "configuration_requested": false
+}
