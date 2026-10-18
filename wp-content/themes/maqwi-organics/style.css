@@ -391,3 +391,235 @@ License: GPL-2.0-or-later
 @media(min-width:1600px){.mq-slideshow-hero{min-height:640px}}
 
 .mq-slideshow-hero .mq-primary-label{white-space:nowrap}
+
+
+/* MAQWI-LIVE-GLASS-20261018-START */
+
+/* A restrained glass editorial treatment. The established Maqwi palette,
+   custom Garamond and system sans fonts stay unchanged. */
+.mq-site{
+  background:var(--mq-cream);
+  background-image:radial-gradient(ellipse 65% 32% at 94% 24%,rgba(217,164,65,.095),transparent 85%),radial-gradient(ellipse 45% 26% at 4% 64%,rgba(47,93,58,.055),transparent 85%);
+}
+.mq-site .mq-announcement{
+  background:var(--mq-green);color:var(--mq-cream);
+  letter-spacing:.1em;font-weight:500;padding:9px 18px;
+}
+.mq-site .mq-header{
+  background:rgba(247,242,231,.87);-webkit-backdrop-filter:blur(20px) saturate(145%);
+  backdrop-filter:blur(20px) saturate(145%);
+  border-bottom:1px solid rgba(47,93,58,.12);
+  box-shadow:0 12px 40px rgba(45,41,36,.045);
+}
+.mq-site .mq-header .mq-menu a{border-radius:999px;padding:0 13px;transition:background-color .2s ease,color .2s ease}
+.mq-site .mq-header .mq-menu a:hover,.mq-site .mq-header .mq-menu .current-menu-item>a{background:rgba(47,93,58,.085);text-decoration:none}
+.mq-site .mq-header-actions>a,.mq-site .mq-header .mq-mobile-nav>summary{
+  border:1px solid rgba(47,93,58,.14)!important;background:rgba(255,255,255,.43)!important;
+  border-radius:999px!important;box-shadow:0 5px 18px rgba(45,41,36,.045);
+}
+.mq-home .mq-section{position:relative}
+.mq-home .mq-section-top h2,.mq-home .mq-story h2{letter-spacing:-.045em;text-wrap:balance}
+.mq-home .mq-eyebrow{letter-spacing:.18em}
+.mq-site .mq-slideshow-hero{
+  border:1px solid rgba(47,93,58,.11);border-radius:30px;
+  box-shadow:0 22px 68px rgba(45,41,36,.10);
+  background:linear-gradient(125deg,rgba(255,255,255,.45),rgba(247,242,231,.9));
+  overflow:hidden;isolation:isolate;
+}
+.mq-site .mq-slideshow-hero .mq-premium-copy{position:relative;z-index:3}
+.mq-site .mq-slideshow-hero .mq-premium-primary{
+  border-radius:999px;box-shadow:0 12px 24px rgba(47,93,58,.14);
+  transition:transform .2s ease,box-shadow .2s ease;
+}
+.mq-site .mq-slideshow-hero .mq-premium-primary:hover{transform:translateY(-2px);box-shadow:0 15px 30px rgba(47,93,58,.18)}
+.mq-site .mq-slideshow-hero .mq-premium-story{
+  border-bottom:1px solid rgba(47,93,58,.3);min-height:44px;
+}
+.mq-site .mq-slideshow-hero .mq-premium-media{border-radius:0}
+.mq-site .mq-slideshow-hero .mq-hero-controls{
+  background:rgba(247,242,231,.77);border:1px solid rgba(255,255,255,.66);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  border-radius:999px;box-shadow:0 10px 32px rgba(45,41,36,.10);
+}
+.mq-site .mq-slideshow-hero .mq-hero-gallery-note{
+  color:var(--mq-green);letter-spacing:.02em;
+}
+.mq-home .mq-category-section{border-top:0}
+.mq-home .mq-categories{gap:20px}
+.mq-home .mq-category{
+  background:rgba(255,255,255,.49);border:1px solid rgba(255,255,255,.84);
+  border-radius:23px;padding:12px 12px 19px!important;
+  box-shadow:0 13px 32px rgba(45,41,36,.065),inset 0 1px 0 rgba(255,255,255,.65);
+  transition:transform .24s ease,box-shadow .24s ease;
+}
+.mq-home .mq-category figure{border-radius:16px!important;overflow:hidden;margin-bottom:14px!important}
+.mq-home .mq-category img{border-radius:16px!important;aspect-ratio:4/5;object-fit:cover}
+.mq-home .mq-category h3,.mq-home .mq-category p{padding-inline:5px}
+.mq-home .mq-category:hover{transform:translateY(-5px);box-shadow:0 22px 42px rgba(45,41,36,.095)}
+.mq-home .mq-category a:focus-visible{border-radius:8px}
+.mq-home .mq-product-card{
+  background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.78);
+  border-radius:22px;padding:12px 12px 20px;
+  box-shadow:0 12px 30px rgba(45,41,36,.058);
+  transition:transform .2s ease,box-shadow .2s ease;
+}
+.mq-home .mq-product-card:hover{transform:translateY(-4px);box-shadow:0 18px 36px rgba(45,41,36,.085)}
+.mq-home .mq-product-card img{border-radius:15px;border:0;aspect-ratio:1;object-fit:cover}
+.mq-home .mq-product-card h3{font-size:clamp(19px,1.9vw,24px);margin:13px 0 8px}
+.mq-home .mq-product-card .mq-price{font-weight:600;color:var(--mq-green)}
+.mq-home .mq-story{
+  background:var(--mq-green);
+  background-image:radial-gradient(ellipse at 0% 0%,rgba(247,242,231,.13),transparent 50%),radial-gradient(ellipse at 95% 100%,rgba(217,164,65,.13),transparent 55%);
+  border-radius:30px;margin:42px clamp(16px,3.5vw,62px);padding:clamp(40px,6vw,88px) clamp(24px,6vw,80px);
+  box-shadow:0 26px 50px rgba(47,93,58,.15);
+}
+.mq-home .mq-story-inner{gap:clamp(24px,4vw,60px);align-items:center}
+.mq-home .mq-story-inner>div:last-child{
+  padding:clamp(22px,3vw,40px);border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.075);border-radius:20px;
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+}
+.mq-home .mq-principles{gap:18px}
+.mq-home .mq-principle{
+  background:rgba(255,255,255,.56);border:1px solid rgba(255,255,255,.88);
+  box-shadow:0 12px 34px rgba(45,41,36,.055);
+  border-radius:20px;padding:25px 24px 20px;
+}
+.mq-home .mq-principle .mq-number{color:var(--mq-green);opacity:.75}
+.mq-home .mq-faq-section{border-top:0;gap:clamp(20px,5vw,68px)}
+.mq-home .mq-faq details{
+  background:rgba(255,255,255,.58);border:1px solid rgba(47,93,58,.10);
+  border-radius:14px;padding:10px 22px;margin:0 0 12px;
+  box-shadow:0 8px 24px rgba(45,41,36,.035);
+}
+.mq-home .mq-faq details:first-child{border-top:1px solid rgba(47,93,58,.10)}
+.mq-home .mq-faq summary{padding:12px 22px 12px 0;font-weight:600;position:relative}
+.mq-home .mq-faq summary::after{content:'+';position:absolute;right:0;top:50%;transform:translateY(-50%);font-size:22px;font-weight:400;color:var(--mq-green)}
+.mq-home .mq-faq details[open] summary::after{content:'−'}
+.mq-home .mq-faq details p{margin:0 0 14px}
+.mq-home .mq-closing{
+  border:1px solid rgba(47,93,58,.10);border-radius:24px;
+  padding:60px 24px;background:rgba(255,255,255,.50);
+  box-shadow:0 14px 36px rgba(45,41,36,.04);
+}
+.mq-site .woocommerce ul.products li.product{
+  padding:12px!important;border-radius:20px;
+  background:rgba(255,255,255,.58);border:1px solid rgba(47,93,58,.09);
+  box-shadow:0 9px 26px rgba(45,41,36,.05);
+}
+.mq-site .woocommerce ul.products li.product a img{
+  border-radius:13px;transition:transform .25s ease;
+}
+.mq-site .woocommerce ul.products li.product:hover a img{transform:scale(1.015)}
+.mq-site .woocommerce ul.products li.product .price{font-weight:600;color:var(--mq-green)}
+.mq-site .mq-collection-nav a{background:rgba(255,255,255,.55);border-color:rgba(47,93,58,.16);transition:background-color .2s ease}
+.mq-site .mq-collection-nav a:hover{background:var(--mq-green)}
+.mq-site .woocommerce .button,.mq-site .woocommerce a.button{border-radius:999px}
+.mq-site .mq-footer{
+  background:var(--mq-green);
+  background-image:radial-gradient(ellipse at 85% 0%,rgba(247,242,231,.09),transparent 60%);
+  border-top:1px solid rgba(255,255,255,.15);
+}
+.mq-site .mq-footer nav a{opacity:.92}
+.mq-site .mq-footer nav a:hover{opacity:1}
+@media(min-width:1100px){
+  .mq-site .mq-slideshow-hero{
+    max-width:min(1480px,calc(100% - 48px));min-height:590px;
+    margin:20px auto 32px;padding:55px 5.2%;
+  }
+  .mq-site .mq-slideshow-hero .mq-premium-copy{
+    width:min(48%,570px);max-width:570px;padding:42px 34px;
+    background:rgba(247,242,231,.76);border:1px solid rgba(255,255,255,.80);
+    border-radius:24px;-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);
+    box-shadow:0 19px 48px rgba(45,41,36,.065);
+  }
+  .mq-site .mq-slideshow-hero .mq-hero-gallery{inset:0 0 0 auto;width:78%;height:100%}
+  .mq-site .mq-slideshow-hero .mq-premium-media{height:100%}
+  .mq-site .mq-slideshow-hero .mq-premium-media::after{background:linear-gradient(90deg,rgba(247,242,231,.66) 0%,rgba(247,242,231,.10) 50%,transparent 74%)}
+  .mq-site .mq-slideshow-hero .mq-hero-controls{left:auto;right:30px;bottom:28px;width:min(380px,45%)}
+  .mq-site .mq-slideshow-hero .mq-hero-gallery-note{left:auto;right:42px;bottom:10px;width:min(340px,43%);text-align:right}
+}
+@media(min-width:768px) and (max-width:1099px){
+  .mq-site .mq-slideshow-hero{margin:16px 20px 28px;padding:36px 28px 24px;border-radius:24px}
+  .mq-site .mq-slideshow-hero .mq-premium-copy{max-width:680px}
+  .mq-site .mq-slideshow-hero .mq-premium-media{border-radius:18px}
+  .mq-site .mq-slideshow-hero .mq-hero-gallery{width:100%;margin-inline:0}
+}
+@media(max-width:767px){
+  .mq-site .mq-announcement{font-size:10px;padding:7px 12px;letter-spacing:.045em}
+  .mq-site .mq-header{min-height:65px;padding:7px 16px}
+  .mq-site .mq-header .mq-menu a{padding:0 9px}
+  .mq-site .mq-header .mq-mobile-nav>summary{width:44px!important;height:44px!important}
+  .mq-site .mq-mobile-nav nav{
+    background:rgba(247,242,231,.97);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+    box-shadow:0 18px 38px rgba(45,41,36,.15);border-radius:18px;
+  }
+  .mq-site .mq-slideshow-hero{
+    margin:10px 10px 28px;padding:0 0 12px;display:flex;flex-direction:column;
+    border-radius:24px;gap:0;min-height:0;
+  }
+  .mq-site .mq-slideshow-hero .mq-hero-gallery{
+    order:0;width:100%!important;max-width:none;margin:0!important;align-self:stretch;
+  }
+  .mq-site .mq-slideshow-hero .mq-premium-media{
+    width:100%;aspect-ratio:5/4;min-height:0;height:auto;border-radius:0;
+  }
+  .mq-site .mq-slideshow-hero .mq-hero-slide>img{object-fit:cover;object-position:center}
+  .mq-site .mq-slideshow-hero .mq-hero-controls{
+    margin:10px 15px 0;min-height:42px;border-radius:999px;padding-inline:10px;
+  }
+  .mq-site .mq-slideshow-hero .mq-hero-gallery-note{
+    margin:4px 16px 0!important;font-size:9px;text-align:center;
+  }
+  .mq-site .mq-slideshow-hero .mq-premium-copy{
+    order:1;width:calc(100% - 24px);max-width:none;padding:20px 20px 22px;
+    margin:12px 12px 0;align-self:center;
+    border:1px solid rgba(255,255,255,.85);border-radius:18px;
+    background:rgba(255,255,255,.46);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  }
+  .mq-site .mq-slideshow-hero .mq-premium-eyebrow{font-size:9px;margin-bottom:12px!important}
+  .mq-site .mq-home .mq-slideshow-hero h1{font-size:clamp(34px,9vw,47px);line-height:1.04;margin-bottom:12px}
+  .mq-site .mq-slideshow-hero .mq-premium-description{font-size:14px;line-height:1.55;min-height:0;margin:0 0 14px!important}
+  .mq-site .mq-slideshow-hero .mq-premium-actions{gap:10px;flex-wrap:wrap}
+  .mq-site .mq-slideshow-hero .mq-premium-primary{min-height:46px;font-size:12px}
+  .mq-site .mq-slideshow-hero .mq-premium-story{min-height:44px;font-size:12px}
+  .mq-home .mq-section{padding:50px 18px}
+  .mq-home .mq-categories{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .mq-home .mq-category{padding:8px 8px 15px!important;border-radius:17px}
+  .mq-home .mq-category figure,.mq-home .mq-category img{border-radius:12px!important}
+  .mq-home .mq-category h3{font-size:clamp(19px,5vw,23px);margin:0 0 5px}
+  .mq-home .mq-category p{font-size:12px;line-height:1.5}
+  .mq-home .mq-product-card{padding:9px 9px 16px;border-radius:17px}
+  .mq-home .mq-product-card img{border-radius:11px}
+  .mq-home .mq-product-card h3{font-size:19px}
+  .mq-home .mq-story{margin:12px 10px 26px;padding:34px 20px;border-radius:23px}
+  .mq-home .mq-story-inner{display:block!important}
+  .mq-home .mq-story-inner>div:last-child{margin-top:18px;padding:18px}
+  .mq-home .mq-principles{grid-template-columns:1fr;gap:12px}
+  .mq-home .mq-principle{padding:18px 19px;border-radius:15px}
+  .mq-home .mq-principle h3{margin:8px 0}
+  .mq-home .mq-faq-section{display:block!important}
+  .mq-home .mq-faq{margin-top:22px}
+  .mq-home .mq-faq details{padding:6px 16px;border-radius:13px}
+  .mq-home .mq-closing{margin:0 12px 28px;padding:36px 18px;border-radius:21px}
+  .mq-site .woocommerce ul.products{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .mq-site .woocommerce ul.products li.product{padding:9px!important;border-radius:16px}
+  .mq-site .woocommerce ul.products li.product a img{border-radius:10px}
+  .mq-site .woocommerce ul.products li.product .woocommerce-loop-product__title{font-size:19px}
+  .mq-site .mq-footer{padding:40px 18px 22px}
+  .mq-site .mq-footer nav{gap:4px 14px}
+}
+@media(max-width:359px){
+  .mq-site .mq-slideshow-hero{margin-inline:7px}
+  .mq-site .mq-slideshow-hero .mq-premium-copy{padding-inline:15px}
+  .mq-site .mq-home .mq-slideshow-hero h1{font-size:32px}
+  .mq-home .mq-category{padding:7px 7px 13px!important}
+  .mq-home .mq-category p{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){
+  .mq-home .mq-category,.mq-home .mq-product-card,.mq-site .mq-header .mq-menu a,
+  .mq-site .mq-slideshow-hero .mq-premium-primary,
+  .mq-site .woocommerce ul.products li.product a img{transition:none!important;transform:none!important}
+}
+
+/* MAQWI-LIVE-GLASS-20261018-END */
