@@ -18,6 +18,7 @@ add_filter( 'woocommerce_order_button_html', function ( $html ) {
 add_filter( 'option_woocommerce_enable_myaccount_registration', function ( $value ) { return maqwi_storefront_preview() ? 'no' : $value; } );
 add_filter( 'option_woocommerce_enable_signup_and_login_from_checkout', function ( $value ) { return maqwi_storefront_preview() ? 'no' : $value; } );
 add_filter( 'woocommerce_package_rates', function ( $rates, $package ) {
+    if ( get_option( 'maqwi_business_setup_release' ) ) { return 'PK' === ( $package['destination']['country'] ?? '' ) ? $rates : array(); }
     if ( ! maqwi_storefront_preview() ) { return $rates; }
     if ( get_option( 'maqwi_catalogue_release' ) ) { return array(); }
     if ( 'PK' !== ( $package['destination']['country'] ?? '' ) ) { return array(); }
@@ -127,6 +128,7 @@ add_filter( 'woocommerce_get_privacy_policy_text', function ( $text, $type ) {
 }, 10, 2 );
 /** Purge native page cache once when this approved storefront code release is first executed. */
 add_action( 'init', function () {
+    if ( ! maqwi_allow_automatic_content_releases() ) { return; }
     $release = '0.3.0/' . wp_get_theme()->get( 'Version' );
     if ( maqwi_storefront_preview() && $release !== get_option( 'maqwi_preview_cache_release', '' ) && function_exists( 'w3tc_flush_all' ) ) {
         delete_transient( 'wc_shipping_method_count' );
@@ -160,6 +162,6 @@ add_action( 'woocommerce_shipping_init', function () {
     }
 } );
 add_filter( 'woocommerce_shipping_methods', function ( $methods ) {
-    if ( maqwi_storefront_preview() ) { $methods['maqwi_preview'] = 'Maqwi_Preview_Shipping'; }
+    if ( maqwi_storefront_preview() && ! get_option( 'maqwi_business_setup_release' ) ) { $methods['maqwi_preview'] = 'Maqwi_Preview_Shipping'; }
     return $methods;
 } );

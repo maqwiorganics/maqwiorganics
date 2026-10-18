@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Maqwi Store Core
  * Description: Pakistan checkout rules and verified product details, independent of the theme.
- * Version: 0.3.1
+ * Version: 0.3.3
  * Requires Plugins: woocommerce
  * Requires PHP: 8.1
  * License: GPL-2.0-or-later
@@ -14,6 +14,15 @@ add_action( 'before_woocommerce_init', function () {
         \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
     }
 } );
+
+/**
+ * Automatic catalogue and copy migrations are disabled in the hardening release.
+ * Existing completed releases remain intact. Explicit site-owner review is required
+ * before any pending importer is re-enabled in a controlled deployment.
+ */
+function maqwi_allow_automatic_content_releases() {
+    return false;
+}
 
 /** Fail closed for the approved public brand launch; sales need a separate launch. */
 function maqwi_brand_launch_mode() {
@@ -209,6 +218,17 @@ function maqwi_store_setup_screen() {
         <tr><td>Business details</td><td>Verify address, support contact and published policies.</td><td><a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-settings&tab=general' ) ); ?>">Store settings</a></td></tr>
         <tr><td>Order email</td><td>Authentication and customer/admin delivery are not proven by installed settings.</td><td><a href="<?php echo esc_url( admin_url( 'admin.php?page=wc-settings&tab=email' ) ); ?>">Email settings</a></td></tr>
     </tbody></table>
+    <h2>Launch safety checks (read-only)</h2>
+    <p>These checks do not update products, shipping methods, payment gateways, or live order settings. A passed configuration check is not a successful test order.</p>
+    <table class="widefat striped" style="max-width:1000px"><thead><tr><th>Check</th><th>Status</th><th>Required verification</th></tr></thead><tbody>
+    <tr><td>Order guard</td><td><?php echo maqwi_brand_launch_mode() ? 'ACTIVE — orders blocked' : 'DISABLED — verify immediately'; ?></td><td>Do not disable until customer checkout tests and launch approval are complete.</td></tr>
+    <tr><td>Automatic content releases</td><td>Disabled by 0.3.2</td><td>Existing catalogue and copy records are preserved; review any outstanding migration explicitly.</td></tr>
+    <tr><td>Shipping rates</td><td><?php echo maqwi_storefront_preview() ? 'PREVIEW RATE ONLY — not approved for sales' : 'Review live zones'; ?></td><td>Confirm courier coverage, price and delivery time with the business.</td></tr>
+    <tr><td>Payment provider</td><td><?php echo 'yes' === ( $cod['enabled'] ?? 'no' ) ? 'COD enabled in WooCommerce settings' : 'COD not enabled'; ?></td><td>Verify gateway appears in a controlled checkout only when orders are approved.</td></tr>
+    <tr><td>Customer information</td><td>Requires manual approval</td><td>Confirm support contacts, refund policy, privacy policy, ingredients and packaging sizes.</td></tr>
+    <tr><td>Recovery</td><td>Not verified from this page</td><td>Verify latest complete UpdraftPlus files/database backup and restore procedure.</td></tr>
+    <tr><td>Email delivery</td><td>Not verified from this page</td><td>Perform inbox delivery tests for administrator and customer notifications.</td></tr>
+    </tbody></table>
     <h2>Full storefront preview</h2><p>Create four editable sample products with two sizes each, product photography concepts and six information pages. Existing matching source records are reused; existing content is never overwritten. Native cart and checkout are available for testing; no orders or account registrations can be submitted.</p>
     <form action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" method="post"><input type="hidden" name="action" value="maqwi_seed_preview"><?php wp_nonce_field( 'maqwi_seed_preview' ); submit_button( 'Build sample catalogue and enable storefront preview', 'primary' ); ?></form>
     <h2>Public brand launch</h2><p>This makes the site public while purchase and checkout guards keep orders closed. The real domain and DNS are unchanged.</p>
@@ -221,7 +241,7 @@ function maqwi_store_setup_screen() {
         <input type="hidden" name="action" value="maqwi_setup_checkout">
         <?php wp_nonce_field( 'maqwi_setup_checkout' ); submit_button( 'Configure classic cart and checkout', 'secondary' ); ?>
     </form>
-    <p><strong>Installed:</strong> Maqwi Store Core 0.3.1; WooCommerce <?php echo esc_html( defined( 'WC_VERSION' ) ? WC_VERSION : 'not available' ); ?>; database <?php echo esc_html( get_option( 'woocommerce_db_version', 'not available' ) ); ?>; theme <?php echo esc_html( wp_get_theme()->get( 'Name' ) . ' ' . wp_get_theme()->get( 'Version' ) ); ?>.</p>
+    <p><strong>Installed:</strong> Maqwi Store Core 0.3.3; WooCommerce <?php echo esc_html( defined( 'WC_VERSION' ) ? WC_VERSION : 'not available' ); ?>; database <?php echo esc_html( get_option( 'woocommerce_db_version', 'not available' ) ); ?>; theme <?php echo esc_html( wp_get_theme()->get( 'Name' ) . ' ' . wp_get_theme()->get( 'Version' ) ); ?>.</p>
     </div>
     <?php
 }
@@ -268,3 +288,5 @@ require_once __DIR__ . '/storefront-preview.php';
 require_once __DIR__ . '/catalogue-release.php';
 
 require_once __DIR__ . '/storefront-copy.php';
+
+require_once __DIR__ . '/business-setup.php';

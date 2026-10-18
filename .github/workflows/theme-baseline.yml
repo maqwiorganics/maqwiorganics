@@ -1,0 +1,29 @@
+name: Review live theme baseline
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/theme-baseline.yml']
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - run: python3 .github/scripts/theme_snapshot.py
+        env:
+          HOST: ${{ secrets.INFINITYFREE_FTP_HOST }}
+          USERNAME: ${{ secrets.INFINITYFREE_FTP_USERNAME }}
+          PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: reviewed-theme-originals
+          path: theme-backup/
+          retention-days: 30
+          if-no-files-found: error
+
+# Refresh reviewed homepage baseline: 2026-10-18 editorial refinement

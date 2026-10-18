@@ -1,121 +1,138 @@
 [
   {
     "filename": "04-desi-ghee-alternate-angle.webp",
-    "sha256": "926c090bea271b1e573177ed00cb61a1176d80255827fc95f123409d4cf026d2",
-    "bytes": 128946,
+    "sha256": "0cc5cfe49ec6c9e9adf8a95311142327aa764c8433356ef10f9df350d41599be",
+    "bytes": 112682,
     "width": 1200,
-    "height": 1200
+    "height": 1200,
+    "source_sha256": "926c090bea271b1e573177ed00cb61a1176d80255827fc95f123409d4cf026d2"
   },
   {
     "filename": "03-desi-ghee-detail.webp",
     "sha256": "79218fabcaac8e5d6cde0b4ca4db1dca53c127354131c79e3bbdd0184e6df8ab",
     "bytes": 165220,
     "width": 1200,
-    "height": 1200
+    "height": 1200,
+    "source_sha256": "79218fabcaac8e5d6cde0b4ca4db1dca53c127354131c79e3bbdd0184e6df8ab"
   },
   {
     "filename": "01-desi-ghee-catalogue.webp",
-    "sha256": "f9c809a69204d6e32dbd9fff5cf54b3e7ac77c1f114451ea6c4981754e3f2d32",
-    "bytes": 114456,
+    "sha256": "a9dbea3afe9ec75bf2522dcb3e4cc4a965c621b0948722d9ed859710a4340b4f",
+    "bytes": 102224,
     "width": 1200,
-    "height": 1200
+    "height": 1200,
+    "source_sha256": "f9c809a69204d6e32dbd9fff5cf54b3e7ac77c1f114451ea6c4981754e3f2d32"
   },
   {
     "filename": "02-desi-ghee-lifestyle.webp",
-    "sha256": "c511e5f39ecdc9cf9bb5f0b04f18bd5aeba43ec21b780330fb12679cb0c90f41",
-    "bytes": 171808,
+    "sha256": "7b35e922c52fa21f6b19b81aea5bb3fa609122677131f44096f351c8e5bfeb0a",
+    "bytes": 156860,
     "width": 1200,
-    "height": 1200
+    "height": 1200,
+    "source_sha256": "c511e5f39ecdc9cf9bb5f0b04f18bd5aeba43ec21b780330fb12679cb0c90f41"
   },
   {
     "filename": "04-itar-alternate-angle.webp",
     "sha256": "f9a4b11c6ac9bb6fce7a545195280db882e9923ab5ba814688e94dfc5996e80d",
     "bytes": 118976,
     "width": 1200,
-    "height": 1200
+    "height": 1200,
+    "source_sha256": "f9a4b11c6ac9bb6fce7a545195280db882e9923ab5ba814688e94dfc5996e80d"
   },
   {
     "filename": "01-itar-catalogue.webp",
-    "sha256": "1e8c3ba897d17c3539de8050046fd337553aa04a242b651b67c5155a4e6c02c5",
-    "bytes": 90932,
+    "sha256": "3fc540b0b77f8799841d061d6eb48716b195f3c0b998b8a2fad3d40ead365dcf",
+    "bytes": 82166,
     "width": 1200,
-    "height": 1200
+    "height": 1200,
+    "source_sha256": "1e8c3ba897d17c3539de8050046fd337553aa04a242b651b67c5155a4e6c02c5"
   },
   {
     "filename": "03-itar-detail.webp",
     "sha256": "479f780b5d587ff288d5d53e354fbf3dd7ab8af0152dd183c54d8d735502dde3",
     "bytes": 153670,
     "width": 1200,
-    "height": 1200
+    "height": 1200,
+    "source_sha256": "479f780b5d587ff288d5d53e354fbf3dd7ab8af0152dd183c54d8d735502dde3"
   },
   {
     "filename": "02-itar-lifestyle.webp",
     "sha256": "e72223c438265d16f8abb60f1153798f51c157536caaac7f9d60569a4fe28e20",
     "bytes": 135882,
     "width": 1200,
-    "height": 1200
+    "height": 1200,
+    "source_sha256": "e72223c438265d16f8abb60f1153798f51c157536caaac7f9d60569a4fe28e20"
   },
   {
     "filename": "04-achaar-alternate-angle.webp",
-    "sha256": "ade00f6915ee7a34a1688fb843d81375f388d1fef454e33c3cad23ccb181bac0",
-    "bytes": 175270,
+    "sha256": "38631b56b0ee2ea63f9788f2546e7837006c656078debaa6ee063b88ee360a51",
+    "bytes": 158504,
     "width": 1200,
-    "height": 1200
+    "height": 1200,
+    "source_sha256": "ade00f6915ee7a34a1688fb843d81375f388d1fef454e33c3cad23ccb181bac0"
   },
   {
     "filename": "01-achaar-catalogue.webp",
     "sha256": "6606e1e9c84c54abe0b6fdf7483cb58ff0c0909c5440e24f5a7ed29bed5b3d53",
     "bytes": 162042,
     "width": 1200,
-    "height": 1200
+    "height": 1200,
+    "source_sha256": "6606e1e9c84c54abe0b6fdf7483cb58ff0c0909c5440e24f5a7ed29bed5b3d53"
   },
   {
     "filename": "03-achaar-detail.webp",
     "sha256": "eada8621820aea8900ec541a4d0c5471b62d290569c1ce2c7d95758eb5b5b191",
     "bytes": 211228,
     "width": 1200,
-    "height": 1200
+    "height": 1200,
+    "source_sha256": "eada8621820aea8900ec541a4d0c5471b62d290569c1ce2c7d95758eb5b5b191"
   },
   {
     "filename": "02-achaar-lifestyle.webp",
-    "sha256": "25677007173a1f19c42721a7d972da371886efd3032dd3e08d7ea9e2a3528fef",
-    "bytes": 216954,
+    "sha256": "9c4fc6e9ca812cad075475c0a2a3222b0faa2e66e50f1f0c97b7b01b41f356d8",
+    "bytes": 196564,
     "width": 1200,
-    "height": 1200
+    "height": 1200,
+    "source_sha256": "25677007173a1f19c42721a7d972da371886efd3032dd3e08d7ea9e2a3528fef"
   },
   {
     "filename": "04-honey-alternate-angle.webp",
     "sha256": "fb5d498411093d76c12c2473f99dcc5e3683afda2e597a05cbe784d1f5749650",
     "bytes": 121562,
     "width": 1200,
-    "height": 1200
+    "height": 1200,
+    "source_sha256": "fb5d498411093d76c12c2473f99dcc5e3683afda2e597a05cbe784d1f5749650"
   },
   {
     "filename": "03-honey-detail.webp",
     "sha256": "90a93136ffacac9c0285f3dcea9970f2d121ee78dfd7de120f1f9aaedd8cdd82",
     "bytes": 163302,
     "width": 1200,
-    "height": 1200
+    "height": 1200,
+    "source_sha256": "90a93136ffacac9c0285f3dcea9970f2d121ee78dfd7de120f1f9aaedd8cdd82"
   },
   {
     "filename": "01-honey-catalogue.webp",
-    "sha256": "b8577f28b087dda472d7800fd2754cb642fc3cb98e19bb1408fa2434a346c457",
-    "bytes": 105454,
+    "sha256": "7b968b5515af29780209c179661521fdb053efdedddf0574c4ceb88ddbf33e80",
+    "bytes": 95460,
     "width": 1200,
-    "height": 1200
+    "height": 1200,
+    "source_sha256": "b8577f28b087dda472d7800fd2754cb642fc3cb98e19bb1408fa2434a346c457"
   },
   {
     "filename": "02-honey-lifestyle.webp",
-    "sha256": "d318e4b0471de5b2dd2d4ef396f8aaf06c8c143cf1d675e054a12bfceaac4b06",
-    "bytes": 136854,
+    "sha256": "02396b472ba186387e1a1323dbd51e06e0a373701a7df4c31f3f3ef610fba304",
+    "bytes": 121898,
     "width": 1200,
-    "height": 1200
+    "height": 1200,
+    "source_sha256": "d318e4b0471de5b2dd2d4ef396f8aaf06c8c143cf1d675e054a12bfceaac4b06"
   },
   {
     "filename": "maqwi-collection-banner.webp",
     "sha256": "5ba67496c69f5c37aa81f1523727987842d7bc975a83fec1b8391a80971156dc",
     "bytes": 113428,
     "width": 1200,
-    "height": 675
+    "height": 675,
+    "source_sha256": "5ba67496c69f5c37aa81f1523727987842d7bc975a83fec1b8391a80971156dc"
   }
 ]

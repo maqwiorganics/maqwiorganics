@@ -29,7 +29,7 @@ function maqwi_premium_hero() {
                 </figure>
                 <?php endforeach; ?>
             </div>
-            <p class="mq-hero-gallery-note">Explore the collection. Product details are listed below.</p>
+            <p class="mq-hero-gallery-note">Product presentation shown. Refer to each listing for pack details.</p>
             <p id="mq-hero-motion-help" class="mq-visually-hidden">Images and text change automatically. Keyboard focus within this section pauses the slideshow. Press Escape to stop rotation. Reduced-motion preferences are respected.</p>
         </div>
     </section>
@@ -63,23 +63,32 @@ function maqwi_shop_url() {
     return $url && -1 !== $url ? $url : home_url( '/' );
 }
 
+/** Share the same visible product set between homepage navigation and cards. */
+function maqwi_home_featured_products() {
+    static $products = null;
+    if ( null !== $products ) { return $products; }
+    if ( ! function_exists( 'wc_get_products' ) ) { return array(); }
+    $products = wc_get_products( array( 'status' => 'publish', 'featured' => true, 'limit' => 4 ) );
+    $products = array_filter( $products, function ( $product ) {
+        return $product->is_visible() && ( $product->is_purchasable() || $product->get_meta( '_maqwi_catalogue_release' ) );
+    } );
+    return $products;
+}
+
 /** Only public, purchasable, in-stock WooCommerce products appear as featured. */
 add_shortcode( 'maqwi_featured_products', function () {
     if ( maqwi_public_brand_mode() ) { return maqwi_brand_collection_details(); }
     if ( ! function_exists( 'wc_get_products' ) ) {
         return '';
     }
-    $products = wc_get_products( array( 'status' => 'publish', 'featured' => true, 'limit' => 4 ) );
-    $products = array_filter( $products, function ( $product ) {
-        return $product->is_visible() && ( $product->is_purchasable() || $product->get_meta( '_maqwi_catalogue_release' ) );
-    } );
+    $products = maqwi_home_featured_products();
     if ( ! $products ) {
         return '';
     }
     ob_start();
     ?>
-    <section class="mq-section mq-featured" aria-labelledby="mq-featured-title">
-        <div class="mq-section-top"><div><p class="mq-eyebrow">Shop Maqwi</p><h2 id="mq-featured-title">Explore the collection</h2></div><a href="<?php echo esc_url( maqwi_shop_url() ); ?>">View all products &rarr;</a></div>
+    <section id="the-collection" class="mq-section mq-featured" aria-labelledby="mq-featured-title">
+        <div class="mq-section-top"><div><p class="mq-eyebrow">Four everyday favourites</p><h2 id="mq-featured-title">The Maqwi collection.</h2></div><a href="<?php echo esc_url( maqwi_shop_url() ); ?>">View all products &rarr;</a></div>
         <div class="mq-product-grid">
         <?php foreach ( $products as $product ) : ?>
             <article class="mq-product-card"><a href="<?php echo esc_url( $product->get_permalink() ); ?>"><?php echo wp_kses_post( $product->get_image( 'woocommerce_thumbnail', array( 'loading' => 'lazy' ) ) ); ?><h3><?php echo esc_html( $product->get_name() ); ?></h3></a><div class="mq-price"><?php echo wp_kses_post( $product->get_price_html() ); ?></div><a class="mq-text-link" href="<?php echo esc_url( $product->get_permalink() ); ?>">View product &rarr;</a></article>
@@ -163,10 +172,10 @@ function maqwi_public_brand_mode() {
 }
 function maqwi_brand_collections() {
     return array(
-        'honey' => array( 'name' => 'Honey', 'image' => 'honey', 'line' => 'A little sweetness in the everyday.', 'copy' => 'From a spoonful beside breakfast to the cup of tea you make your own, honey has a familiar place at the table.', 'details' => '1 kg pack — PKR 4,500. Origin, ingredients and storage information will accompany the final product listing.' ),
-        'desi-ghee' => array( 'name' => 'Desi Ghee', 'image' => 'ghee', 'line' => 'A familiar finishing touch.', 'copy' => 'Some meals are remembered by the smallest details. Desi ghee is part of the food traditions that inspired the Maqwi collection.', 'details' => '1 kg pack — PKR 3,500. Ingredients, dairy allergen details and storage instructions will be available before ordering opens.' ),
-        'achaar' => array( 'name' => 'Achaar', 'image' => 'achaar', 'line' => 'The extra beside a favourite meal.', 'copy' => 'Passed around the table or kept beside a favourite plate, achaar is a small ritual with a place in everyday meals.', 'details' => 'Choose a 500 g pack for PKR 1,500 or a 1 kg pack for PKR 3,000. Ingredients, allergens and care details will be confirmed before ordering opens.' ),
-        'itar' => array( 'name' => 'Itar', 'image' => 'itar', 'line' => 'A fragrance. A personal ritual.', 'copy' => 'A fragrance can feel familiar before you can name it. Itar brings a different kind of everyday tradition to the Maqwi collection.', 'details' => '12 ml bottle — PKR 200. Fragrance notes, ingredients and safe-use guidance will be provided before ordering opens.' ),
+        'honey' => array( 'name' => 'Honey', 'image' => 'honey', 'line' => 'A little sweetness in the everyday.', 'copy' => 'From a spoonful beside breakfast to the cup of tea you make your own, honey has a familiar place at the table.', 'details' => 'Varieties, net weight, origin, ingredients and storage information will accompany the final products.' ),
+        'desi-ghee' => array( 'name' => 'Desi Ghee', 'image' => 'ghee', 'line' => 'A familiar finishing touch.', 'copy' => 'Some meals are remembered by the smallest details. Desi ghee is part of the food traditions that inspired the Maqwi collection.', 'details' => 'Ingredients, dairy allergen information, pack sizes, sourcing and storage instructions will be shared before ordering opens.' ),
+        'achaar' => array( 'name' => 'Achaar', 'image' => 'achaar', 'line' => 'The extra beside a favourite meal.', 'copy' => 'Passed around the table or kept beside a favourite plate, achaar is a small ritual with a place in everyday meals.', 'details' => 'The final flavours, ingredient lists, allergens, net weights and storage guidance will be listed with each product.' ),
+        'itar' => array( 'name' => 'Itar', 'image' => 'itar', 'line' => 'A fragrance. A personal ritual.', 'copy' => 'A fragrance can feel familiar before you can name it. Itar brings a different kind of everyday tradition to the Maqwi collection.', 'details' => 'Fragrance descriptions, bottle sizes, ingredients and safe-use guidance will be provided with the final range.' ),
     );
 }
 function maqwi_brand_collection_details() {
@@ -177,7 +186,7 @@ function maqwi_brand_collection_details() {
         <?php $number = 0; foreach ( maqwi_brand_collections() as $slug => $item ) : $number++; ?>
             <details class="mq-collection-detail">
                 <summary><span class="mq-detail-number" aria-hidden="true"><?php echo esc_html( sprintf( '%02d', $number ) ); ?></span><span><span class="mq-detail-title"><?php echo esc_html( $item['name'] ); ?></span><span class="mq-detail-line"><?php echo esc_html( $item['line'] ); ?></span></span><span class="mq-detail-toggle" aria-hidden="true"></span></summary>
-                <div id="<?php echo esc_attr( 'collection-' . $slug ); ?>" class="mq-detail-body"><figure><img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/' . $item['image'] . '.webp' ); ?>" alt="<?php echo esc_attr( 'Maqwi ' . $item['name'] . '' ); ?>" width="900" height="900" loading="lazy" decoding="async"></figure><div><p class="mq-eyebrow">Maqwi collection</p><h3><?php echo esc_html( $item['line'] ); ?></h3><p><?php echo esc_html( $item['copy'] ); ?></p><p><?php echo esc_html( $item['details'] ); ?></p><p class="mq-detail-note">Online ordering will open after final product and delivery checks.</p><a class="mq-text-link" href="<?php echo esc_url( maqwi_home_anchor( 'questions' ) ); ?>">Before you order <span aria-hidden="true">&nbsp;↗</span></a></div></div>
+                <div id="<?php echo esc_attr( 'collection-' . $slug ); ?>" class="mq-detail-body"><figure><img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/images/' . $item['image'] . '.webp' ); ?>" alt="<?php echo esc_attr( 'Maqwi ' . $item['name'] . '' ); ?>" width="900" height="900" loading="lazy" decoding="async"></figure><div><p class="mq-eyebrow">Maqwi collection</p><h3><?php echo esc_html( $item['line'] ); ?></h3><p><?php echo esc_html( $item['copy'] ); ?></p><p><?php echo esc_html( $item['details'] ); ?></p><p class="mq-detail-note">Artwork is an early. Final product details, photographs, prices and availability will be confirmed before orders open.</p><a class="mq-text-link" href="<?php echo esc_url( maqwi_home_anchor( 'questions' ) ); ?>">Before you order <span aria-hidden="true">&nbsp;↗</span></a></div></div>
             </details>
         <?php endforeach; ?>
         </div>
@@ -257,7 +266,24 @@ add_action( 'woocommerce_before_shop_loop', function () {
 
 /** Clear page caches once after the reviewed campaign release. */
 add_action( 'wp_loaded', function () {
-    if ( get_option( 'maqwi_hero_scene_release' ) === '2026-10-18-mobile-hero-1' ) { return; }
-    update_option( 'maqwi_hero_scene_release', '2026-10-18-mobile-hero-1', false );
+    if ( get_option( 'maqwi_hero_scene_release' ) === '2026-10-18-home-clarity-1' ) { return; }
+    update_option( 'maqwi_hero_scene_release', '2026-10-18-home-clarity-1', false );
     if ( function_exists( 'w3tc_flush_all' ) ) { w3tc_flush_all(); }
 }, 55 );
+
+/** One collection grid and a useful closing action; saved blocks remain editable. */
+add_filter( 'render_block_core/group', function ( $html, $block ) {
+    if ( ! is_front_page() ) { return $html; }
+    $classes = preg_split( '/\\s+/', $block['attrs']['className'] ?? '' );
+    if ( in_array( 'mq-category-section', $classes, true ) && ! maqwi_public_brand_mode() && maqwi_home_featured_products() ) {
+        return '';
+    }
+    if ( in_array( 'mq-closing', $classes, true ) && ! str_contains( $html, 'mq-closing-actions' ) ) {
+        $position = strrpos( $html, '</div>' );
+        if ( false !== $position ) {
+            $actions = '<div class="mq-closing-actions"><a class="mq-premium-primary" href="' . esc_url( maqwi_shop_url() ) . '">Explore products <span aria-hidden="true">↗</span></a><a class="mq-closing-contact" href="' . esc_url( home_url( '/contact/' ) ) . '">Contact Maqwi <span aria-hidden="true">→</span></a></div>';
+            $html = substr_replace( $html, $actions, $position, 0 );
+        }
+    }
+    return $html;
+}, 50, 2 );

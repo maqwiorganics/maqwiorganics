@@ -1,0 +1,974 @@
+{
+  "posts": [
+    {
+      "ID": "35",
+      "post_parent": "0",
+      "post_title": "Maqwi Itar",
+      "post_name": "maqwi-itar",
+      "post_content": "<h2>Maqwi Itar</h2><p>Maqwi Itar comes in a compact 12 ml bottle for everyday personal fragrance.</p><h3>Your bottle</h3><p>Net volume: <strong>12 ml</strong>. Price: <strong>PKR 200</strong>. Scent and ingredient information will be available before ordering opens.</p><h3>Use with care</h3><p>For external use only. Avoid contact with eyes and broken skin. Stop use if irritation occurs. Keep the bottle closed, away from heat and out of reach of children. Follow the supplied product label.</p>",
+      "post_excerpt": "Personal fragrance in a compact 12 ml bottle. PKR 200 per bottle.",
+      "post_type": "product",
+      "post_status": "publish",
+      "menu_order": "0"
+    },
+    {
+      "ID": "25",
+      "post_parent": "0",
+      "post_title": "Maqwi QA \u2014 temporary draft",
+      "post_name": "__trashed",
+      "post_content": "",
+      "post_excerpt": "",
+      "post_type": "product",
+      "post_status": "trash",
+      "menu_order": "0"
+    },
+    {
+      "ID": "26",
+      "post_parent": "0",
+      "post_title": "Maqwi Honey",
+      "post_name": "maqwi-honey",
+      "post_content": "<h2>Maqwi Honey</h2><p>Bring Maqwi Honey to the table with warm toast, yoghurt, fruit or your favourite breakfast bowl. Stir a spoonful into a drink or use it as a sweet finishing touch in everyday recipes.</p><h3>Your pack</h3><p>Net weight: <strong>1 kg</strong>. Price: <strong>PKR 4,500</strong>. The gallery illustrates the brand packaging in a 500 g jar; it does not show the size of the 1 kg pack.</p><h3>Serving and care</h3><p>Use a clean, dry spoon and close the lid after use. Honey is not suitable for infants under 12 months. Check the supplied label for batch, best-before and storage instructions.</p>",
+      "post_excerpt": "A spoonful of sweetness for breakfast, drinks and everyday recipes. Net weight: 1 kg.",
+      "post_type": "product",
+      "post_status": "publish",
+      "menu_order": "0"
+    },
+    {
+      "ID": "27",
+      "post_parent": "26",
+      "post_title": "Maqwi Honey - 250 g",
+      "post_name": "maqwi-honey-250-g",
+      "post_content": "",
+      "post_excerpt": "Size: 250 g",
+      "post_type": "product_variation",
+      "post_status": "private",
+      "menu_order": "0"
+    },
+    {
+      "ID": "28",
+      "post_parent": "26",
+      "post_title": "Maqwi Honey - 500 g",
+      "post_name": "maqwi-honey-500-g",
+      "post_content": "",
+      "post_excerpt": "Size: 500 g",
+      "post_type": "product_variation",
+      "post_status": "private",
+      "menu_order": "0"
+    },
+    {
+      "ID": "29",
+      "post_parent": "0",
+      "post_title": "Maqwi Desi Ghee",
+      "post_name": "maqwi-desi-ghee",
+      "post_content": "<h2>Maqwi Desi Ghee</h2><p>Add Maqwi Desi Ghee while cooking or use a small spoonful to finish warm roti, rice or dal. A practical choice for the everyday dishes you enjoy sharing at home.</p><h3>Your pack</h3><p>Net weight: <strong>1 kg</strong>. Price: <strong>PKR 3,500</strong>. This product is sold by weight. The pictured jar is marked 500 ml. This listing is for 1 kg by weight.</p><h3>Serving and care</h3><p>Use a clean, dry utensil and keep the container closed between uses. Ghee is a dairy product. Check the supplied label for the final ingredient, allergen and storage information.</p>",
+      "post_excerpt": "A familiar addition to roti, rice, dal and home cooking. Sold by net weight: 1 kg.",
+      "post_type": "product",
+      "post_status": "publish",
+      "menu_order": "0"
+    },
+    {
+      "ID": "30",
+      "post_parent": "29",
+      "post_title": "Maqwi Desi Ghee - 250 g",
+      "post_name": "maqwi-desi-ghee-250-g",
+      "post_content": "",
+      "post_excerpt": "Size: 250 g",
+      "post_type": "product_variation",
+      "post_status": "private",
+      "menu_order": "0"
+    },
+    {
+      "ID": "31",
+      "post_parent": "29",
+      "post_title": "Maqwi Desi Ghee - 500 g",
+      "post_name": "maqwi-desi-ghee-500-g",
+      "post_content": "",
+      "post_excerpt": "Size: 500 g",
+      "post_type": "product_variation",
+      "post_status": "private",
+      "menu_order": "0"
+    },
+    {
+      "ID": "32",
+      "post_parent": "0",
+      "post_title": "Maqwi Achaar",
+      "post_name": "maqwi-achaar",
+      "post_content": "<h2>Maqwi Achaar</h2><p>Bring a small helping of Maqwi Achaar to the table with paratha, rice, dal or a home-cooked meal.</p><h3>Before you order</h3><p>Coming soon. Recipe, ingredient and allergen information, pack sizes and prices will be available before ordering opens.</p><h3>Serving and care</h3><p>Use a clean, dry spoon. Follow the final product label for storage and best-before information.</p>",
+      "post_excerpt": "A little extra beside paratha, rice or dal. Pack size, recipe and price will be confirmed before ordering opens.",
+      "post_type": "product",
+      "post_status": "publish",
+      "menu_order": "0"
+    },
+    {
+      "ID": "33",
+      "post_parent": "32",
+      "post_title": "Maqwi Achaar",
+      "post_name": "maqwi-achaar-250-g",
+      "post_content": "",
+      "post_excerpt": "",
+      "post_type": "product_variation",
+      "post_status": "private",
+      "menu_order": "0"
+    },
+    {
+      "ID": "34",
+      "post_parent": "32",
+      "post_title": "Maqwi Achaar",
+      "post_name": "maqwi-achaar-500-g",
+      "post_content": "",
+      "post_excerpt": "",
+      "post_type": "product_variation",
+      "post_status": "private",
+      "menu_order": "0"
+    },
+    {
+      "ID": "36",
+      "post_parent": "35",
+      "post_title": "Maqwi Itar - 6 ml",
+      "post_name": "maqwi-itar-6-ml",
+      "post_content": "",
+      "post_excerpt": "Size: 6 ml",
+      "post_type": "product_variation",
+      "post_status": "private",
+      "menu_order": "0"
+    },
+    {
+      "ID": "37",
+      "post_parent": "35",
+      "post_title": "Maqwi Itar - 12 ml",
+      "post_name": "maqwi-itar-12-ml",
+      "post_content": "",
+      "post_excerpt": "Size: 12 ml",
+      "post_type": "product_variation",
+      "post_status": "private",
+      "menu_order": "0"
+    },
+    {
+      "ID": "38",
+      "post_parent": "0",
+      "post_title": "Our Story",
+      "post_name": "about",
+      "post_content": "<!-- wp:html --><p class=\"mq-eyebrow\">Maqwi Organics \u00b7 Pakistan</p><h2>Welcome to Maqwi</h2><p>Maqwi Organics is a Pakistan-based brand bringing together honey, desi ghee, achaar and itar.</p><p>Our range covers everyday cooking, the breakfast table and personal fragrance. Browse each product for its pack size, price and care information.</p><p><a href=\"/shop/\">Explore the collection \u2192</a></p><!-- /wp:html -->",
+      "post_excerpt": "",
+      "post_type": "page",
+      "post_status": "publish",
+      "menu_order": "0"
+    },
+    {
+      "ID": "39",
+      "post_parent": "0",
+      "post_title": "Contact",
+      "post_name": "contact",
+      "post_content": "<!-- wp:html --><h2>Get in touch</h2><p>Customer support contact details will be available here when ordering opens.</p><p>For now, visit our frequently asked questions for information about the collection and availability.</p><p><a href=\"/faq/\">Frequently asked questions \u2192</a></p><!-- /wp:html -->",
+      "post_excerpt": "",
+      "post_type": "page",
+      "post_status": "publish",
+      "menu_order": "0"
+    },
+    {
+      "ID": "40",
+      "post_parent": "0",
+      "post_title": "Frequently Asked Questions",
+      "post_name": "faq",
+      "post_content": "<!-- wp:html --><details><summary>Can I place an order?</summary><p>Ordering opens soon. You can browse the collection and product details now.</p></details><details><summary>What are the prices and pack sizes?</summary><p>Maqwi Honey is PKR 4,500 for 1 kg. Desi Ghee is PKR 3,500 for 1 kg. Itar is PKR 200 for 12 ml. Achaar is coming soon.</p></details><details><summary>Why does the pictured pack show a different size?</summary><p>Some images show a different pack size. The net weight or volume stated on the product listing applies to your selected pack.</p></details><details><summary>Where do you deliver?</summary><p>Delivery areas, charges and estimated timings for Pakistan will be published when ordering opens.</p></details><details><summary>Which payment methods can I use?</summary><p>Available payment methods will be listed when ordering opens. Payments are currently unavailable.</p></details><details><summary>Where can I find ingredient and allergen information?</summary><p>Read the product details and the supplied label before use. Do not assume a product is allergen-free.</p></details><details><summary>What is your returns policy?</summary><p>Return and cancellation terms will be available on our Returns page before orders open.</p></details><p><a href=\"/shop/\">Browse products \u2192</a></p><!-- /wp:html -->",
+      "post_excerpt": "",
+      "post_type": "page",
+      "post_status": "publish",
+      "menu_order": "0"
+    },
+    {
+      "ID": "41",
+      "post_parent": "0",
+      "post_title": "Delivery Information",
+      "post_name": "delivery",
+      "post_content": "<!-- wp:html --><h2>Delivery within Pakistan</h2><p>Ordering opens soon. Delivery coverage, charges and estimated timings will be published here before you can place an order.</p><p><a href=\"/faq/\">Frequently asked questions \u2192</a></p><!-- /wp:html -->",
+      "post_excerpt": "",
+      "post_type": "page",
+      "post_status": "publish",
+      "menu_order": "0"
+    },
+    {
+      "ID": "42",
+      "post_parent": "0",
+      "post_title": "Returns &amp; Order Support",
+      "post_name": "returns",
+      "post_content": "<!-- wp:html --><h2>Returns and cancellations</h2><p>Ordering is currently unavailable. Return eligibility, cancellation terms and the process for reporting damaged or incorrect items will be published here before orders open.</p><p><a href=\"/contact/\">Contact information \u2192</a></p><!-- /wp:html -->",
+      "post_excerpt": "",
+      "post_type": "page",
+      "post_status": "publish",
+      "menu_order": "0"
+    },
+    {
+      "ID": "43",
+      "post_parent": "0",
+      "post_title": "Privacy Information",
+      "post_name": "privacy-preview",
+      "post_content": "<!-- wp:html --><h2>Your browsing session</h2><p>This website uses WordPress and WooCommerce. Store sessions and browser cookies retain bag selections while you browse.</p><p>Ordering and new account registration are currently unavailable. Please do not submit personal details through checkout.</p><p>Full privacy information, including business contact details and how order information is handled, will be published before ordering opens.</p><!-- /wp:html -->",
+      "post_excerpt": "",
+      "post_type": "page",
+      "post_status": "publish",
+      "menu_order": "0"
+    },
+    {
+      "ID": "62",
+      "post_parent": "26",
+      "post_title": "Maqwi Honey - 1 kg",
+      "post_name": "maqwi-honey-1-kg",
+      "post_content": "",
+      "post_excerpt": "Size: 1 kg",
+      "post_type": "product_variation",
+      "post_status": "publish",
+      "menu_order": "0"
+    },
+    {
+      "ID": "63",
+      "post_parent": "29",
+      "post_title": "Maqwi Desi Ghee - 1 kg",
+      "post_name": "maqwi-desi-ghee-1-kg",
+      "post_content": "",
+      "post_excerpt": "Size: 1 kg",
+      "post_type": "product_variation",
+      "post_status": "publish",
+      "menu_order": "0"
+    },
+    {
+      "ID": "64",
+      "post_parent": "35",
+      "post_title": "Maqwi Itar - 12 ml",
+      "post_name": "maqwi-itar-12-ml-2",
+      "post_content": "",
+      "post_excerpt": "Size: 12 ml",
+      "post_type": "product_variation",
+      "post_status": "publish",
+      "menu_order": "0"
+    }
+  ],
+  "meta": [
+    {
+      "meta_id": "21",
+      "post_id": "25",
+      "meta_key": "_manage_stock",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "22",
+      "post_id": "25",
+      "meta_key": "_backorders",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "28",
+      "post_id": "25",
+      "meta_key": "_stock",
+      "meta_value": null
+    },
+    {
+      "meta_id": "29",
+      "post_id": "25",
+      "meta_key": "_stock_status",
+      "meta_value": "instock"
+    },
+    {
+      "meta_id": "36",
+      "post_id": "25",
+      "meta_key": "_regular_price",
+      "meta_value": "1"
+    },
+    {
+      "meta_id": "37",
+      "post_id": "25",
+      "meta_key": "_price",
+      "meta_value": "1"
+    },
+    {
+      "meta_id": "50",
+      "post_id": "26",
+      "meta_key": "_manage_stock",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "51",
+      "post_id": "26",
+      "meta_key": "_backorders",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "57",
+      "post_id": "26",
+      "meta_key": "_stock",
+      "meta_value": null
+    },
+    {
+      "meta_id": "58",
+      "post_id": "26",
+      "meta_key": "_stock_status",
+      "meta_value": "outofstock"
+    },
+    {
+      "meta_id": "61",
+      "post_id": "26",
+      "meta_key": "_product_attributes",
+      "meta_value": "a:1:{s:4:\"size\";a:6:{s:4:\"name\";s:4:\"Size\";s:5:\"value\";s:4:\"1 kg\";s:8:\"position\";i:0;s:10:\"is_visible\";i:1;s:12:\"is_variation\";i:1;s:11:\"is_taxonomy\";i:0;}}"
+    },
+    {
+      "meta_id": "391",
+      "post_id": "26",
+      "meta_key": "_thumbnail_id",
+      "meta_value": "45"
+    },
+    {
+      "meta_id": "390",
+      "post_id": "26",
+      "meta_key": "_product_image_gallery",
+      "meta_value": "46,47,48"
+    },
+    {
+      "meta_id": "387",
+      "post_id": "26",
+      "meta_key": "_maqwi_catalogue_release",
+      "meta_value": "2026-10-16-catalogue-1"
+    },
+    {
+      "meta_id": "76",
+      "post_id": "27",
+      "meta_key": "_manage_stock",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "77",
+      "post_id": "27",
+      "meta_key": "_backorders",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "83",
+      "post_id": "27",
+      "meta_key": "_stock",
+      "meta_value": null
+    },
+    {
+      "meta_id": "84",
+      "post_id": "27",
+      "meta_key": "_stock_status",
+      "meta_value": "outofstock"
+    },
+    {
+      "meta_id": "87",
+      "post_id": "27",
+      "meta_key": "attribute_size",
+      "meta_value": "250 g"
+    },
+    {
+      "meta_id": "88",
+      "post_id": "27",
+      "meta_key": "_price",
+      "meta_value": ""
+    },
+    {
+      "meta_id": "95",
+      "post_id": "28",
+      "meta_key": "_manage_stock",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "96",
+      "post_id": "28",
+      "meta_key": "_backorders",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "102",
+      "post_id": "28",
+      "meta_key": "_stock",
+      "meta_value": null
+    },
+    {
+      "meta_id": "103",
+      "post_id": "28",
+      "meta_key": "_stock_status",
+      "meta_value": "outofstock"
+    },
+    {
+      "meta_id": "106",
+      "post_id": "28",
+      "meta_key": "attribute_size",
+      "meta_value": "500 g"
+    },
+    {
+      "meta_id": "107",
+      "post_id": "28",
+      "meta_key": "_price",
+      "meta_value": ""
+    },
+    {
+      "meta_id": "484",
+      "post_id": "26",
+      "meta_key": "_price",
+      "meta_value": "4500"
+    },
+    {
+      "meta_id": "114",
+      "post_id": "29",
+      "meta_key": "_manage_stock",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "115",
+      "post_id": "29",
+      "meta_key": "_backorders",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "121",
+      "post_id": "29",
+      "meta_key": "_stock",
+      "meta_value": null
+    },
+    {
+      "meta_id": "122",
+      "post_id": "29",
+      "meta_key": "_stock_status",
+      "meta_value": "outofstock"
+    },
+    {
+      "meta_id": "125",
+      "post_id": "29",
+      "meta_key": "_product_attributes",
+      "meta_value": "a:1:{s:4:\"size\";a:6:{s:4:\"name\";s:4:\"Size\";s:5:\"value\";s:4:\"1 kg\";s:8:\"position\";i:0;s:10:\"is_visible\";i:1;s:12:\"is_variation\";i:1;s:11:\"is_taxonomy\";i:0;}}"
+    },
+    {
+      "meta_id": "421",
+      "post_id": "29",
+      "meta_key": "_thumbnail_id",
+      "meta_value": "49"
+    },
+    {
+      "meta_id": "420",
+      "post_id": "29",
+      "meta_key": "_product_image_gallery",
+      "meta_value": "50,51,52"
+    },
+    {
+      "meta_id": "417",
+      "post_id": "29",
+      "meta_key": "_maqwi_catalogue_release",
+      "meta_value": "2026-10-16-catalogue-1"
+    },
+    {
+      "meta_id": "140",
+      "post_id": "30",
+      "meta_key": "_manage_stock",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "141",
+      "post_id": "30",
+      "meta_key": "_backorders",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "147",
+      "post_id": "30",
+      "meta_key": "_stock",
+      "meta_value": null
+    },
+    {
+      "meta_id": "148",
+      "post_id": "30",
+      "meta_key": "_stock_status",
+      "meta_value": "outofstock"
+    },
+    {
+      "meta_id": "151",
+      "post_id": "30",
+      "meta_key": "attribute_size",
+      "meta_value": "250 g"
+    },
+    {
+      "meta_id": "152",
+      "post_id": "30",
+      "meta_key": "_price",
+      "meta_value": ""
+    },
+    {
+      "meta_id": "159",
+      "post_id": "31",
+      "meta_key": "_manage_stock",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "160",
+      "post_id": "31",
+      "meta_key": "_backorders",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "166",
+      "post_id": "31",
+      "meta_key": "_stock",
+      "meta_value": null
+    },
+    {
+      "meta_id": "167",
+      "post_id": "31",
+      "meta_key": "_stock_status",
+      "meta_value": "outofstock"
+    },
+    {
+      "meta_id": "170",
+      "post_id": "31",
+      "meta_key": "attribute_size",
+      "meta_value": "500 g"
+    },
+    {
+      "meta_id": "171",
+      "post_id": "31",
+      "meta_key": "_price",
+      "meta_value": ""
+    },
+    {
+      "meta_id": "485",
+      "post_id": "29",
+      "meta_key": "_price",
+      "meta_value": "3500"
+    },
+    {
+      "meta_id": "178",
+      "post_id": "32",
+      "meta_key": "_manage_stock",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "179",
+      "post_id": "32",
+      "meta_key": "_backorders",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "185",
+      "post_id": "32",
+      "meta_key": "_stock",
+      "meta_value": null
+    },
+    {
+      "meta_id": "186",
+      "post_id": "32",
+      "meta_key": "_stock_status",
+      "meta_value": "outofstock"
+    },
+    {
+      "meta_id": "459",
+      "post_id": "64",
+      "meta_key": "_sku",
+      "meta_value": "MQ-ITR-STD-012"
+    },
+    {
+      "meta_id": "460",
+      "post_id": "64",
+      "meta_key": "_regular_price",
+      "meta_value": "200"
+    },
+    {
+      "meta_id": "450",
+      "post_id": "32",
+      "meta_key": "_thumbnail_id",
+      "meta_value": "53"
+    },
+    {
+      "meta_id": "449",
+      "post_id": "32",
+      "meta_key": "_product_image_gallery",
+      "meta_value": "54,55,56"
+    },
+    {
+      "meta_id": "447",
+      "post_id": "32",
+      "meta_key": "_maqwi_catalogue_release",
+      "meta_value": "2026-10-16-catalogue-1"
+    },
+    {
+      "meta_id": "204",
+      "post_id": "33",
+      "meta_key": "_manage_stock",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "205",
+      "post_id": "33",
+      "meta_key": "_backorders",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "211",
+      "post_id": "33",
+      "meta_key": "_stock",
+      "meta_value": null
+    },
+    {
+      "meta_id": "212",
+      "post_id": "33",
+      "meta_key": "_stock_status",
+      "meta_value": "outofstock"
+    },
+    {
+      "meta_id": "215",
+      "post_id": "33",
+      "meta_key": "attribute_size",
+      "meta_value": "250 g"
+    },
+    {
+      "meta_id": "216",
+      "post_id": "33",
+      "meta_key": "_price",
+      "meta_value": ""
+    },
+    {
+      "meta_id": "223",
+      "post_id": "34",
+      "meta_key": "_manage_stock",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "224",
+      "post_id": "34",
+      "meta_key": "_backorders",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "230",
+      "post_id": "34",
+      "meta_key": "_stock",
+      "meta_value": null
+    },
+    {
+      "meta_id": "231",
+      "post_id": "34",
+      "meta_key": "_stock_status",
+      "meta_value": "outofstock"
+    },
+    {
+      "meta_id": "234",
+      "post_id": "34",
+      "meta_key": "attribute_size",
+      "meta_value": "500 g"
+    },
+    {
+      "meta_id": "235",
+      "post_id": "34",
+      "meta_key": "_price",
+      "meta_value": ""
+    },
+    {
+      "meta_id": "242",
+      "post_id": "35",
+      "meta_key": "_manage_stock",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "243",
+      "post_id": "35",
+      "meta_key": "_backorders",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "249",
+      "post_id": "35",
+      "meta_key": "_stock",
+      "meta_value": null
+    },
+    {
+      "meta_id": "250",
+      "post_id": "35",
+      "meta_key": "_stock_status",
+      "meta_value": "outofstock"
+    },
+    {
+      "meta_id": "253",
+      "post_id": "35",
+      "meta_key": "_product_attributes",
+      "meta_value": "a:1:{s:4:\"size\";a:6:{s:4:\"name\";s:4:\"Size\";s:5:\"value\";s:5:\"12 ml\";s:8:\"position\";i:0;s:10:\"is_visible\";i:1;s:12:\"is_variation\";i:1;s:11:\"is_taxonomy\";i:0;}}"
+    },
+    {
+      "meta_id": "457",
+      "post_id": "35",
+      "meta_key": "_thumbnail_id",
+      "meta_value": "57"
+    },
+    {
+      "meta_id": "456",
+      "post_id": "35",
+      "meta_key": "_product_image_gallery",
+      "meta_value": "58,59,60"
+    },
+    {
+      "meta_id": "453",
+      "post_id": "35",
+      "meta_key": "_maqwi_catalogue_release",
+      "meta_value": "2026-10-16-catalogue-1"
+    },
+    {
+      "meta_id": "268",
+      "post_id": "36",
+      "meta_key": "_manage_stock",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "269",
+      "post_id": "36",
+      "meta_key": "_backorders",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "275",
+      "post_id": "36",
+      "meta_key": "_stock",
+      "meta_value": null
+    },
+    {
+      "meta_id": "276",
+      "post_id": "36",
+      "meta_key": "_stock_status",
+      "meta_value": "outofstock"
+    },
+    {
+      "meta_id": "279",
+      "post_id": "36",
+      "meta_key": "attribute_size",
+      "meta_value": "6 ml"
+    },
+    {
+      "meta_id": "280",
+      "post_id": "36",
+      "meta_key": "_price",
+      "meta_value": ""
+    },
+    {
+      "meta_id": "287",
+      "post_id": "37",
+      "meta_key": "_manage_stock",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "288",
+      "post_id": "37",
+      "meta_key": "_backorders",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "294",
+      "post_id": "37",
+      "meta_key": "_stock",
+      "meta_value": null
+    },
+    {
+      "meta_id": "295",
+      "post_id": "37",
+      "meta_key": "_stock_status",
+      "meta_value": "outofstock"
+    },
+    {
+      "meta_id": "298",
+      "post_id": "37",
+      "meta_key": "attribute_size",
+      "meta_value": "12 ml"
+    },
+    {
+      "meta_id": "299",
+      "post_id": "37",
+      "meta_key": "_price",
+      "meta_value": ""
+    },
+    {
+      "meta_id": "486",
+      "post_id": "35",
+      "meta_key": "_price",
+      "meta_value": "200"
+    },
+    {
+      "meta_id": "303",
+      "post_id": "38",
+      "meta_key": "_maqwi_sample_page",
+      "meta_value": "yes"
+    },
+    {
+      "meta_id": "304",
+      "post_id": "39",
+      "meta_key": "_maqwi_sample_page",
+      "meta_value": "yes"
+    },
+    {
+      "meta_id": "305",
+      "post_id": "40",
+      "meta_key": "_maqwi_sample_page",
+      "meta_value": "yes"
+    },
+    {
+      "meta_id": "306",
+      "post_id": "41",
+      "meta_key": "_maqwi_sample_page",
+      "meta_value": "yes"
+    },
+    {
+      "meta_id": "307",
+      "post_id": "42",
+      "meta_key": "_maqwi_sample_page",
+      "meta_value": "yes"
+    },
+    {
+      "meta_id": "308",
+      "post_id": "43",
+      "meta_key": "_maqwi_sample_page",
+      "meta_value": "yes"
+    },
+    {
+      "meta_id": "393",
+      "post_id": "62",
+      "meta_key": "_sku",
+      "meta_value": "MQ-HNY-STD-1000"
+    },
+    {
+      "meta_id": "394",
+      "post_id": "62",
+      "meta_key": "_regular_price",
+      "meta_value": "4500"
+    },
+    {
+      "meta_id": "398",
+      "post_id": "62",
+      "meta_key": "_manage_stock",
+      "meta_value": "yes"
+    },
+    {
+      "meta_id": "399",
+      "post_id": "62",
+      "meta_key": "_backorders",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "406",
+      "post_id": "62",
+      "meta_key": "_thumbnail_id",
+      "meta_value": "45"
+    },
+    {
+      "meta_id": "407",
+      "post_id": "62",
+      "meta_key": "_stock",
+      "meta_value": "0"
+    },
+    {
+      "meta_id": "408",
+      "post_id": "62",
+      "meta_key": "_stock_status",
+      "meta_value": "outofstock"
+    },
+    {
+      "meta_id": "411",
+      "post_id": "62",
+      "meta_key": "attribute_size",
+      "meta_value": "1 kg"
+    },
+    {
+      "meta_id": "412",
+      "post_id": "62",
+      "meta_key": "_price",
+      "meta_value": "4500"
+    },
+    {
+      "meta_id": "423",
+      "post_id": "63",
+      "meta_key": "_sku",
+      "meta_value": "MQ-GHE-STD-1000"
+    },
+    {
+      "meta_id": "424",
+      "post_id": "63",
+      "meta_key": "_regular_price",
+      "meta_value": "3500"
+    },
+    {
+      "meta_id": "428",
+      "post_id": "63",
+      "meta_key": "_manage_stock",
+      "meta_value": "yes"
+    },
+    {
+      "meta_id": "429",
+      "post_id": "63",
+      "meta_key": "_backorders",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "436",
+      "post_id": "63",
+      "meta_key": "_thumbnail_id",
+      "meta_value": "49"
+    },
+    {
+      "meta_id": "437",
+      "post_id": "63",
+      "meta_key": "_stock",
+      "meta_value": "0"
+    },
+    {
+      "meta_id": "438",
+      "post_id": "63",
+      "meta_key": "_stock_status",
+      "meta_value": "outofstock"
+    },
+    {
+      "meta_id": "441",
+      "post_id": "63",
+      "meta_key": "attribute_size",
+      "meta_value": "1 kg"
+    },
+    {
+      "meta_id": "442",
+      "post_id": "63",
+      "meta_key": "_price",
+      "meta_value": "3500"
+    },
+    {
+      "meta_id": "464",
+      "post_id": "64",
+      "meta_key": "_manage_stock",
+      "meta_value": "yes"
+    },
+    {
+      "meta_id": "465",
+      "post_id": "64",
+      "meta_key": "_backorders",
+      "meta_value": "no"
+    },
+    {
+      "meta_id": "471",
+      "post_id": "64",
+      "meta_key": "_thumbnail_id",
+      "meta_value": "57"
+    },
+    {
+      "meta_id": "472",
+      "post_id": "64",
+      "meta_key": "_stock",
+      "meta_value": "0"
+    },
+    {
+      "meta_id": "473",
+      "post_id": "64",
+      "meta_key": "_stock_status",
+      "meta_value": "outofstock"
+    },
+    {
+      "meta_id": "476",
+      "post_id": "64",
+      "meta_key": "attribute_size",
+      "meta_value": "12 ml"
+    },
+    {
+      "meta_id": "477",
+      "post_id": "64",
+      "meta_key": "_price",
+      "meta_value": "200"
+    }
+  ]
+}
