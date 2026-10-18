@@ -14,8 +14,8 @@ import sys
 REMOTE = "/htdocs/wp-content/themes/maqwi-organics/style.css"
 LOCAL = Path("wp-content/themes/maqwi-organics/style.css")
 BACKUP = Path("live-theme-backup")
-START = b"/* MAQWI-LIVE-GLASS-20261018-START */"
-END = b"/* MAQWI-LIVE-GLASS-20261018-END */"
+START = b"/* MAQWI-LIVE-COMMERCE-20261018-START */"
+END = b"/* MAQWI-LIVE-COMMERCE-20261018-END */"
 
 
 def digest(value):
@@ -41,7 +41,7 @@ def prepare():
     if source.count(START) != 1 or source.count(END) != 1:
         raise RuntimeError("Reviewed design marker mismatch")
     css = source[source.index(START):source.index(END)+len(END)]
-    if not 8000 < len(css) < 20000:
+    if not 2000 < len(css) < 20000:
         raise RuntimeError("Unexpected design block size")
     if source.count(b"{") != source.count(b"}"):
         raise RuntimeError("Source CSS unbalanced")
@@ -58,7 +58,7 @@ def prepare():
         raise RuntimeError("Unexpected live theme CSS; manual inspection required")
     if START in original or END in original:
         raise RuntimeError("Design release already present or partially present; fail closed")
-    changed, count = re.subn(rb"(?m)^Version:\s*[0-9.]+", b"Version: 0.12.0", original, count=1)
+    changed, count = re.subn(rb"(?m)^Version:\s*[0-9.]+", b"Version: 0.12.1", original, count=1)
     if count != 1:
         raise RuntimeError("Theme version header missing")
     prepared = changed.rstrip() + b"\n\n" + css + b"\n"
