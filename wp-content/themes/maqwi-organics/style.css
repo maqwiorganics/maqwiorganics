@@ -347,3 +347,5 @@ License: GPL-2.0-or-later
 }
 @media(min-width:1100px){.mq-slideshow-hero{min-height:580px}.mq-slideshow-hero .mq-premium-description{margin-bottom:22px!important}}
 @media(min-width:1600px){.mq-slideshow-hero{min-height:640px}}
+
+.mq-slideshow-hero .mq-primary-label{white-space:nowrap}
