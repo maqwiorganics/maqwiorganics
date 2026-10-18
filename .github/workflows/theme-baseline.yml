@@ -25,3 +25,5 @@ jobs:
           path: theme-backup/
           retention-days: 30
           if-no-files-found: error
+
+# Refresh reviewed homepage baseline: 2026-10-18 editorial refinement
