@@ -1,0 +1,50 @@
+name: Snapshot owned live source without writes
+on:
+  push:
+    branches: [staging]
+    paths: ['.github/workflows/snapshot-live-source.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Read only owned text source and compare known history
+        env:
+          FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
+        run: |
+          python3 - <<'PY'
+          import ftplib,ssl,os,io,json,hashlib,subprocess,pathlib,re
+          paths=["wp-content/plugins/maqwi-store-core/catalogue-release.php","wp-content/plugins/maqwi-store-core/maqwi-store-core.php","wp-content/plugins/maqwi-store-core/photography/manifest.json","wp-content/plugins/maqwi-store-core/storefront-copy.php","wp-content/plugins/maqwi-store-core/storefront-preview.php","wp-content/themes/maqwi-organics/404.php","wp-content/themes/maqwi-organics/assets/public.js","wp-content/themes/maqwi-organics/footer-maqwi.php","wp-content/themes/maqwi-organics/front-page.php","wp-content/themes/maqwi-organics/functions.php","wp-content/themes/maqwi-organics/header-maqwi.php","wp-content/themes/maqwi-organics/page-maqwi.php","wp-content/themes/maqwi-organics/patterns/home.php","wp-content/themes/maqwi-organics/style.css","wp-content/themes/maqwi-organics/theme.json","wp-content/themes/maqwi-organics/woocommerce.php"]
+          out=pathlib.Path('live-source-review');out.mkdir()
+          ftp=ftplib.FTP_TLS(context=ssl.create_default_context(),timeout=35)
+          ftp.connect('ftpupload.net',21);ftp.login('if0_43106867',os.environ['FTP_PASSWORD']);ftp.prot_p()
+          manifest={}
+          for p in paths:
+              b=io.BytesIO();ftp.retrbinary('RETR /htdocs/'+p,b.write);data=b.getvalue()
+              assert len(data)<500000,'Unexpected source size'
+              text=data.decode('utf-8')
+              assert not re.search(r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----|AKIA[0-9A-Z]{16}|gh[pousr]_[A-Za-z0-9]{30,}|re_[A-Za-z0-9]{25,}',text),'Unexpected credential pattern: '+p
+              target=out/p;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(data)
+              matches=[]
+              for c in subprocess.check_output(['git','rev-list','--all','--',p],text=True).splitlines()[:120]:
+                  old=subprocess.run(['git','show',c+':'+p],capture_output=True)
+                  if old.returncode==0 and old.stdout==data: matches.append(c)
+              manifest[p]={'sha256':hashlib.sha256(data).hexdigest(),'bytes':len(data),'matching_commits':matches}
+          ftp.quit()
+          (out/'manifest.json').write_text(json.dumps(manifest,indent=2))
+          print(json.dumps(manifest,indent=2))
+          PY
+      - name: Retain verified live custom source
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: maqwi-live-source-${{ github.run_id }}
+          path: live-source-review/
+          retention-days: 30
+          if-no-files-found: error
