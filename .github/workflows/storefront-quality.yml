@@ -36,7 +36,13 @@ jobs:
           assert data['shipping']=={'amount':300,'basis':'per_order','country':'PK'}
           expected={'maqwi-honey':(20,{'1 kg':4500}), 'maqwi-desi-ghee':(15,{'1 kg':3500}), 'maqwi-achaar':(5,{'500 g':1500,'1 kg':3000}), 'maqwi-itar':(10,{'12 ml':200})}
           products={p['slug']:p for p in data['products']}
-          assert set(products)==set(expected)
+          assert set(products)==set(expected)|{'maqwi-honey-spoons'}
+          spoons=products['maqwi-honey-spoons']
+          assert spoons['product_type']=='simple' and spoons['price']==1000
+          assert spoons['pack_count']==10 and spoons['honey_grams_per_spoon']==5
+          assert spoons['net_honey_weight_grams']==50
+          assert spoons['stock'] is None and spoons['public_purchasing_enabled'] is False
+          assert spoons['availability']=='draft_pending_stock_packaging_and_label_verification'
           for slug,(stock,prices) in expected.items():
               product=products[slug]
               assert product['stock']==stock
