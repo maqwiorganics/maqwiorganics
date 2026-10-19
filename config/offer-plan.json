@@ -1,0 +1,147 @@
+{
+  "revision": "2026-10-19-7g-offer-plan",
+  "status": "planning_only_not_enabled_in_woocommerce",
+  "currency": "PKR",
+  "public_ordering_enabled": false,
+  "payments_approved": false,
+  "shipping": {
+    "amount": 300,
+    "currency": "PKR",
+    "basis": "per_order",
+    "country": "PK",
+    "included_in_retail_prices": false
+  },
+  "approved_flagship": {
+    "slug": "maqwi-honey-spoons",
+    "sku": "MQ-HSP-010X007",
+    "price": 899,
+    "spoons_per_pack": 10,
+    "honey_g_per_spoon": 7,
+    "total_honey_g": 70,
+    "stock": null,
+    "sellable": false
+  },
+  "offers": [
+    {
+      "id": "honey-spoons-duo",
+      "name": "Honey Spoons Duo — 20 Spoons",
+      "type": "quantity_bundle",
+      "price": 1699,
+      "status": "proposed_pending_costs_and_inventory",
+      "components": [
+        {
+          "slug": "maqwi-honey-spoons",
+          "quantity": 2
+        }
+      ],
+      "honey_g": 140,
+      "discount_vs_separate": 99
+    },
+    {
+      "id": "honey-spoons-monthly",
+      "name": "Honey Spoons Monthly Pack — 30 Spoons",
+      "type": "quantity_bundle",
+      "price": 2399,
+      "status": "proposed_pending_costs_and_inventory",
+      "components": [
+        {
+          "slug": "maqwi-honey-spoons",
+          "quantity": 3
+        }
+      ],
+      "honey_g": 210,
+      "discount_vs_separate": 298
+    },
+    {
+      "id": "everyday-gift",
+      "name": "The Everyday Gift",
+      "type": "gift_set",
+      "price": 1099,
+      "status": "proposed_pending_packaging_supplier_costs",
+      "components": [
+        {
+          "slug": "maqwi-honey-spoons",
+          "quantity": 1
+        }
+      ],
+      "gift_packaging": "gift sleeve, ribbon, message card",
+      "packaging_premium_vs_component_retail": 200
+    },
+    {
+      "id": "honey-ritual-duo",
+      "name": "The Honey Ritual Duo",
+      "type": "gift_set",
+      "price": 1999,
+      "status": "proposed_pending_packaging_supplier_costs",
+      "components": [
+        {
+          "slug": "maqwi-honey-spoons",
+          "quantity": 2
+        }
+      ],
+      "gift_packaging": "presentation box, message card",
+      "packaging_premium_vs_discounted_duo_retail": 300
+    },
+    {
+      "id": "sweet-and-scent",
+      "name": "Sweet & Scent",
+      "type": "gift_set",
+      "price": 1499,
+      "status": "proposed_pending_packaging_supplier_costs",
+      "components": [
+        {
+          "slug": "maqwi-honey-spoons",
+          "quantity": 1
+        },
+        {
+          "slug": "maqwi-itar",
+          "size": "12 ml",
+          "quantity": 1
+        }
+      ],
+      "gift_packaging": "presentation box, message card",
+      "packaging_premium_vs_component_retail": 400
+    },
+    {
+      "id": "signature-honey-gift",
+      "name": "The Signature Honey Gift",
+      "type": "gift_set",
+      "price": 5999,
+      "status": "proposed_pending_packaging_supplier_costs",
+      "components": [
+        {
+          "slug": "maqwi-honey",
+          "size": "1 kg",
+          "quantity": 1
+        },
+        {
+          "slug": "maqwi-honey-spoons",
+          "quantity": 1
+        },
+        {
+          "slug": "maqwi-itar",
+          "size": "12 ml",
+          "quantity": 1
+        }
+      ],
+      "gift_packaging": "premium fitted box, message card",
+      "packaging_premium_vs_component_retail": 400
+    }
+  ],
+  "discount_policies": {
+    "stackable": false,
+    "other_promotional_discounts_enabled": false,
+    "bulk_and_seasonal_offers": "pending_cost_and_fulfillment_approval"
+  },
+  "inventory_policy": "All bundles and gifts must consume stock of their actual WooCommerce component products exactly once; no independent phantom stock or duplicated component reductions.",
+  "required_before_launch": [
+    "verified_cost_and_margin_per_offer",
+    "confirmed_supplies_and_packaging",
+    "supplier_inventory_and_label_validation",
+    "actual_product_photography",
+    "authenticated_woocommerce_setup",
+    "native_component_inventory_checkout_tests",
+    "real_transactional_mail_delivery",
+    "final_owner_launch_confirmation"
+  ]
+}
