@@ -1,5 +1,5 @@
 {
-  "revision": "2026-10-17",
+  "revision": "2026-10-19",
   "currency": "PKR",
   "country": "PK",
   "ordering_enabled": false,
@@ -59,6 +59,26 @@
           "price": 200
         }
       ]
+    },
+    {
+      "slug": "maqwi-honey-spoons",
+      "name": "Maqwi Honey Spoons",
+      "product_type": "simple",
+      "sku": "MQ-HSP-010X005",
+      "category": "honey",
+      "price": 1000,
+      "currency": "PKR",
+      "pack_count": 10,
+      "honey_grams_per_spoon": 5,
+      "net_honey_weight_grams": 50,
+      "size": "10 single-use spoons × 5 g",
+      "intended_use": "One individually packed honey-filled spoon each day for 10 days; open and use as appropriate for the product and packaging.",
+      "stock": null,
+      "availability": "draft_pending_stock_packaging_and_label_verification",
+      "public_purchasing_enabled": false,
+      "packaging_and_food_contact_material": "unverified",
+      "final_pack_photography": "pending",
+      "notes": "Do not claim recyclable, compostable, edible, heat-safe or suitable for hot drinks before validating actual food-contact material and use instructions. Honey is not suitable for infants under 12 months."
     }
   ]
 }
