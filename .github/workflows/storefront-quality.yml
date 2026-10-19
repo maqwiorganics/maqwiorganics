@@ -6,6 +6,7 @@ on:
       - 'wp-content/themes/maqwi-organics/**'
       - 'wp-content/plugins/maqwi-store-core/**'
       - 'config/approved-store.json'
+      - 'config/offer-plan.json'
       - '.github/workflows/storefront-quality.yml'
   pull_request:
     branches: [main]
@@ -38,9 +39,10 @@ jobs:
           products={p['slug']:p for p in data['products']}
           assert set(products)==set(expected)|{'maqwi-honey-spoons'}
           spoons=products['maqwi-honey-spoons']
-          assert spoons['product_type']=='simple' and spoons['price']==1000
-          assert spoons['pack_count']==10 and spoons['honey_grams_per_spoon']==5
-          assert spoons['net_honey_weight_grams']==50
+          assert spoons['product_type']=='simple' and spoons['price']==899
+          assert spoons['sku']=='MQ-HSP-010X007'
+          assert spoons['pack_count']==10 and spoons['honey_grams_per_spoon']==7
+          assert spoons['net_honey_weight_grams']==70
           assert spoons['stock'] is None and spoons['public_purchasing_enabled'] is False
           assert spoons['availability']=='draft_pending_stock_packaging_and_label_verification'
           for slug,(stock,prices) in expected.items():
@@ -48,5 +50,32 @@ jobs:
               assert product['stock']==stock
               assert {v['size']:v['price'] for v in product['variations']}==prices
           assert products['maqwi-achaar']['stock_scope']=='shared_parent'
+          offers=json.loads(Path('config/offer-plan.json').read_text())
+          assert offers['status']=='planning_only_not_enabled_in_woocommerce'
+          assert offers['public_ordering_enabled'] is False
+          assert offers['payments_approved'] is False
+          assert offers['shipping']=={'amount':300,'currency':'PKR','basis':'per_order','country':'PK','included_in_retail_prices':False}
+          assert offers['approved_flagship']['price']==899
+          assert offers['approved_flagship']['total_honey_g']==70
+          assert offers['approved_flagship']['stock'] is None and offers['approved_flagship']['sellable'] is False
+          expected_offers={'honey-spoons-duo':1699,'honey-spoons-monthly':2399,'everyday-gift':1099,'honey-ritual-duo':1999,'sweet-and-scent':1499,'signature-honey-gift':5999}
+          assert {o['id']:o['price'] for o in offers['offers']}==expected_offers
+          assert all(o['status'].startswith('proposed_pending_') for o in offers['offers'])
+          base={'maqwi-honey':4500,'maqwi-itar':200,'maqwi-honey-spoons':899}
+          for o in offers['offers']:
+              assert all(line['slug'] in base for line in o['components'])
+              if o['id']=='honey-spoons-duo':
+                  assert o['price']==2*899-99 and o['honey_g']==140
+              if o['id']=='honey-spoons-monthly':
+                  assert o['price']==3*899-298 and o['honey_g']==210
+              if o['type']=='gift_set' and 'packaging_premium_vs_component_retail' in o:
+                  total=sum(base[item['slug']]*item['quantity'] for item in o['components'])
+                  assert o['price']-total==o['packaging_premium_vs_component_retail']
+          assert offers['discount_policies']['stackable'] is False
+          creator=Path('wp-content/plugins/maqwi-store-core/honey-spoons-draft.php').read_text()
+          for required in ["MQ-HSP-010X007","set_regular_price( '899' )","set_stock_quantity( 0 )","set_status( 'draft' )","set_catalog_visibility( 'hidden' )","_maqwi_honey_per_spoon_g', '7'"]:
+              assert required in creator, f'Expected draft-only Honey Spoons configuration missing: {required}'
+          assert "MQ-HSP-010X005" not in creator
+          print('Gift-plan prices, no-sale guarantees and Honey Spoons draft source verified')
           print('Approved catalog and closed ordering verified in source')
           PY
