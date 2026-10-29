@@ -772,3 +772,24 @@ License: GPL-2.0-or-later
  .mq-site .mq-slideshow-hero .mq-premium-story{font-size:11px}
  .mq-site .mq-home .mq-product-card h3{font-size:19px}
 }
+
+
+/* 2026-10-30: Mobile-first polish without changing the brand palette. */
+.mq-site .mq-home .mq-product-card,
+.mq-site .mq-home .mq-category {transition:transform .22s ease,box-shadow .22s ease}
+@media (hover:hover) and (prefers-reduced-motion:no-preference) {
+ .mq-site .mq-home .mq-product-card:hover,
+ .mq-site .mq-home .mq-category:hover {transform:translateY(-3px);box-shadow:0 16px 36px rgba(45,41,36,.10)}
+}
+.mq-site .mq-home .mq-product-card a:focus-visible,
+.mq-site .mq-home .mq-category a:focus-visible {outline:3px solid var(--mq-green);outline-offset:4px}
+.mq-site .mq-home .mq-product-card img,
+.mq-site .mq-home .mq-category img {display:block;max-width:100%;height:auto}
+@media(max-width:767px){
+ .mq-site .mq-home .mq-product-grid {gap:12px}
+ .mq-site .mq-home .mq-product-card h3 {overflow-wrap:anywhere}
+ .mq-site .mq-home .mq-product-card .mq-text-link {display:inline-flex;align-items:center;min-height:44px}
+}
+@media(prefers-reduced-motion:reduce){
+ .mq-site .mq-home .mq-product-card,.mq-site .mq-home .mq-category {transition:none!important;transform:none!important}
+}
