@@ -287,3 +287,41 @@ add_filter( 'render_block_core/group', function ( $html, $block ) {
     }
     return $html;
 }, 50, 2 );
+
+
+/**
+ * Lightweight SEO fallback. Defer to established SEO plugins to avoid
+ * duplicate description and structured-data output.
+ */
+function maqwi_seo_plugin_active() {
+    return defined( 'WPSEO_VERSION' ) || defined( 'RANK_MATH_VERSION' )
+        || defined( 'AIOSEO_VERSION' ) || defined( 'SEOPRESS_VERSION' );
+}
+function maqwi_seo_description() {
+    if ( is_front_page() ) {
+        return 'Explore Maqwi Organics in Pakistan: honey, desi ghee, achaar and itar. Discover the collection and product information ahead of our store launch.';
+    }
+    if ( function_exists( 'is_product' ) && is_product() ) {
+        $product = function_exists( 'wc_get_product' ) ? wc_get_product( get_queried_object_id() ) : false;
+        if ( $product ) {
+            $summary = wp_strip_all_tags( $product->get_short_description() ?: $product->get_description() );
+            $summary = trim( preg_replace( '/\\s+/u', ' ', $summary ) );
+            if ( $summary ) { return wp_html_excerpt( $summary, 155, '…' ); }
+            return sprintf( 'Explore %s from Maqwi Organics. See available size, price and product information in Pakistan.', $product->get_name() );
+        }
+    }
+    if ( is_page() ) {
+        $page = get_queried_object();
+        if ( $page instanceof WP_Post ) {
+            $excerpt = trim( wp_strip_all_tags( strip_shortcodes( $page->post_excerpt ?: $page->post_content ) ) );
+            $excerpt = trim( preg_replace( '/\\s+/u', ' ', $excerpt ) );
+            if ( $excerpt ) { return wp_html_excerpt( $excerpt, 155, '…' ); }
+        }
+    }
+    return '';
+}
+add_action( 'wp_head', function () {
+    if ( is_admin() || is_feed() || is_404() || is_search() || maqwi_seo_plugin_active() ) { return; }
+    $description = maqwi_seo_description();
+    if ( $description ) { echo '<meta name="description" content="' . esc_attr( $description ) . '">' . "\\n"; }
+}, 2 );
