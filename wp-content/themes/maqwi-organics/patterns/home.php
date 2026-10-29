@@ -21,7 +21,7 @@ $assets = get_stylesheet_directory_uri() . '/assets/images/';
 </div><!-- /wp:group -->
 <!-- wp:group {"className":"mq-section mq-category-section","anchor":"the-collection","layout":{"type":"default"}} --><div id="the-collection" class="wp-block-group mq-section mq-category-section">
 <!-- wp:paragraph {"className":"mq-eyebrow"} --><p class="mq-eyebrow">Rooted in everyday traditions</p><!-- /wp:paragraph -->
-<!-- wp:heading --><h2 class="wp-block-heading">Find your familiar favourite.</h2><!-- /wp:heading -->
+<!-- wp:heading --><h2 class="wp-block-heading">Explore honey, desi ghee, achaar and itar.</h2><!-- /wp:heading -->
 <!-- wp:group {"className":"mq-categories","layout":{"type":"default"}} --><div class="wp-block-group mq-categories">
 <?php
 $categories = array(
@@ -63,7 +63,7 @@ foreach ( $categories as $category ) :
 <!-- wp:group {"layout":{"type":"default"}} --><div class="wp-block-group"><!-- wp:paragraph {"className":"mq-eyebrow"} --><p class="mq-eyebrow">Before we begin</p><!-- /wp:paragraph --><!-- wp:heading --><h2 class="wp-block-heading">A few things<br>you may wonder.</h2><!-- /wp:heading --></div><!-- /wp:group -->
 <!-- wp:group {"className":"mq-faq","layout":{"type":"default"}} --><div class="wp-block-group mq-faq">
 <!-- wp:details --><details class="wp-block-details"><summary>Can I place an order yet?</summary><!-- wp:paragraph --><p>Orders are not open yet. We are preparing the collection and testing the store before launch.</p><!-- /wp:paragraph --></details><!-- /wp:details -->
-<!-- wp:details --><details class="wp-block-details"><summary>What will Maqwi offer?</summary><!-- wp:paragraph --><p>Our starting range is honey, desi ghee, achaar and itar. The final variants, sizes and prices will be listed when the collection is ready.</p><!-- /wp:paragraph --></details><!-- /wp:details -->
-<!-- wp:details --><details class="wp-block-details"><summary>Where will you deliver?</summary><!-- wp:paragraph --><p>We are preparing for customers in Pakistan. Delivery areas, charges and expected timings will be confirmed before orders open.</p><!-- /wp:paragraph --></details><!-- /wp:details -->
+<!-- wp:details --><details class="wp-block-details"><summary>What will Maqwi offer?</summary><!-- wp:paragraph --><p>Our starting range includes honey, desi ghee, achaar and itar. Approved pack sizes and prices will be shown on their product pages once the catalogue is released.</p><!-- /wp:paragraph --></details><!-- /wp:details -->
+<!-- wp:details --><details class="wp-block-details"><summary>Where will you deliver?</summary><!-- wp:paragraph --><p>We plan to deliver across Pakistan with a flat Rs. 300 shipping fee per order. Ordering and delivery services will open after final testing.</p><!-- /wp:paragraph --></details><!-- /wp:details -->
 </div><!-- /wp:group --></div><!-- /wp:group -->
 <!-- wp:group {"className":"mq-section mq-closing","layout":{"type":"default"}} --><div class="wp-block-group mq-section mq-closing"><!-- wp:paragraph {"className":"mq-eyebrow"} --><p class="mq-eyebrow">A thoughtful beginning</p><!-- /wp:paragraph --><!-- wp:heading --><h2 class="wp-block-heading">Tradition has a place here.</h2><!-- /wp:heading --><!-- wp:paragraph --><p>We’re taking the time to prepare the details. Come back soon to meet the Maqwi collection.</p><!-- /wp:paragraph --></div><!-- /wp:group -->
